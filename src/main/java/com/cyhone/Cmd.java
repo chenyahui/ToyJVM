@@ -12,6 +12,7 @@ import java.util.List;
 public class Cmd {
     private Options options;
     private CommandLine cmd;
+    private String[] args;
 
     public Cmd(String[] args) throws ParseException {
         options = new Options();
@@ -71,6 +72,30 @@ public class Cmd {
         hf.printHelp(formatstr, "", this.options, "");
     }
 
+    public String getXjrePath() {
+        if (cmd.hasOption("Xjre")) {
+            return cmd.getOptionValue("Xjre");
+        }
+        return "";
+
+    }
+
+    public String getCpPath() {
+        if (cmd.hasOption("classpath")) {
+            return cmd.getOptionValue("classpath");
+        }
+
+        if (cmd.hasOption("cp")) {
+            return cmd.getOptionValue("cp");
+        }
+
+        return "";
+    }
+
+    public String getClassName() {
+        return args[0];
+    }
+
     public void printVersion() {
         System.out.println("version 0.0.1");
     }
@@ -78,7 +103,7 @@ public class Cmd {
     public void parse(String[] args) throws ParseException {
         CommandLineParser parser = new DefaultParser();
         cmd = parser.parse(options, args);
+        this.args = args.clone();
+
     }
-
-
 }

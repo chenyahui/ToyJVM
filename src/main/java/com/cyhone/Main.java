@@ -1,7 +1,12 @@
 package com.cyhone;
 
+import com.cyhone.classpath.ClassPath;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.UnrecognizedOptionException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executor;
 
 /**
  * @author cyhone
@@ -22,11 +27,14 @@ public class Main {
         } else if (cmd.isVersion()) {
             cmd.printVersion();
         } else {
-            
+            startJVM(cmd);
         }
     }
 
-    void startJVM(Cmd cmd) {
+    static void startJVM(Cmd cmd) {
+        ClassPath classPath = new ClassPath(cmd.getXjrePath(), cmd.getCpPath());
+
+        byte[] classData = classPath.readClass(cmd.getClassName());
 
     }
 
