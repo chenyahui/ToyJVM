@@ -2,8 +2,6 @@ package com.cyhone.classpath;
 
 import com.cyhone.exception.EnvCheckError;
 import com.cyhone.utils.FilePathUtils;
-import com.sun.javafx.scene.shape.PathUtils;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -99,10 +97,16 @@ public class ClassPath {
         } catch (IOException e) {
         }
 
+        if (classBytes != null)
+            return classBytes;
+
         try {
             classBytes = extClasspath.readClass(className);
         } catch (IOException e1) {
         }
+        if (classBytes != null)
+            return classBytes;
+
 
         try {
             classBytes = userClasspath.readClass(className);
