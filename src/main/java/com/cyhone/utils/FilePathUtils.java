@@ -8,7 +8,6 @@ import java.io.File;
  */
 public class FilePathUtils {
     private FilePathUtils() {
-
     }
 
     public static String join(String... fileItems) {

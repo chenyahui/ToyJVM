@@ -2,49 +2,49 @@ package com.cyhone.classfile;
 
 import com.cyhone.exception.ClassFileError;
 import com.cyhone.exception.EnvCheckError;
-import com.cyhone.types.Uint16;
+
 
 /**
  * @author cyhone
  * @date 2017/2/20
  */
 public class ClassFile {
-    private Uint16 minorVersion;
-    private Uint16 majorVersion;
+    private short minorVersion;
+    private short majorVersion;
     private ConstantPool constantPool;
-    private Uint16 accessFlags;
-    private Uint16 thisClass;
-    private Uint16 superClass;
-    private Uint16[] interfaces;
+    private short accessFlags;
+    private short thisClass;
+    private short superClass;
+    private short[] interfaces;
     private MemberInfo[] fields;
     private MemberInfo[] methods;
     private AttributeInfo[] attributes;
 
-    void read(ClassReader reader) {
+    public void read(ClassReader reader) {
         readAndCheckMagic(reader);
         readAndCheckVersion(reader);
         this.constantPool = ConstantPool.readConstantPool(reader);
-        this.accessFlags = reader.readUint16();
-        this.thisClass = reader.readUint16();
-        this.superClass = reader.readUint16();
-        this.interfaces = reader.readUint16s();
+        this.accessFlags = reader.readShort();
+        this.thisClass = reader.readShort();
+        this.superClass = reader.readShort();
+        this.interfaces = reader.readShorts();
         this.fields = MemberInfo.readMembers(reader, this.constantPool);
         this.methods = MemberInfo.readMembers(reader, this.constantPool);
         this.attributes = AttributeInfo.readAttributes(reader, this.constantPool);
     }
 
-    void readAndCheckMagic(ClassReader reader) {
-        int magic = reader.readUint32().toInt();
+    private void readAndCheckMagic(ClassReader reader) {
+        int magic = reader.readInt();
         if (magic != 0xCAFEBABE) {
             throw new ClassFileError("java.lang.ClassFormatError: magic!");
         }
     }
 
-    void readAndCheckVersion(ClassReader reader) {
-        this.minorVersion = reader.readUint16();
-        this.majorVersion = reader.readUint16();
+    private void readAndCheckVersion(ClassReader reader) {
+        this.minorVersion = reader.readShort();
+        this.majorVersion = reader.readShort();
 
-        switch (majorVersion.toInt()) {
+        switch (majorVersion) {
             case 45:
                 return;
             case 46:
@@ -54,7 +54,7 @@ public class ClassFile {
             case 50:
             case 51:
             case 52:
-                if (minorVersion.toInt() == 0) {
+                if (minorVersion == 0) {
                     return;
                 }
         }
