@@ -14,7 +14,7 @@ include_directories(${CMAKE_CURRENT_LIST_DIR}/include)
 link_directories(${CMAKE_CURRENT_LIST_DIR}/lib)
 link_directories(${Boost_LIBRARIES})
 
-add_executable(tinyjvm ${SOURCE_LIST} src/classfile/classreader.cpp src/util/byteutils.cpp src/classfile/classfile.cpp src/classfile/memberinfo.cpp include/classfile/constantinfo.h)
+add_executable(tinyjvm ${SOURCE_LIST} src/classfile/classreader.cpp src/util/byteutils.cpp src/classfile/classfile.cpp src/classfile/memberinfo.cpp include/classfile/constantinfo.h src/classfile/classinfo.cpp include/classfile/cp_numeric.h include/classfile/cp_utf8.h include/classfile/cp_string.h src/classfile/cp_numeric.cpp)
 
 target_link_libraries(tinyjvm
         boost_system

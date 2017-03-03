@@ -9,6 +9,7 @@ namespace cyh {
     class ConstantInfo {
     public:
         virtual void readInfo(ClassReader reader) = 0;
+
     };
 
     enum CONSTANT_TYPE {
@@ -28,4 +29,5 @@ namespace cyh {
         INVOKE_DYNAMIC = 18
     };
 
+    ConstantInfo*  newConstantInfo(Byte tag, ConstantInfo cp);
 }
