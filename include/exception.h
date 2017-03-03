@@ -18,4 +18,14 @@ namespace cyh {
     private:
         std::string msg_;
     };
+
+    class ClassFormatError : public std::exception {
+    public:
+        ClassFormatError(std::string const &message) : msg_(message) {}
+
+        virtual char const *what() const noexcept { return msg_.c_str(); }
+
+    private:
+        std::string msg_;
+    };
 }

@@ -28,14 +28,6 @@ namespace cyh {
     }
 }
 
-#include "util/fileutils.h"
-
-void testReadBytes() {
-    cyh::Bytes byteData = cyh::FileUtils::readFileToBytes("/home/cyhone/test.txt");
-    for (auto item:byteData) {
-        cyh::print(int(item), " ");
-    }
-}
 
 int main(int argc, char *argv[]) {
     cyh::CmdParser cmdParser = cyh::CmdParser(argc, argv);
@@ -44,6 +36,8 @@ int main(int argc, char *argv[]) {
     } else {
         cyh::startJVM(cmdParser);
     }
+
+
     return 0;
 }
 
