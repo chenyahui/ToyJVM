@@ -13,7 +13,7 @@ namespace cyh {
         std::string str();
 
     private:
-        std::string val;
+        std::string _str;
     };
 
     std::string decodeMUTF8(Bytes bytes);

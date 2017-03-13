@@ -4,6 +4,7 @@
 //
 
 #include "classreader.h"
+#include "constantPool.h"
 
 namespace cyh {
     class ConstantInfo {
@@ -29,5 +30,5 @@ namespace cyh {
         INVOKE_DYNAMIC = 18
     };
 
-    ConstantInfo*  newConstantInfo(Byte tag, ConstantInfo cp);
+    ConstantInfo *newConstantInfo(Byte tag, ConstantPool cp);
 }
