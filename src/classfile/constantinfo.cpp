@@ -44,7 +44,7 @@ namespace cyh {
             case INVOKE_DYNAMIC:
                 return new ConstantInvokeDynamicInfo();
             default:
-                throw ClassFormatError("");
+                throw ClassFormatError("java.lang.ClassFormatError: constant pool tag!");
         }
     }
 }
