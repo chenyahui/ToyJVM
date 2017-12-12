@@ -1,52 +1,51 @@
-//
-// Created by cyhone on 17-3-1.
-//
+#include <jvm/classfile/classreader.h>
+namespace cyh{
+	ClassReader::ClassReader(bytes& data):data_(data),now_(0){
+	}
+	ClassReader::ClassReader(const ClassReader& reader){
+		this->data_ = reader.data_;
+		this->now_ = 0;
+	}
+	ClassReader& ClassReader::operator=(const ClassReader& reader){
+		this->data_ = reader.data_;
+		this->now_ = 0;
+		return *this;
+	}
 
-#include <util/byteutils.h>
-#include "classfile/classreader.h"
+	ClassReader::~ClassReader(){
+	}
 
+	std::vector<u2> ClassReader::ReadU2s(){
+		u2 num = ReadU2();
+		std::vector<u2> u2s;
+		for (int i = 0; i < num; ++i) {
+			u2s.push_back(ReadU2());
+		}
+		return u2s;
+	}
+	std::vector<u1> ClassReader::ReadU1s(){
+		u2 num = ReadU2();
+		return ReadU1s((u4)num);
+	}
+	std::vector<u1> ClassReader::ReadU1s(u4 num){
+		bytes u1s;
+		for (int i = 0; i < num; ++i) {
+			u1s.push_back(ReadU1());
+		}
+		return u1s;
+	}
+	#define READ_BYTES(num) \
+	u##num ClassReader::ReadU##num(){ \
+        	u##num result=0x0; \
+        	for(int i = 0; i < num; ++i){ \
+			result |= data_[now_ + i] << ((num - i - 1) * 8); \
+		} \
+		now_ += num; \
+		return result; \
+	}
 
-namespace cyh {
-    Byte ClassReader::readUint8() {
-        auto val = data[0];
-        data = Bytes(data.begin() + 1, data.end());
-        return val;
-    }
-
-    uint16 ClassReader::readUint16() {
-        auto val = ByteUtils::twoByteToUint16(data[0], data[1]);
-        data = Bytes(data.begin() + 1, data.end());
-
-        return val;
-    }
-
-    uint32 ClassReader::readUint32() {
-        auto val = ByteUtils::fourByteToUint32(data[0], data[1], data[2], data[3]);
-        data = Bytes(data.begin() + 4, data.end());
-        return val;
-    }
-
-    uint64 ClassReader::readUint64() {
-        auto val = ByteUtils::eightByteToUint64(Bytes(data.begin(), data.begin() + 8));
-
-        data = Bytes(data.begin() + 8, data.end());
-        return val;
-    }
-
-    std::vector<uint16> ClassReader::readUint16s() {
-
-        uint16 n = readUint16();
-        std::vector<uint16> results = std::vector<uint16>(n);
-        for (uint16 i = 0; i < n; ++i) {
-            results[i] = readUint16();
-        }
-        return results;
-    }
-
-    Bytes ClassReader::readBytes(uint32 length) {
-        auto val = Bytes(data.begin(), data.begin() + length);
-        data = Bytes(data.begin() + length, data.end());
-        return val;
-    }
-
+	READ_BYTES(8)
+	READ_BYTES(4)
+	READ_BYTES(2)
+	READ_BYTES(1)
 }

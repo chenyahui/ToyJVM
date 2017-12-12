@@ -1,45 +1,44 @@
 #include <iostream>
-#include <log.h>
+#include <vector>
+#include <jvm/classfile/classfile.h>
+#include <jvm/utils/fileutils.h>
+using namespace std;
 
-#include "cmd.h"
-#include "util/commonutils.h"
-#include "classpath/classpath.h"
-
-namespace cyh {
-    void startJVM(cyh::CmdParser cmdParser) {
-        ClassPath classPath;
-        try {
-            classPath.parse(cmdParser.xjreOption(), cmdParser.cpOption());
-            println("classpath ", classPath.toString(), " class ", cmdParser.getClassName());
-
-            auto className = boost::replace_all_copy(cmdParser.getClassName(), ".", "/");
-
-            Bytes classData = classPath.readClass(className);
-            print(classData.size());
-            for (auto item:classData) {
-                cyh::print(int(item), " ");
-            }
-            println("\n");
-
-        } catch (std::exception e) {
-            Log::f("出错了" + std::string(e.what()));
-        }
-
-    }
+template<typename T>
+void println(std::string name,T value){
+	cout<< name << value<<endl;
+}
+void println(std::string name, std::vector<std::string> items){
+	cout << name <<endl;
+	for(auto item : items){
+		cout<<item<<" ";
+	}
+	cout<<endl;
 }
 
+void print_class_info(cyh::ClassFile c){
+	println("Class: ",c.ClassName());
+	println("Super Class: ",c.SuperClassName());
+	println("AccessFlags: ",c.AccessFlags());
 
-int main(int argc, char *argv[]) {
-    cyh::CmdParser cmdParser = cyh::CmdParser(argc, argv);
-    if (cmdParser.isVersion()) {
-        cyh::printVersion();
-    } else {
-        cyh::startJVM(cmdParser);
-    }
-
-
-    return 0;
+	println("Interfaces: ", c.InterfaceNames());
+	println("Methods: ", c.MethodNames());
+	println("Fields: ",c.FieldNames());
 }
+int main(int argc, char *argv[])
+{
+	try {
+		cyh::bytes data = cyh::readfile("/home/cyhone/String.class");
+		cyh::ClassFile classfile(data);
+		classfile.Parse();
+		print_class_info(classfile);
 
-
-
+	} catch (char const* e){
+		cout<<e<<endl;
+	} catch(std::string& e){
+		cout<<e<<endl;
+	} catch (...){
+		cout << "OMG! an unexpected exception has been caught" << endl;
+	}
+	return 0;
+}
