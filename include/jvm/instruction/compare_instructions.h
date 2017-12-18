@@ -81,14 +81,14 @@ public:
 	}
 
 	if (jump) {
-	    BranchJump(frame);
+	    BranchJump(frame, this->offset);
 	}
     };
 };
 
 #define GENE_COND(Type)                                         \
-    using IF##Type = IfCond_Instruction<int, CondType::Type, false>; \
-    using IF_ICMP##Type = IfCond_Instruction<int, CondType::Type, true>;
+    using IF##Type##_Instruction = IfCond_Instruction<int, CondType::Type, false>; \
+    using IF_ICMP##Type##_Instruction = IfCond_Instruction<int, CondType::Type, true>;
 
 GENE_COND(EQ)
 GENE_COND(NE)
@@ -97,8 +97,8 @@ GENE_COND(LE)
 GENE_COND(GT)
 GENE_COND(GE)
 
-using IF_ACMPEQ = IfCond_Instruction<j_ref, CondType::EQ, true>;
-using IF_ACMPNE = IfCond_Instruction<j_ref, CondType::NE, true>;
+using IF_ACMPEQ_Instruction = IfCond_Instruction<j_ref, CondType::EQ, true>;
+using IF_ACMPNE_Instruction = IfCond_Instruction<j_ref, CondType::NE, true>;
 
 }
 #endif

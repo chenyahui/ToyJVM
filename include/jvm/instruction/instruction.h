@@ -16,21 +16,26 @@ public:
     void FetchOperands(ByteCodeReader&) override {}
 };
 
+void BranchJump(JFrame& frame, int offset)
+{
+    auto thread = frame.Thread();
+    auto nextpc = thread->Pc() + offset;
+
+    thread->SetNextPc(nextpc);
+}
+
 class BranchInstruction : public Instruction {
 public:
     void FetchOperands(ByteCodeReader& reader) override
     {
 	offset = reader.Read<int>();
     }
+    virtual void Execute(JFrame& frame) override
+    {
+	BranchJump(frame, offset);
+    }
 
 protected:
-    void BranchJump(JFrame& frame)
-    {
-	auto thread = frame.Thread();
-	auto nextpc = thread->Pc() + offset;
-
-	thread->SetNextPc(nextpc);
-    }
     int offset;
 };
 
