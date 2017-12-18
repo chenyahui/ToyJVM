@@ -3,13 +3,12 @@
 
 #include <exception>
 
-namespace cyh{
-	class ClassFileException: public std::exception
-	{
-		virtual const char* what() const throw()
-		{
-			return "My exception happened";
-		}
-	};
+namespace cyh {
+class ClassFileException : public std::exception {
+    virtual const char* what() const throw()
+    {
+	return "My exception happened";
+    }
+};
 }
 #endif
