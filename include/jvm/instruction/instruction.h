@@ -2,7 +2,7 @@
 #define MY_JVM_INSTRUCTION_INSTRCUTION_H
 
 #include <jvm/instruction/bytecodereader.h>
-#include <jvm/rtdata/jvm_thread.h>
+#include <jvm/rtdata/jvm_frame.h>
 
 namespace cyh {
 class Instruction {
@@ -24,6 +24,13 @@ public:
     }
 
 protected:
+    void BranchJump(JFrame& frame)
+    {
+	auto thread = frame.Thread();
+	auto nextpc = thread->Pc() + offset;
+
+	thread->SetNextPc(nextpc);
+    }
     int offset;
 };
 
