@@ -4,7 +4,7 @@
 #include <jvm/instruction/instruction.h>
 
 namespace cyh {
-using GOTO_Instruction = BranchInstruction;
+using GOTO_Instruction = BranchInstruction<j_short>;
 
 class TABLE_SWITCH_Instruction : public Instruction {
 public:
@@ -48,15 +48,15 @@ public:
     {
 	reader.SkipPadding();
 
-	default_offset_ = reader.Pop<int>();
-	npairs_ = reader.Pop<int>();
+	default_offset_ = reader.Read<int>();
+	npairs_ = reader.Read<int>();
 
 	match_offsets_ = reader.ReadInt32s(npairs_ * 2);
     }
 
     void Execute(JFrame& frame)
     {
-	auto key = reader.Pop<int>();
+	auto key = frame.OpStack().Pop<int>();
 
 	int offset = default_offset_;
 

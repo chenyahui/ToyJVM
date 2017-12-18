@@ -24,19 +24,20 @@ void BranchJump(JFrame& frame, int offset)
     thread->SetNextPc(nextpc);
 }
 
+template<typename T = j_short>
 class BranchInstruction : public Instruction {
 public:
     void FetchOperands(ByteCodeReader& reader) override
     {
-	offset = reader.Read<int>();
+	offset = reader.Read<T>();
     }
     virtual void Execute(JFrame& frame) override
     {
-	BranchJump(frame, offset);
+	BranchJump(frame, static_cast<int>(offset));
     }
 
 protected:
-    int offset;
+    T offset;
 };
 
 class Index8Instruction : public Instruction {

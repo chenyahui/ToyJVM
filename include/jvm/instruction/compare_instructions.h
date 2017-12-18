@@ -45,7 +45,7 @@ enum class CondType {
     GE
 };
 template <typename T, CondType cond, bool icmp = false>
-class IfCond_Instruction : public BranchInstruction {
+class IfCond_Instruction : public BranchInstruction<j_short> {
 public:
     void Execute(JFrame& frame) override
     {
