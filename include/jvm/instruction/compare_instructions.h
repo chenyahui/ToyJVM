@@ -1,7 +1,7 @@
 #ifndef MY_JVM_INSTRUCTION_COMPARE_INSTRUCTIONS_H
 #define MY_JVM_INSTRUCTION_COMPARE_INSTRUCTIONS_H
 
-#include <jvm/instruction/instruction.h>
+#include <jvm/instruction/base_instruction.h>
 #include <math.h>
 
 namespace cyh {
@@ -45,7 +45,7 @@ enum class CondType {
     GE
 };
 template <typename T, CondType cond, bool icmp = false>
-class IfCond_Instruction : public BranchInstruction<j_short> {
+class IfCond_Instruction : public BranchInstruction<> {
 public:
     void Execute(JFrame& frame) override
     {

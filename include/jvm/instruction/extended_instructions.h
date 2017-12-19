@@ -3,41 +3,31 @@
 
 #include <jvm/instruction/instruction.h>
 
-namespace cyh{
-class WIDE_Instruction : public Instruction{
-	public:
-		void FetchOperands(ByteCodeReader& reader) override{
-			auto opcode = reader.Read<u1>();
+namespace cyh {
+class WIDE_Instruction : public Instruction {
+public:
+    void FetchOperands(ByteCodeReader& reader) override;
+    void Execute(JFrame& frame) override;
 
-			switch(opcode){
-				case 0x15:
-					break;
-				default:
-					break;
-			}
-		}
-
-		void Execute(JFrame& frame) override{
-			modified_instruction_->Execute(frame);
-		}
-	private:
-		Instruction* modified_instruction_;
+private:
+    Instruction* modified_instruction_;
 };
 
-template<bool isnull = true>
-class IFNULL_Instruction : public BranchInstruction<j_short>{
-	public:
-		void Execute(JFrame& frame) override{
-			auto ref = frame.OpStack().Pop<j_ref>();
+template <bool isnull = true>
+class IFNULL_Instruction : public BranchInstruction<> {
+public:
+    void Execute(JFrame& frame) override
+    {
+	auto ref = frame.OpStack().Pop<j_ref>();
 
-			if((ref == NULL) == isnull){
-				BranchJump(frame, this->offset);
-			}
-		}
+	if ((ref == NULL) == isnull) {
+	    BranchJump(frame, this->offset);
+	}
+    }
 };
 
 using IFNONULL_Instruction = IFNULL_Instruction<false>;
 
-using GOTO_W_Instruction = BranchInstruction<j_int>;
+using GOTO_W_Instruction = BranchInstruction<u4>;
 }
 #endif

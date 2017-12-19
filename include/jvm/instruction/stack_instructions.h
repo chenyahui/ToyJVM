@@ -1,7 +1,7 @@
 #ifndef MY_JVM_INSTRUCTION_STORE_INSTRUCTIONS_H
 #define MY_JVM_INSTRUCTION_STORE_INSTRUCTIONS_H
 
-#include <jvm/instruction/instruction.h>
+#include <jvm/instruction/base_instruction.h>
 namespace cyh {
 template <int num = 1>
 class POP_Instruction : public NoOperandsInstruction {
@@ -51,16 +51,7 @@ using DUP2_X2_Instruction = DUP_Instruction<2, 1>;
 
 class SWAP_Instruction : public NoOperandsInstruction {
 public:
-    void Execute(JFrame& frame) override
-    {
-	auto op_stack = frame.OpStack();
-
-	auto val1 = op_stack.Pop<LocalSlot>();
-	auto val2 = op_stack.Pop<LocalSlot>();
-
-	op_stack.Push<LocalSlot>(val1);
-	op_stack.Push<LocalSlot>(val2);
-    }
-};
+    void Execute(JFrame& frame) override;
+  };
 }
 #endif

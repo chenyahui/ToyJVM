@@ -1,10 +1,11 @@
 #ifndef MY_JVM_INSTRUCTION_INSTRCUTION_H
 #define MY_JVM_INSTRUCTION_INSTRCUTION_H
 
-#include <jvm/instruction/bytecodereader.h>
+#include <jvm/instruction/bytecode_reader.h>
 #include <jvm/rtdata/jvm_frame.h>
 
 namespace cyh {
+class WIDE_Instruction;
 class Instruction {
 public:
     virtual void FetchOperands(ByteCodeReader&){};
@@ -16,39 +17,38 @@ public:
     void FetchOperands(ByteCodeReader&) override {}
 };
 
-void BranchJump(JFrame& frame, int offset)
-{
-    auto thread = frame.Thread();
-    auto nextpc = thread->Pc() + offset;
+void BranchJump(JFrame& frame, int offset);
 
-    thread->SetNextPc(nextpc);
-}
-
-template<typename T = j_short>
+template <typename T = u2>
 class BranchInstruction : public Instruction {
 public:
     void FetchOperands(ByteCodeReader& reader) override
     {
-	offset = reader.Read<T>();
+	offset = static_cast<int>(reader.Read<T>());
     }
     virtual void Execute(JFrame& frame) override
     {
-	BranchJump(frame, static_cast<int>(offset));
+	BranchJump(frame, offset);
     }
 
+    friend class WIDE_Instruction;
+
 protected:
-    T offset;
+    int offset;
 };
 
+template <typename T = u1>
 class Index8Instruction : public Instruction {
 public:
     void FetchOperands(ByteCodeReader& reader) override
     {
-	index = reader.Read<u2>();
+	index = static_cast<int>(reader.Read<T>());
     }
 
+    friend class WIDE_Instruction;
+
 protected:
-    u2 index;
+    int index;
 };
 }
 #endif /* ifndef  */

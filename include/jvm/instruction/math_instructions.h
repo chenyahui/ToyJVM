@@ -3,7 +3,7 @@
 
 #include <cmath>
 #include <functional>
-#include <jvm/instruction/instruction.h>
+#include <jvm/instruction/base_instruction.h>
 
 namespace cyh {
 template <typename T, typename Op>
@@ -81,20 +81,8 @@ GENE_SHIFTS(L, j_long)
 
 class IINC_Instruction : public Instruction {
 public:
-    void FetchOperands(ByteCodeReader& reader) override
-    {
-	index_ = reader.Read<u4>();
-	const_ = reader.Read<j_int>();
-    }
-    void Execute(JFrame& frame) override
-    {
-	auto local_vars = frame.LocalVars();
-
-	auto val = local_vars.Get<j_int>(index_);
-	val += const_;
-
-	local_vars.Set<j_int>(index_, val);
-    }
+    void FetchOperands(ByteCodeReader& reader) override;
+    void Execute(JFrame& frame) override;
 
 private:
     u4 index_;

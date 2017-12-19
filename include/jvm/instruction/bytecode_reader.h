@@ -15,22 +15,8 @@ public:
 	pc_ += num;
 	return result;
     }
-    void SkipPadding()
-    {
-	while (pc_ % 4 != 0) {
-	    Read<u1>();
-	}
-    }
-    std::vector<int> ReadInt32s(int n)
-    {
-	std::vector<int> result(n);
-
-	for (int i = 0; i < n; i++) {
-	    result[i] = Read<int>();
-	}
-
-	return result;
-    }
+    void SkipPadding();
+    std::vector<int> ReadInt32s(int n);
 
 private:
     bytes data_;

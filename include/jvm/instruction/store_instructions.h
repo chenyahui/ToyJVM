@@ -1,7 +1,7 @@
 #ifndef MY_JVM_INSTRUCTION_STORE_INSTRUCTIONS_H
 #define MY_JVM_INSTRUCTION_STORE_INSTRUCTIONS_H
 
-#include <jvm/instruction/instruction.h>
+#include <jvm/instruction/base_instruction.h>
 // 25
 namespace cyh {
 template <typename T>

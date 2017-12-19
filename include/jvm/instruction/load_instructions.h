@@ -1,6 +1,6 @@
 #ifndef MY_JVM_INSTRUCTION_LOAD_INSTRUCTIONS_H
 #define MY_JVM_INSTRUCTION_LOAD_INSTRUCTIONS_H
-#include <jvm/instruction/instruction.h>
+#include <jvm/instruction/base_instruction.h>
 // 25
 namespace cyh {
 template <typename T>
@@ -12,7 +12,7 @@ void load(JFrame& frame, int index)
 }
 
 template <typename T>
-class LoadInstruction : public Index8Instruction {
+class LoadInstruction : public Index8Instruction<> {
 public:
     void Execute(JFrame& frame) override
     {
@@ -23,6 +23,7 @@ public:
 template <typename T, int index>
 class LoadConstInstruction : public NoOperandsInstruction {
 public:
+
     void Execute(JFrame& frame) override
     {
 	load<T>(frame, index);

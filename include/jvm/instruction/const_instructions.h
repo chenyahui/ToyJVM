@@ -1,7 +1,7 @@
 #ifndef MY_JVM_INSTRUCTION_CONST_INSTRUCTIONS_H
 #define MY_JVM_INSTRUCTION_CONST_INSTRUCTIONS_H
 
-#include <jvm/instruction/instruction.h>
+#include <jvm/instruction/base_instruction.h>
 
 namespace cyh {
 template <typename T, int num>

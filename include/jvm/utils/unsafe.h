@@ -9,52 +9,58 @@ namespace cyh {
 template <typename SourceType, typename ResultType>
 inline ResultType ConvertAtLowLevel(SourceType s)
 {
-    return *((ResultType*)&s);
-}
+    auto s_len = sizeof(SourceType);
+    auto r_len = sizeof(ResultType);
+    //assert(s_len <= r_len);
 
-template <typename T>
-inline int32_t ConvertToInt32(T val)
-{
-    if (std::is_same<T, float>::value) {
-	return ConvertAtLowLevel<float, int32_t>(val);
+    if (s_len == r_len) {
+	ResultType val;
+	memcpy(&val, &s, r_len);
+	return val;
     } else {
-	return static_cast<int32_t>(val);
+	return static_cast<ResultType>(s);
     }
 }
 
-inline std::pair<int, int> ConvertToInt32(int64_t val)
+// for float, short, char , byte
+template <typename T, typename R = int>
+R ConvertToInt32(T val)
+{
+    assert((std::is_same<R, int32_t>::value));
+    return ConvertAtLowLevel<T, int32_t>(val);
+}
+
+template <>
+std::pair<int, int> ConvertToInt32<j_long, std::pair<int, int> >(j_long val)
 {
     int low = int(val);
     int high = int(val >> 32);
     return std::make_pair(low, high);
 }
 
-inline std::pair<int, int> ConvertToInt32(double val)
+template <>
+std::pair<int, int> ConvertToInt32<j_double, std::pair<int, int> >(double val)
 {
     int64_t lval = ConvertAtLowLevel<double, int64_t>(val);
-    return ConvertToInt32<int64_t>(lval);
+    return ConvertToInt32<int64_t, std::pair<int, int> >(lval);
 }
 
-template <typename T>
-inline T ConvertFromInt32(int32_t val)
+template <typename T = int, typename R>
+R ConvertFromInt32(T val, int)
 {
-    if (std::is_same<T, float>::value) {
-	return ConvertAtLowLevel<int32_t, float>(val);
-    } else {
-	return static_cast<T>(val);
-    }
+    assert((std::is_same<T, int32_t>::value));
+    return ConvertAtLowLevel<int32_t, R>(val);
 }
 
-inline int64_t ConvertFromInt32(std::pair<int32_t, int32_t> vals)
+j_long ConvertFromInt32(std::pair<int32_t, int32_t> vals, j_long)
 {
-    return int64_t(vals.second) << 32 | int64_t(vals.first)
+    j_long l = int64_t(vals.second) << 32 | int64_t(vals.first);
+    return l;
 }
-
-inline double ConvertFromInt32(intstd::pair<int32_t, int32_t> vals)
+j_double ConvertFromInt32(std::pair<int32_t, int32_t> vals, j_double)
 {
-    int64_t l_result = ConvertFromInt32(vals);
-
-    return ConvertAtLowLevel<int64_t, double>(val);
+    auto l = ConvertFromInt32<std::pair<int, int>, j_long>(vals, 0);
+    return ConvertAtLowLevel<j_long, j_double>(l);
 }
 }
 #endif
