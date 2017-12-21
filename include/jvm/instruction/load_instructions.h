@@ -4,29 +4,29 @@
 // 25
 namespace cyh {
 template <typename T>
-void load(JFrame& frame, int index)
+static void load(JFrame* frame, int index)
 {
-    auto local_vars = frame.LocalVars();
+    auto local_vars = frame->LocalVars();
     T val = local_vars.Get<T>(index);
-    frame.OpStack().Push<T>(val);
+    frame->OpStack().Push<T>(val);
 }
 
 template <typename T>
 class LoadInstruction : public Index8Instruction<> {
 public:
-    void Execute(JFrame& frame) override
+    void Execute(JFrame* frame) override
     {
 	load<T>(frame, index);
     }
 };
 
-template <typename T, int index>
+template <typename T, int num>
 class LoadConstInstruction : public NoOperandsInstruction {
 public:
 
-    void Execute(JFrame& frame) override
+    void Execute(JFrame* frame) override
     {
-	load<T>(frame, index);
+	load<T>(frame, num);
     }
 };
 

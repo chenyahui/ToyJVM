@@ -1,9 +1,17 @@
+#ifndef MY_JVM_INSTRUCTION_BYTECODE_READER_H
+#define MY_JVM_INSTRUCTION_BYTECODE_READER_H
 #include <jvm/utils/types.h>
 #include <jvm/utils/unsafe.h>
 
 namespace cyh {
 class ByteCodeReader {
 public:
+    ByteCodeReader() {}
+    ByteCodeReader(bytes& data)
+	: data_(data)
+	, pc_(0)
+    {
+    }
     template <typename T>
     T Read()
     {
@@ -17,9 +25,11 @@ public:
     }
     void SkipPadding();
     std::vector<int> ReadInt32s(int n);
-
+    void Reset(bytes& data, int pc);
+    inline int Pc() { return pc_; }
 private:
     bytes data_;
     int pc_;
 };
 }
+#endif /* ifndef  */

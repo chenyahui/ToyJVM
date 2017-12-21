@@ -1,6 +1,11 @@
 #include <iostream>
 #include <jvm/classfile/classfile.h>
+#include <jvm/instruction/base_instruction.h>
+#include <jvm/instruction/bytecode_reader.h>
+#include <jvm/rtdata/jvm_thread.h>
 #include <jvm/utils/fileutils.h>
+
+#include <typeinfo>
 #include <vector>
 using namespace std;
 
@@ -28,14 +33,78 @@ void print_class_info(cyh::ClassFile c)
     println("Methods: ", c.MethodNames());
     println("Fields: ", c.FieldNames());
 }
+namespace cyh {
+void loop(JThread* thread, bytes& data);
+void interpert(MemberInfo* method_info)
+{
+    auto code_attr = method_info->CodeAttribute();
+    JThread* thread = new JThread();
+    thread->NewAndPushFrame(code_attr->max_locals_, code_attr->max_stack_);
+    loop(thread, code_attr->code_);
+}
+
+void printFrame(int pc, Instruction* inst)
+{
+    cout << "pc :" << pc
+	 << " " << typeid(*inst).name() << endl;
+}
+void loop(JThread* thread, bytes& data)
+{
+    auto frame = thread->PopFrame();
+    auto reader = ByteCodeReader();
+
+    while (true) {
+	try {
+	    int pc = frame->NextPc();
+	    thread->SetPc(pc);
+
+	    reader.Reset(data, pc);
+	    auto opcode = reader.Read<u1>();
+	    Instruction* inst = InstructionFactory(opcode);
+	    inst->FetchOperands(reader);
+	    frame->SetNextPc(reader.Pc());
+
+	    printFrame(pc, inst);
+	    inst->Execute(frame);
+	} catch (...) {
+	    break;
+	}
+    }
+
+    cout << "局部变量表：" << endl;
+    for (auto item : frame->LocalVars().InnerData()) {
+	cout << item.val << endl;
+    }
+}
+
+MemberInfo* GetMainFunc(ClassFile* klass)
+{
+    for (auto item : klass->methods) {
+	//cout << item->MemberName()<<endl;
+	if (item->MemberName() == "main") {
+	    return item;
+	}
+    }
+
+    throw "can't find main";
+}
+
+void startJvm(const char* filename)
+{
+
+    cyh::bytes data = cyh::readfile(filename);
+    ClassFile* klass = new ClassFile(data);
+    klass->Parse();
+
+    auto mainfunc = GetMainFunc(klass);
+
+    interpert(mainfunc);
+}
+}
 int main(int argc, char* argv[])
 {
     try {
-	cyh::bytes data = cyh::readfile("/home/cyhone/String.class");
-	cyh::ClassFile classfile(data);
-	classfile.Parse();
-	print_class_info(classfile);
-
+	    cyh::startJvm("/home/cyhone/Guass.class");
     } catch (char const* e) {
 	cout << e << endl;
     } catch (std::string& e) {

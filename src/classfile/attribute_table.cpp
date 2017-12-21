@@ -55,7 +55,7 @@ AttributeInfo* AttributeTable::NewAttributeInfo(std::string attr_name, ConstantP
     } else if (attr_name == "SourceFile") {
 	return new AttributeSourceFileInfo();
     } else if (attr_name == "Synthetic") {
-	return new AttributeSyntheticInfo();
+	return new AttributeSyntheticInfo<>();
     }
 
     return NULL;

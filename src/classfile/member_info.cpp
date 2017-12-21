@@ -14,4 +14,14 @@ std::string MemberInfo::MemberName()
 {
     return pool_->GetUtf8AsString(name_index_);
 }
+
+AttributeCodeInfo* MemberInfo::CodeAttribute()
+{
+    for (AttributeInfo* attr_info : attribute_table_.attributes_infos_) {
+  	if(attr_info->attr_type_ == "Code")
+		return dynamic_cast<AttributeCodeInfo*>(attr_info);
+    }
+
+    throw "can not find Code attribute";
+}
 }

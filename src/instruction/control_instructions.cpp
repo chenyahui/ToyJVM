@@ -13,9 +13,9 @@ void TABLE_SWITCH_Instruction::FetchOperands(ByteCodeReader& reader)
     jump_offsets_ = reader.ReadInt32s(count);
 };
 
-void TABLE_SWITCH_Instruction::Execute(JFrame& frame)
+void TABLE_SWITCH_Instruction::Execute(JFrame* frame)
 {
-    auto index = frame.OpStack().Pop<int>();
+    auto index = frame->OpStack().Pop<int>();
 
     int offset;
 
@@ -37,9 +37,9 @@ void LOOKUP_SWITCH_Instruction::FetchOperands(ByteCodeReader& reader)
     match_offsets_ = reader.ReadInt32s(npairs_ * 2);
 }
 
-void LOOKUP_SWITCH_Instruction::Execute(JFrame& frame)
+void LOOKUP_SWITCH_Instruction::Execute(JFrame* frame)
 {
-    auto key = frame.OpStack().Pop<int>();
+    auto key = frame->OpStack().Pop<int>();
 
     int offset = default_offset_;
 

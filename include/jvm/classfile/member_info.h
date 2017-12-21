@@ -3,6 +3,7 @@
 
 #include <jvm/classfile/attribute_table.h>
 #include <jvm/classfile/classreader.h>
+#include <jvm/classfile/attribute_infos.h>
 
 namespace cyh {
 
@@ -14,7 +15,7 @@ public:
     }
     void Read(ClassReader& reader);
     std::string MemberName();
-
+    AttributeCodeInfo* CodeAttribute();
 private:
     u2 access_flags_;
     u2 name_index_;

@@ -1,16 +1,16 @@
 #ifndef MY_JVM_INSTRUCTION_CONVERT_INSTRUCTIONS_H
 #define MY_JVM_INSTRUCTION_CONVERT_INSTRUCTIONS_H
 
-#include <jvm/instruction/instruction.h>
+#include <jvm/instruction/base_instruction.h>
 #include <jvm/utils/unsafe.h>
 
 namespace cyh {
 template <typename T1, typename T2>
 class TypeConvertInstruction : public NoOperandsInstruction {
 public:
-    void Execute(JFrame& frame)
+    void Execute(JFrame* frame)
     {
-	auto op_stack = frame.OpStack();
+	auto op_stack = frame->OpStack();
 
 	T1 val = op_stack.Pop<T1>();
 	T2 result = static_cast<T2>(val);
@@ -26,6 +26,10 @@ using D2F_Instruction = TypeConvertInstruction<j_double, j_float>;
 using I2L_Instruction = TypeConvertInstruction<j_int, j_long>;
 using I2F_Instruction = TypeConvertInstruction<j_int, j_float>;
 using I2D_Instruction = TypeConvertInstruction<j_int, j_double>;
+using I2S_Instruction = TypeConvertInstruction<j_int, j_short>;
+using I2C_Instruction = TypeConvertInstruction<j_int, j_char>;
+using I2B_Instruction = TypeConvertInstruction<j_int, j_byte>;
+
 
 using L2I_Instruction = TypeConvertInstruction<j_long, j_int>;
 using L2D_Instruction = TypeConvertInstruction<j_long, j_double>;

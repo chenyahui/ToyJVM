@@ -17,4 +17,9 @@ std::vector<int> ByteCodeReader::ReadInt32s(int n)
 
     return result;
 }
+
+void ByteCodeReader::Reset(bytes &data,int pc){
+	data_ = data;
+	pc_ = pc;
+}
 }

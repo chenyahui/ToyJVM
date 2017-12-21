@@ -9,9 +9,9 @@ namespace cyh {
 template <typename T, int gflag = 1>
 class CompareInstrution : public NoOperandsInstruction {
 public:
-    void Execute(JFrame& jframe)
+    void Execute(JFrame* jframe)
     {
-	auto op_stack = jframe.OpStack();
+	auto op_stack = jframe->OpStack();
 
 	auto v2 = op_stack.Pop<T>();
 	auto v1 = op_stack.Pop<T>();
@@ -47,12 +47,12 @@ enum class CondType {
 template <typename T, CondType cond, bool icmp = false>
 class IfCond_Instruction : public BranchInstruction<> {
 public:
-    void Execute(JFrame& frame) override
+    void Execute(JFrame* frame) override
     {
-	auto op_stack = frame.OpStack();
+	auto op_stack = frame->OpStack();
 
 	auto v2 = op_stack.Pop<T>();
-	int v1 = 0;
+	T v1 = 0;
 
 	if (icmp) {
 	    v1 = op_stack.Pop<T>();
@@ -86,7 +86,7 @@ public:
     };
 };
 
-#define GENE_COND(Type)                                         \
+#define GENE_COND(Type)                                                            \
     using IF##Type##_Instruction = IfCond_Instruction<int, CondType::Type, false>; \
     using IF_ICMP##Type##_Instruction = IfCond_Instruction<int, CondType::Type, true>;
 
@@ -99,6 +99,5 @@ GENE_COND(GE)
 
 using IF_ACMPEQ_Instruction = IfCond_Instruction<j_ref, CondType::EQ, true>;
 using IF_ACMPNE_Instruction = IfCond_Instruction<j_ref, CondType::NE, true>;
-
 }
 #endif

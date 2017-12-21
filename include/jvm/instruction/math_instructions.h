@@ -7,33 +7,54 @@
 
 namespace cyh {
 template <typename T, typename Op>
+class P1MathInstruction : public NoOperandsInstruction {
+public:
+    void Execute(JFrame* frame) override
+    {
+	auto op_stack = frame->OpStack();
+	auto v2 = op_stack.Pop<T>();
+	Op op;
+	T result = op(v2);
+	op_stack.Push<T>(result);
+    }
+};
+template <typename T, typename Op>
 class MathInstruction : public NoOperandsInstruction {
 public:
-    void Execute(JFrame& frame) override
+    void Execute(JFrame* frame) override
     {
-	auto op_stack = frame.OpStack();
-
+	auto op_stack = frame->OpStack();
 	auto v2 = op_stack.Pop<T>();
-	auto v1 = op_stack.Pop<T>();
 
 	Op op;
-	auto result = op(v1, v2);
+	T result;
+
+	auto v1 = op_stack.Pop<T>();
+	result = op(v1, v2);
 
 	op_stack.Push<T>(result);
     }
 };
+template <typename T>
+class Fmod {
+public:
+    constexpr T operator()(const T& lhs, const T& rhs) const
+    {
+	return std::fmod(lhs, rhs);
+    }
+};
 #define GENE_MATHS(prefix, type)                                                   \
-    using prefix##REM_Instruction = MathInstruction<type, std::modulus<type> >;    \
+    using prefix##REM_Instruction = MathInstruction<type, Fmod<type> >;            \
     using prefix##ADD_Instruction = MathInstruction<type, std::plus<type> >;       \
     using prefix##DIV_Instruction = MathInstruction<type, std::divides<type> >;    \
     using prefix##MUL_Instruction = MathInstruction<type, std::multiplies<type> >; \
     using prefix##SUB_Instruction = MathInstruction<type, std::minus<type> >;      \
-    using prefix##NEG_Instruction = MathInstruction<type, std::negate<type> >;
+    using prefix##NEG_Instruction = P1MathInstruction<type, std::negate<type> >;
 
 GENE_MATHS(I, int)
 GENE_MATHS(D, double)
 GENE_MATHS(L, j_long)
-GENE_MATHS(f, float)
+GENE_MATHS(F, float)
 
 #define GENE_BOOLEANS(prefix, type)                                             \
     using prefix##AND_Instruction = MathInstruction<type, std::bit_and<type> >; \
@@ -47,9 +68,9 @@ GENE_BOOLEANS(L, j_long)
 template <typename T, bool is_left = true, bool is_logic = false>
 class ShiftInstruction : public NoOperandsInstruction {
 public:
-    void Execute(JFrame& frame) override
+    void Execute(JFrame* frame) override
     {
-	auto op_stack = frame.OpStack();
+	auto op_stack = frame->OpStack();
 
 	auto v2 = op_stack.Pop<int>();
 	auto v1 = op_stack.Pop<T>();
@@ -79,13 +100,15 @@ public:
 GENE_SHIFTS(I, int)
 GENE_SHIFTS(L, j_long)
 
+class WIDE_Instruction;
 class IINC_Instruction : public Instruction {
 public:
     void FetchOperands(ByteCodeReader& reader) override;
-    void Execute(JFrame& frame) override;
+    void Execute(JFrame* frame) override;
+    friend class WIDE_Instruction;
 
 private:
-    u4 index_;
+    u4 index;
     j_int const_;
 };
 }

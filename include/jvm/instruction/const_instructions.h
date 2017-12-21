@@ -2,20 +2,29 @@
 #define MY_JVM_INSTRUCTION_CONST_INSTRUCTIONS_H
 
 #include <jvm/instruction/base_instruction.h>
+#include <typeinfo>
 
 namespace cyh {
 template <typename T, int num>
 class ConstInstruction : public NoOperandsInstruction {
 public:
-    void Execute(JFrame& frame) override
+    void Execute(JFrame* frame) override
     {
-	frame.OpStack().Push<T>(num);
+	frame->OpStack().Push<T>(static_cast<T>(num));
     }
 };
 
+class ACONST_NULL_Instruction : public NoOperandsInstruction {
+public:
+    void Execute(JFrame* frame) override
+    {
+	frame->OpStack().Push<j_ref>(NULL);
+    }
+};
 using NOP_Instruction = Instruction;
 
-using ACONST_NULL_Instruction = ConstInstruction<j_ref, NULL>;
+//using ACONST_NULL_Instruction = ConstInstruction<j_ref, 0>;
+
 using DCONST_0_Instruction = ConstInstruction<double, 0>;
 using DCONST_1_Instruction = ConstInstruction<double, 1>;
 
@@ -42,12 +51,12 @@ public:
 	val = reader.Read<T>();
     }
 
-    void Execute(JFrame& frame) override
+    void Execute(JFrame* frame) override
     {
-	frame.OpStack().Push<T>(val);
+	frame->OpStack().Push<T>(val);
     }
 
-private:
+public:
     T val;
 };
 

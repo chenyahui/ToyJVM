@@ -31,7 +31,7 @@ private:
     std::vector<MemberInfo*> ReadMembers();
     void ReadAttributes();
 
-private:
+public:
     ConstantPool constant_pool;
     u2 access_flags;
     u2 this_class;

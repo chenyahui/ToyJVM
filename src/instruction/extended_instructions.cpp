@@ -1,5 +1,7 @@
 #include <jvm/instruction/extended_instructions.h>
 #include <jvm/instruction/load_instructions.h>
+#include <jvm/instruction/store_instructions.h>
+#include <jvm/instruction/math_instructions.h>
 
 namespace cyh {
 #define GENE_CASE(Code, INS)                                      \
@@ -29,7 +31,7 @@ void WIDE_Instruction::FetchOperands(ByteCodeReader& reader)
 	// TODO ret
     }
 }
-void Execute(JFrame& frame)
+void WIDE_Instruction::Execute(JFrame* frame)
 {
     modified_instruction_->Execute(frame);
 }

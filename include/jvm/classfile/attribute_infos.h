@@ -8,6 +8,10 @@ namespace cyh {
 
 class AttributeConstantValueInfo : public AttributeInfo {
 public:
+    AttributeConstantValueInfo()
+	: AttributeInfo("ConstantValue")
+    {
+    }
     void ReadInfo(ClassReader&) override;
 
 private:
@@ -24,12 +28,13 @@ struct ExceptionInfo {
 class AttributeCodeInfo : public AttributeInfo {
 public:
     AttributeCodeInfo(ConstantPool* pool)
-	: pool_(pool)
+	: AttributeInfo("Code")
+	, pool_(pool)
     {
     }
     void ReadInfo(ClassReader&) override;
 
-private:
+public:
     u2 max_stack_;
     u2 max_locals_;
     bytes code_;
@@ -41,6 +46,10 @@ private:
 
 class AttributeExceptionsInfo : public AttributeInfo {
 public:
+    AttributeExceptionsInfo()
+	: AttributeInfo("Exceptions")
+    {
+    }
     void ReadInfo(ClassReader& reader) override;
 
 private:
@@ -55,6 +64,10 @@ struct InnerClassInfo {
 };
 class AttributeInnerClassesInfo : public AttributeInfo {
 public:
+    AttributeInnerClassesInfo()
+	: AttributeInfo("InnerClasses")
+    {
+    }
     void ReadInfo(ClassReader& reader) override;
 
 private:
@@ -63,6 +76,10 @@ private:
 
 class AttributeEnclosingMethodInfo : public AttributeInfo {
 public:
+    AttributeEnclosingMethodInfo()
+	: AttributeInfo("EnclosingMethod")
+    {
+    }
     void ReadInfo(ClassReader& reader) override;
 
 private:
@@ -70,15 +87,24 @@ private:
     u2 method_index_;
 };
 
+template <bool synthetic = true>
 class AttributeSyntheticInfo : public AttributeInfo {
 public:
+    AttributeSyntheticInfo()
+	: AttributeInfo(synthetic ? "Synthetic" : "Deprecated")
+    {
+    }
     void ReadInfo(ClassReader&) override {}
 };
 
-using AttributeDeprecatedInfo = AttributeSyntheticInfo;
+using AttributeDeprecatedInfo = AttributeSyntheticInfo<false>;
 
 class AttributeSignatureInfo : public AttributeInfo {
 public:
+    AttributeSignatureInfo()
+	: AttributeInfo("Signature")
+    {
+    }
     void ReadInfo(ClassReader&) override;
 
 private:
@@ -86,6 +112,10 @@ private:
 };
 class AttributeSourceFileInfo : public AttributeInfo {
 public:
+    AttributeSourceFileInfo()
+	: AttributeInfo("SourceFile")
+    {
+    }
     void ReadInfo(ClassReader&) override;
 
 private:
@@ -98,6 +128,10 @@ struct LineNumberInfo {
 };
 class AttributeLineNumberTableInfo : public AttributeInfo {
 public:
+    AttributeLineNumberTableInfo()
+	: AttributeInfo("LineNumberTable")
+    {
+    }
     void ReadInfo(ClassReader&) override;
 
 private:
@@ -122,6 +156,10 @@ struct LocalVariableTypeInfo {
 
 class AttributeLocalVariableTableInfo : public AttributeInfo {
 public:
+    AttributeLocalVariableTableInfo()
+	: AttributeInfo("LocalVariableTable")
+    {
+    }
     void ReadInfo(ClassReader&) override;
 
 private:
@@ -130,6 +168,10 @@ private:
 
 class AttributeLocalVariableTypeTableInfo : public AttributeInfo {
 public:
+    AttributeLocalVariableTypeTableInfo()
+	: AttributeInfo("LocalVariableTypeTable")
+    {
+    }
     void ReadInfo(ClassReader&) override;
 
 private:
@@ -138,7 +180,8 @@ private:
 class AttributeUnparsedInfo : public AttributeInfo {
 public:
     AttributeUnparsedInfo(std::string attr_name, u4 attr_len)
-	: attr_name_(attr_name)
+	: AttributeInfo("Unparsed")
+	, attr_name_(attr_name)
 	, attr_len_(attr_len)
     {
     }
@@ -157,6 +200,11 @@ struct BootStrapMethod {
 
 class AttributeBootstrapMethodsInfo : public AttributeInfo {
 public:
+    AttributeBootstrapMethodsInfo()
+	: AttributeInfo("BootstrapMethods")
+    {
+    }
+
     void ReadInfo(ClassReader&) override;
 
 private:

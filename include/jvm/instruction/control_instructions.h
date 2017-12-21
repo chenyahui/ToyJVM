@@ -9,7 +9,7 @@ using GOTO_Instruction = BranchInstruction<>;
 class TABLE_SWITCH_Instruction : public Instruction {
 public:
     void FetchOperands(ByteCodeReader& reader) override;
-    void Execute(JFrame& frame) override;
+    void Execute(JFrame* frame) override;
 
 private:
     int default_offset_;
@@ -21,7 +21,7 @@ private:
 class LOOKUP_SWITCH_Instruction : public Instruction {
 public:
     void FetchOperands(ByteCodeReader& reader) override;
-    void Execute(JFrame& frame) override;
+    void Execute(JFrame* frame) override;
 
 private:
     int default_offset_;

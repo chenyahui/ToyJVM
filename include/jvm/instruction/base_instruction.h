@@ -5,19 +5,23 @@
 #include <jvm/rtdata/jvm_frame.h>
 
 namespace cyh {
+
 class WIDE_Instruction;
 class Instruction {
 public:
-    virtual void FetchOperands(ByteCodeReader&){};
-    virtual void Execute(JFrame&){};
+    virtual void FetchOperands(ByteCodeReader&) {}
+    virtual void Execute(JFrame*) {}
+    virtual ~Instruction() {}
 };
+
+Instruction* InstructionFactory(u1 opcode);
 
 class NoOperandsInstruction : public Instruction {
 public:
     void FetchOperands(ByteCodeReader&) override {}
 };
 
-void BranchJump(JFrame& frame, int offset);
+void BranchJump(JFrame* frame, int offset);
 
 template <typename T = u2>
 class BranchInstruction : public Instruction {
@@ -26,7 +30,7 @@ public:
     {
 	offset = static_cast<int>(reader.Read<T>());
     }
-    virtual void Execute(JFrame& frame) override
+    virtual void Execute(JFrame* frame) override
     {
 	BranchJump(frame, offset);
     }
