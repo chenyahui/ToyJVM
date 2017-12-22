@@ -6,7 +6,8 @@ namespace cyh {
 template <typename T>
 static void load(JFrame* frame, int index)
 {
-    auto local_vars = frame->LocalVars();
+
+    auto& local_vars = frame->LocalVars();
     T val = local_vars.Get<T>(index);
     frame->OpStack().Push<T>(val);
 }
@@ -20,13 +21,12 @@ public:
     }
 };
 
-template <typename T, int num>
+template <typename T, int cindex>
 class LoadConstInstruction : public NoOperandsInstruction {
 public:
-
     void Execute(JFrame* frame) override
     {
-	load<T>(frame, num);
+	load<T>(frame, cindex);
     }
 };
 
@@ -42,6 +42,5 @@ GENE_LOADS(F, float)
 GENE_LOADS(D, double)
 GENE_LOADS(L, j_long)
 GENE_LOADS(A, j_ref)
-
 }
 #endif /* ifndef  */

@@ -1,9 +1,9 @@
 #ifndef MY_JVM_INSTRUCTION_COMPARE_INSTRUCTIONS_H
 #define MY_JVM_INSTRUCTION_COMPARE_INSTRUCTIONS_H
 
+#include <iostream>
 #include <jvm/instruction/base_instruction.h>
 #include <math.h>
-
 namespace cyh {
 
 template <typename T, int gflag = 1>
@@ -11,7 +11,7 @@ class CompareInstrution : public NoOperandsInstruction {
 public:
     void Execute(JFrame* jframe)
     {
-	auto op_stack = jframe->OpStack();
+	auto& op_stack = jframe->OpStack();
 
 	auto v2 = op_stack.Pop<T>();
 	auto v1 = op_stack.Pop<T>();
@@ -49,14 +49,18 @@ class IfCond_Instruction : public BranchInstruction<> {
 public:
     void Execute(JFrame* frame) override
     {
-	auto op_stack = frame->OpStack();
+	auto& op_stack = frame->OpStack();
 
-	auto v2 = op_stack.Pop<T>();
-	T v1 = 0;
+	auto v1 = op_stack.Pop<T>();
+	T v2 = 0;
 
 	if (icmp) {
-	    v1 = op_stack.Pop<T>();
+	    v2 = op_stack.Pop<T>();
 	}
+
+	std::cout << "icmp v2:" << v2
+		  << "v1:" << v1
+		  << std::endl;
 
 	bool jump = false;
 	switch (cond) {
@@ -81,6 +85,7 @@ public:
 	}
 
 	if (jump) {
+	    std::cout << "jump to  " << offset << std::endl;
 	    BranchJump(frame, this->offset);
 	}
     };

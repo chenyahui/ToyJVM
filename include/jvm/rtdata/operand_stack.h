@@ -22,9 +22,10 @@ public:
     {
 	auto val = slots_.top().val;
 	slots_.pop();
-	return ConvertFromInt32<int, T>(val, 0);
+	return ConvertAtLowLevel<int, T>(val);
     }
 
+    std::stack<LocalSlot> InnerData() { return std::stack<LocalSlot>(slots_); }
 private:
     std::stack<LocalSlot> slots_;
     int max_stack_;

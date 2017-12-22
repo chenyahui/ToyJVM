@@ -10,7 +10,7 @@ class TypeConvertInstruction : public NoOperandsInstruction {
 public:
     void Execute(JFrame* frame)
     {
-	auto op_stack = frame->OpStack();
+	auto& op_stack = frame->OpStack();
 
 	T1 val = op_stack.Pop<T1>();
 	T2 result = static_cast<T2>(val);

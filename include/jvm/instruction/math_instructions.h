@@ -11,7 +11,7 @@ class P1MathInstruction : public NoOperandsInstruction {
 public:
     void Execute(JFrame* frame) override
     {
-	auto op_stack = frame->OpStack();
+	auto& op_stack = frame->OpStack();
 	auto v2 = op_stack.Pop<T>();
 	Op op;
 	T result = op(v2);
@@ -23,7 +23,7 @@ class MathInstruction : public NoOperandsInstruction {
 public:
     void Execute(JFrame* frame) override
     {
-	auto op_stack = frame->OpStack();
+	auto& op_stack = frame->OpStack();
 	auto v2 = op_stack.Pop<T>();
 
 	Op op;
@@ -70,7 +70,7 @@ class ShiftInstruction : public NoOperandsInstruction {
 public:
     void Execute(JFrame* frame) override
     {
-	auto op_stack = frame->OpStack();
+	auto& op_stack = frame->OpStack();
 
 	auto v2 = op_stack.Pop<int>();
 	auto v1 = op_stack.Pop<T>();
@@ -108,8 +108,8 @@ public:
     friend class WIDE_Instruction;
 
 private:
-    u4 index;
-    j_int const_;
+    int index;
+    int const_;
 };
 }
 #endif

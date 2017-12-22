@@ -3,7 +3,7 @@
 namespace cyh {
 void SWAP_Instruction::Execute(JFrame* frame)
 {
-    auto op_stack = frame->OpStack();
+    auto& op_stack = frame->OpStack();
 
     auto val1 = op_stack.Pop<LocalSlot>();
     auto val2 = op_stack.Pop<LocalSlot>();

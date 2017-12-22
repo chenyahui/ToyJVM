@@ -8,7 +8,7 @@ class PopTmpInstruction : public NoOperandsInstruction {
 public:
     void Execute(JFrame* frame)
     {
-	auto op_stack = frame->OpStack();
+	auto& op_stack = frame->OpStack();
 	for (int i = 0; i < num; i++) {
 	    op_stack.Pop<LocalSlot>();
 	}
@@ -26,7 +26,7 @@ public:
     {
 	std::vector<LocalSlot> temp;
 
-	auto op_stack = frame->OpStack();
+	auto& op_stack = frame->OpStack();
 
 	// 弹出
 	for (int i = 0; i < X + D; i++) {

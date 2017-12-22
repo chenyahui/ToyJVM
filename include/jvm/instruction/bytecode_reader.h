@@ -16,7 +16,7 @@ public:
     T Read()
     {
 	auto num = sizeof(T);
-	T result;
+	T result = T();
 	for (decltype(num) i = 0; i < num; ++i) {
 	    result |= data_[pc_ + i] << ((num - i - 1) * 8);
 	}

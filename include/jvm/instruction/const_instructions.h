@@ -2,6 +2,7 @@
 #define MY_JVM_INSTRUCTION_CONST_INSTRUCTIONS_H
 
 #include <jvm/instruction/base_instruction.h>
+#include <jvm/utils/logutils.h>
 #include <typeinfo>
 
 namespace cyh {
@@ -10,6 +11,8 @@ class ConstInstruction : public NoOperandsInstruction {
 public:
     void Execute(JFrame* frame) override
     {
+	std::cout << "const" << num << std::endl;
+
 	frame->OpStack().Push<T>(static_cast<T>(num));
     }
 };

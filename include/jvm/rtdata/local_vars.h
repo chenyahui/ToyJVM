@@ -3,6 +3,7 @@
 #include <jvm/utils/unsafe.h>
 #include <utility>
 #include <vector>
+
 namespace cyh {
 union LocalSlot {
     int32_t val;
@@ -13,7 +14,7 @@ public:
     LocalVarRefs(int max_locals)
 	: max_locals_(max_locals)
     {
-	data_.reserve(max_locals);
+	data_.resize(max_locals);
     }
     template <typename T>
     void Set(int index, T val)

@@ -20,12 +20,12 @@ public:
     }
 };
 
-template <typename T, int num>
+template <typename T, int cindex>
 class StoreConstInstruction : public NoOperandsInstruction {
 public:
     void Execute(JFrame* frame) override
     {
-	store<T>(frame, num);
+	store<T>(frame, cindex);
     }
 };
 

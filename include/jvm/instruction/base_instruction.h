@@ -23,7 +23,7 @@ public:
 
 void BranchJump(JFrame* frame, int offset);
 
-template <typename T = u2>
+template <typename T = j_short>
 class BranchInstruction : public Instruction {
 public:
     void FetchOperands(ByteCodeReader& reader) override
