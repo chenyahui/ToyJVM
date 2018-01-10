@@ -1,5 +1,7 @@
 #include <cassert>
 #include <cstring>
+#include <iostream>
+
 #include <jvm/classfile/constant_infos.h>
 #include <jvm/classfile/constant_pool.h>
 #include <jvm/utils/logutils.h>
@@ -10,20 +12,13 @@ namespace cyh {
 void ConstantPool::Read(ClassReader& reader)
 {
     u2 count = reader.ReadU2();
-
-    log("constant_pool count");
-    log(count);
-
     cpinfos_.resize(count);
 
     for (int i = 1; i < count; ++i) {
 	auto tag = reader.ReadU1();
-	log("索引");
-	log(i);
-	log((int)tag);
 
 	cpinfos_[i] = ReadConstantInfo(tag, reader);
-
+	cpinfos_[i]->set_tag(tag);
 	// according the jvms
 	if (tag == Long || tag == Double) {
 	    ++i;
@@ -33,8 +28,11 @@ void ConstantPool::Read(ClassReader& reader)
 
 std::string ConstantPool::GetClassName(int index)
 {
-
+    std::cout << index << "#" << cpinfos_.size() << std::endl;
+    assert(index > 0 & index < cpinfos_.size());
     auto class_info = dynamic_cast<ConstantKlassInfo*>(cpinfos_[index]);
+
+    assert(class_info != NULL);
     return class_info->ClassName();
 }
 

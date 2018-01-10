@@ -2,7 +2,7 @@
 #define MY_JVM_CLASSFILE_CONSTANT_INFOS_H
 
 #include <jvm/classfile/constant_pool.h>
-
+#include <utility>
 namespace cyh {
 class ConstantKlassInfo : public ConstantInfo {
 public:
@@ -18,13 +18,15 @@ private:
     u2 name_index_; // is a index of constant pool,and the entry at the index is  Utf8 type
 };
 
-class ConstantMemberInfo : public ConstantInfo {
+class ConstantMemberRefInfo : public ConstantInfo {
 public:
-    ConstantMemberInfo(ConstantPool* constant_pool)
+    ConstantMemberRefInfo(ConstantPool* constant_pool)
 	: constant_pool_(constant_pool)
     {
     }
     void ReadInfo(ClassReader&) override;
+    std::string ClassName();
+    std::pair<std::string, std::string> NameAndDescriptor();
 
 private:
     ConstantPool* constant_pool_;
@@ -32,9 +34,9 @@ private:
     u2 name_and_type_index_;
 };
 
-using ConstantFieldRefInfo = ConstantMemberInfo;
-using ConstantMethodRefInfo = ConstantMemberInfo;
-using ConstantInterfaceMethodRefInfo = ConstantMemberInfo;
+using ConstantFieldRefInfo = ConstantMemberRefInfo;
+using ConstantMethodRefInfo = ConstantMemberRefInfo;
+using ConstantInterfaceMethodRefInfo = ConstantMemberRefInfo;
 
 class ConstantStringInfo : public ConstantInfo {
 public:
@@ -44,6 +46,11 @@ public:
     }
     void ReadInfo(ClassReader&) override;
 
+    inline std::string val()
+    {
+	return constant_pool_->GetUtf8AsString(string_index_);
+    }
+
 private:
     ConstantPool* constant_pool_;
     u2 string_index_; // index of utf8 type
@@ -52,6 +59,10 @@ private:
 class ConstantFloatInfo : public ConstantInfo {
 public:
     void ReadInfo(ClassReader&) override;
+    inline float val()
+    {
+	return value;
+    }
 
 private:
     float value;
@@ -60,6 +71,10 @@ private:
 class ConstantIntegerInfo : public ConstantInfo {
 public:
     void ReadInfo(ClassReader&) override;
+    inline int val()
+    {
+	return value;
+    }
 
 private:
     int value;
@@ -67,6 +82,10 @@ private:
 class ConstantDoubleInfo : public ConstantInfo {
 public:
     void ReadInfo(ClassReader&) override;
+    inline double val()
+    {
+	return value;
+    }
 
 private:
     double value;
@@ -75,6 +94,10 @@ private:
 class ConstantLongInfo : public ConstantInfo {
 public:
     void ReadInfo(ClassReader&) override;
+    inline long val()
+    {
+	return value;
+    }
 
 private:
     long value;
@@ -87,6 +110,12 @@ public:
     }
     void ReadInfo(ClassReader&) override;
 
+    inline u2 name_index(){
+    	return name_index_;
+    }
+    inline u2 descriptor_index(){
+    	return descriptor_index_;
+    }
 private:
     ConstantPool* pool_;
     u2 name_index_;       // index of utf8 type

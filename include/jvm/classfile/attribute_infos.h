@@ -13,6 +13,10 @@ public:
     {
     }
     void ReadInfo(ClassReader&) override;
+    inline u2 constant_value_index()
+    {
+	return constant_value_index_;
+    }
 
 private:
     u2 constant_value_index_; // must be a constant_pool index

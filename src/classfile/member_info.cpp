@@ -18,10 +18,22 @@ std::string MemberInfo::MemberName()
 AttributeCodeInfo* MemberInfo::CodeAttribute()
 {
     for (AttributeInfo* attr_info : attribute_table_.attributes_infos_) {
-  	if(attr_info->attr_type_ == "Code")
-		return dynamic_cast<AttributeCodeInfo*>(attr_info);
+	if (attr_info->attr_type_ == "Code")
+	    return dynamic_cast<AttributeCodeInfo*>(attr_info);
     }
 
-    throw "can not find Code attribute";
+    // throw "can not find Code attribute";
+    return NULL;
+}
+
+AttributeConstantValueInfo* MemberInfo::ConstantValueAttribute()
+{
+    for (AttributeInfo* attr_info : attribute_table_.attributes_infos_) {
+	if (attr_info->attr_type_ == "ConstantValue")
+	    return dynamic_cast<AttributeConstantValueInfo*>(attr_info);
+    }
+
+    return NULL;
+    //throw "can not find Code attribute";
 }
 }

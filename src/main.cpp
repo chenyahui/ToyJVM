@@ -2,13 +2,13 @@
 #include <jvm/classfile/classfile.h>
 #include <jvm/instruction/base_instruction.h>
 #include <jvm/instruction/bytecode_reader.h>
+#include <jvm/rtdata/class_loader.h>
 #include <jvm/rtdata/jvm_thread.h>
 #include <jvm/utils/fileutils.h>
-
 #include <typeinfo>
 #include <vector>
-using namespace std;
 
+using namespace std;
 template <typename T>
 void println(std::string name, T value)
 {
@@ -22,7 +22,6 @@ void println(std::string name, std::vector<std::string> items)
     }
     cout << endl;
 }
-
 void print_class_info(cyh::ClassFile c)
 {
     println("Class: ", c.ClassName());
@@ -35,11 +34,12 @@ void print_class_info(cyh::ClassFile c)
 }
 namespace cyh {
 void loop(JThread* thread, bytes& data);
-void interpert(MemberInfo* method_info)
+void interpret(JMethod* method)
 {
-    auto code_attr = method_info->CodeAttribute();
+    auto code_attr = method->CodeAttribute();
     JThread* thread = new JThread();
-    thread->NewAndPushFrame(code_attr->max_locals_, code_attr->max_stack_);
+    auto jframe = new JFrame(thread, method);
+    thread->PushFrame(jframe);
     loop(thread, code_attr->code_);
 }
 
@@ -104,11 +104,11 @@ void loop(JThread* thread, bytes& data)
     }
 }
 
-MemberInfo* GetMainFunc(ClassFile* klass)
+JMethod* GetMainFunc(JClass* jclass)
 {
-    for (auto item : klass->methods) {
+    for (auto item : jclass->methods()) {
 	//cout << item->MemberName()<<endl;
-	if (item->MemberName() == "main") {
+	if (item->name() == "main") {
 	    return item;
 	}
     }
@@ -116,22 +116,18 @@ MemberInfo* GetMainFunc(ClassFile* klass)
     throw "can't find main";
 }
 
-void startJvm(const char* filename)
+void startJvm()
 {
+    ClassLoader* loader = new ClassLoader();
+    auto jclass = loader->LoadClass("/home/cyhone/MyObject.class");
 
-    cyh::bytes data = cyh::readfile(filename);
-    ClassFile* klass = new ClassFile(data);
-    klass->Parse();
-
-    auto mainfunc = GetMainFunc(klass);
-
-    interpert(mainfunc);
+    interpret(GetMainFunc(jclass));
 }
 }
 int main(int argc, char* argv[])
 {
     try {
-	cyh::startJvm("/home/cyhone/Guass.class");
+	cyh::startJvm();
     } catch (char const* e) {
 	cout << e << endl;
     } catch (std::string& e) {

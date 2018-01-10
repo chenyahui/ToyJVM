@@ -14,12 +14,24 @@ std::string ConstantKlassInfo::ClassName()
 {
     return constant_pool_->GetUtf8AsString(name_index_);
 }
-void ConstantMemberInfo::ReadInfo(ClassReader& reader)
+void ConstantMemberRefInfo::ReadInfo(ClassReader& reader)
 {
     class_index_ = reader.ReadU2();
     name_and_type_index_ = reader.ReadU2();
 }
+std::string ConstantMemberRefInfo::ClassName()
+{
+    return constant_pool_->GetUtf8AsString(class_index_);
+}
+std::pair<std::string, std::string> ConstantMemberRefInfo::NameAndDescriptor()
+{
+    auto name_type_info = constant_pool_->Get<ConstantNameAndTypeInfo*>(name_and_type_index_);
 
+    auto name = constant_pool_->GetUtf8AsString(name_type_info->name_index());
+    auto descriptor = constant_pool_->GetUtf8AsString(name_type_info->descriptor_index());
+
+    return std::make_pair(name, descriptor);
+}
 void ConstantStringInfo::ReadInfo(ClassReader& reader)
 {
     string_index_ = reader.ReadU2();
