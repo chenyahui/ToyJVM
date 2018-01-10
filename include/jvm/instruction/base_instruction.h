@@ -51,8 +51,10 @@ public:
 
     friend class WIDE_Instruction;
 
-protected:
+public:
     int index;
 };
+
+using Index16Instruction = Index8Instruction<u2>;
 }
 #endif /* ifndef  */
