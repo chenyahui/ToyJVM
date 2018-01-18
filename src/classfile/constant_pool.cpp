@@ -1,12 +1,12 @@
 #include <cassert>
 #include <cstring>
-#include <iostream>
 
 #include <jvm/classfile/constant_infos.h>
 #include <jvm/classfile/constant_pool.h>
 #include <jvm/utils/logutils.h>
 #include <string>
 #include <typeinfo>
+#include <glog/logging.h>
 
 namespace cyh {
 void ConstantPool::Read(ClassReader& reader)
@@ -28,7 +28,6 @@ void ConstantPool::Read(ClassReader& reader)
 
 std::string ConstantPool::GetClassName(int index)
 {
-    std::cout << index << "#" << cpinfos_.size() << std::endl;
     assert(index > 0 & index < cpinfos_.size());
     auto class_info = dynamic_cast<ConstantKlassInfo*>(cpinfos_[index]);
 

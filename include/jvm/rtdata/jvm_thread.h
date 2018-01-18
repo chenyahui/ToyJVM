@@ -13,12 +13,15 @@ using JStack = std::stack<JFrame*>;
 
 class JThread {
 public:
-    inline void SetPc(int pc){pc_ = pc;}
+    inline void SetPc(int pc) { pc_ = pc; }
     inline int Pc() { return pc_; }
     JFrame* PopFrame();
     void PushFrame(JFrame* frame);
-    void NewAndPushFrame(int, int);
-    JFrame* NewFrame(int, int);
+    JFrame* TopFrame();
+    inline bool IsStackEmpty()
+    {
+	return stack_.empty();
+    }
 
 private:
     int pc_;

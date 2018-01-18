@@ -30,10 +30,10 @@ public:
     }
 
 private:
+    JMethod* jmethod_;
     LocalVarRefs local_var_or_ref_;
     OperandStack operand_stack_;
     JThread* current_thread_;
-    JMethod* jmethod_;
     int nextpc_;
 };
 }

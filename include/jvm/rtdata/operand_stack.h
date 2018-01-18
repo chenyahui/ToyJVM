@@ -1,8 +1,11 @@
 #ifndef MY_JVM_RUNTIMEARE_OPERAND_STACK_H
 #define MY_JVM_RUNTIMEARE_OPERAND_STACK_H
+#include <glog/logging.h>
 #include <jvm/rtdata/local_vars.h>
 #include <jvm/utils/unsafe.h>
 #include <stack>
+
+// 要添加一个方法，GetRefFromTop，所以这里的底层最好用vector吧
 namespace cyh {
 class OperandStack {
 public:
@@ -14,6 +17,7 @@ public:
     template <typename T>
     void Push(T data)
     {
+	DLOG(INFO) << "opstack push: " << data;
 	slots_.push(LocalSlot{.val = ConvertToInt32<T, int>(data) });
     }
 
@@ -25,6 +29,7 @@ public:
 	return ConvertAtLowLevel<int, T>(val);
     }
 
+    j_ref GetRefFromTop(int n);
     std::stack<LocalSlot> InnerData() { return std::stack<LocalSlot>(slots_); }
 private:
     std::stack<LocalSlot> slots_;
@@ -40,6 +45,8 @@ inline j_long OperandStack::Pop<j_long>()
     auto low = slots_.top().val;
     slots_.pop();
 
+    DLOG(INFO) << "high: " << high
+	       << " low:" << low;
     return Convert2IntToLong(std::make_pair(high, low));
 }
 
@@ -69,8 +76,8 @@ inline void OperandStack::Push<j_long>(j_long data)
 {
     auto vals = ConvertToInt32<j_long, std::pair<int, int> >(data);
 
-    slots_.push(LocalSlot{.val = vals.first });
-    slots_.push(LocalSlot{.val = vals.second });
+    slots_.push(LocalSlot{.val = vals.first }); // low
+    slots_.push(LocalSlot{.val = vals.second }); // high
 }
 template <>
 inline void OperandStack::Push<j_double>(j_double data)

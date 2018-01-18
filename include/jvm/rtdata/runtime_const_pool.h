@@ -45,7 +45,7 @@ private:
     }
 
     template <typename T>
-    void PutRef(int index, T ref)
+    void PutRef(int index, T* ref)
     {
 	const_vars_[index] = (ConstVar)(ref);
     }

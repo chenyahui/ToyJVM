@@ -29,6 +29,7 @@ public:
     bool IsPublic();
     bool IsPrivate();
     bool IsProtected();
+    bool IsStatic();
 
 protected:
     u2 access_flags_;
@@ -40,7 +41,6 @@ protected:
 class JField : public JMember {
 public:
     JField(JClass* jclass, MemberInfo* field_info);
-    bool IsStatic();
     bool IsLongOrDouble();
     bool IsFinal();
 
@@ -65,6 +65,8 @@ private:
 class JMethod : public JMember {
 public:
     JMethod(JClass* jclass, MemberInfo* method_info);
+    bool IsAbstract();
+    // getter setter
     inline u4 max_stack()
     {
 	return max_stack_;
@@ -80,11 +82,17 @@ public:
 	return code_attr_;
     }
 
+    inline int args_slot_count(){
+    	return args_slot_count_;
+    }
 private:
-    u4 max_stack_;
-    u4 max_locals_;
+    void CalcArgsSlotCount();
+
+    u4 max_stack_ = 0;
+    u4 max_locals_ = 0;
     bytes code_;
-    AttributeCodeInfo* code_attr_;
+    AttributeCodeInfo* code_attr_ = NULL;
+    int args_slot_count_ = 0;
 };
 }
 

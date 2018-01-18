@@ -1,5 +1,7 @@
+#include <glog/logging.h>
 #include <jvm/rtdata/access_flag.h>
 #include <jvm/rtdata/jvm_member.h>
+#include <jvm/rtdata/method_descriptor.h>
 
 using namespace cyh;
 
@@ -42,6 +44,11 @@ bool JMember::IsProtected()
 {
     return CheckAccess(access_flags_, ACC_FIELD::PROTECTED);
 }
+bool JMember::IsStatic()
+{
+    return CheckAccess(access_flags_, ACC_FIELD::STATIC);
+}
+
 JField::JField(JClass* jclass, MemberInfo* field_info)
     : JMember(jclass, field_info)
 {
@@ -49,11 +56,6 @@ JField::JField(JClass* jclass, MemberInfo* field_info)
     if (const_value_attr != NULL) {
 	const_value_index_ = const_value_attr->constant_value_index();
     }
-}
-
-bool JField::IsStatic()
-{
-    return CheckAccess(access_flags_, ACC_FIELD::STATIC);
 }
 
 bool JField::IsLongOrDouble()
@@ -74,4 +76,29 @@ JMethod::JMethod(JClass* jclass, MemberInfo* method_info)
 	max_locals_ = code_attr_->max_locals_;
 	code_ = code_attr_->code_;
     }
+
+    CalcArgsSlotCount();
+}
+bool JMethod::IsAbstract()
+{
+    return CheckAccess(access_flags_, ACC_METHOD::ABSTRACT);
+}
+void JMethod::CalcArgsSlotCount()
+{
+    DLOG(INFO) << "begin parse method descriptor:" << name_;
+    MethodDescriptorParser parser(descriptor_);
+    auto parsed_descriptor = parser.Parse();
+
+    for (auto param_type : parsed_descriptor.param_types) {
+	DLOG(INFO) << "param_type:" << param_type;
+	args_slot_count_++;
+	if (param_type == "J" || param_type == "D") {
+	    args_slot_count_++;
+	}
+    }
+    if (!IsStatic()) {
+	args_slot_count_++;
+    }
+
+    DLOG(INFO) << "end parse method descriptor:" << name_ << " args slot count : " << args_slot_count_;
 }

@@ -1,13 +1,16 @@
 #include <jvm/rtdata/runtime_const_pool.h>
 #include <string>
+#include <jvm/rtdata/symbol_ref.h>
+
 using namespace cyh;
 #define ADD_VAL(CONSTINFO, TYPE)                                   \
     auto info = dynamic_cast<Constant##CONSTINFO##Info*>(cp_info); \
     PutVal<TYPE>(i, info->val());
 
-#define ADD_REF(CINFO)                                              \
+#define ADD_REF(CINFO, REF)                                              \
     auto info = dynamic_cast<Constant##CINFO##Info*>(cp_info); \
-    PutRef<Constant##CINFO##Info*>(i, info);
+    auto ref_info = new REF(this, info); \
+    PutRef<REF>(i, ref_info);
 
 RuntimeConstPool::RuntimeConstPool(JClass* jclass, ConstantPool* const_pool)
     : jclass_(jclass)
@@ -48,19 +51,19 @@ RuntimeConstPool::RuntimeConstPool(JClass* jclass, ConstantPool* const_pool)
 	    break;
 	}
 	case Klass: {
-	    ADD_REF(Klass)
+	    ADD_REF(Klass, ClassRef)
 	    break;
 	}
 	case Fieldref: {
-	    ADD_REF(FieldRef)
+	    ADD_REF(FieldRef, FieldRef)
 	    break;
 	}
 	case Methodref: {
-	    ADD_REF(MethodRef)
+	    ADD_REF(MethodRef, MethodRef)
 	    break;
 	}
 	case InterfaceMethodref: {
-	    ADD_REF(InterfaceMethodRef)
+	    ADD_REF(InterfaceMethodRef, InterfaceMethodRef)
 	    break;
 	}
 	}

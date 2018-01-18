@@ -1,10 +1,10 @@
 #ifndef MY_JVM_CLASSFILE_MEMBER_INFO_H
 #define MY_JVM_CLASSFILE_MEMBER_INFO_H
 
+#include <iostream>
 #include <jvm/classfile/attribute_infos.h>
 #include <jvm/classfile/attribute_table.h>
 #include <jvm/classfile/classreader.h>
-
 namespace cyh {
 
 class MemberInfo {
@@ -25,9 +25,11 @@ public:
     {
 	return pool_->GetUtf8AsString(descriptor_index_);
     }
-    inline int attr_size(){
-    	return attribute_table_.attributes_infos_.size();
+    inline int attr_size()
+    {
+	return attribute_table_.attributes_infos_.size();
     }
+
 private:
     u2 access_flags_;
     u2 name_index_;

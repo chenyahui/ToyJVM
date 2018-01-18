@@ -1,7 +1,8 @@
+#include <glog/logging.h>
 #include <jvm/rtdata/class_loader.h>
 #include <jvm/rtdata/jvm_member.h>
 #include <jvm/rtdata/runtime_const_pool.h>
-
+#include <jvm/utils/types.h>
 using namespace cyh;
 
 static void CalcInstanceFieldSlotIds(JClass* jclass);
@@ -14,6 +15,7 @@ JClass* ClassLoader::LoadClass(std::string class_name)
     if (class_map_.find(class_name) != class_map_.end()) {
 	return class_map_[class_name];
     }
+
     return LoadNoArrayClass(class_name);
 }
 
@@ -36,6 +38,7 @@ JClass* ClassLoader::defineClass(const bytes& data)
     jclass->ResolveInterfaces();
 
     class_map_[jclass->name()] = jclass;
+
     return jclass;
 }
 
@@ -70,7 +73,7 @@ void CalcInstanceFieldSlotIds(JClass* jclass)
 	    }
 	}
     }
-
+    DLOG(INFO) << jclass->name() << " instance_slot_count " << slot_index;
     jclass->set_instance_slot_count(slot_index);
 }
 void CalcStaticFieldSlotIds(JClass* jclass)

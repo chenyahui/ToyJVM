@@ -12,4 +12,7 @@ void JThread::PushFrame(JFrame* frame)
 {
     stack_.push(frame);
 }
-
+JFrame* JThread::TopFrame()
+{
+    return stack_.top();
+}

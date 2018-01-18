@@ -6,13 +6,20 @@
 #include <jvm/rtdata/runtime_const_pool.h>
 
 namespace cyh {
+JMethod* LookupMethodInClass(JClass* jclass, std::string name, std::string descriptor);
+JMethod* LookupMethodInInterfaces(std::vector<JClass*>& ifaces, std::string name, std::string descriptor);
 class SymbolRef {
 public:
     SymbolRef(RuntimeConstPool* rt_const_pool)
 	: rt_const_pool_(rt_const_pool)
+	, jclass_(NULL)
     {
     }
     JClass* ResolveClass();
+    inline std::string& class_name()
+    {
+	return class_name_;
+    }
 
 protected:
     void ResolveClassRef();
@@ -34,6 +41,15 @@ public:
 class MemberRef : public SymbolRef {
 public:
     MemberRef(RuntimeConstPool*, ConstantMemberRefInfo*);
+
+    inline std::string name()
+    {
+	return name_;
+    }
+    inline std::string& descriptor()
+    {
+	return descriptor_;
+    }
 
 protected:
     std::string name_;
@@ -57,25 +73,29 @@ class MethodRef : public MemberRef {
 public:
     MethodRef(RuntimeConstPool* rt_const_pool, ConstantMethodRefInfo* method_ref_info)
 	: MemberRef(rt_const_pool, method_ref_info)
+	, jmethod_(NULL)
     {
     }
-    JMethod* ResolveMethod() {
-    	return NULL;
-    }
+    JMethod* ResolveMethod();
 
 private:
-    void ResolveMethodRef() {}
-
+    void ResolveMethodRef();
+    JMethod* LookupMethod(JClass*);
     JMethod* jmethod_;
 };
 class InterfaceMethodRef : public MemberRef {
 public:
     InterfaceMethodRef(RuntimeConstPool* rt_const_pool, ConstantInterfaceMethodRefInfo* interface_method_ref_info)
 	: MemberRef(rt_const_pool, interface_method_ref_info)
+	, jmethod_(NULL)
     {
     }
 
+    JMethod* ResolveInterfaceMethod();
+
 private:
+    void ResolveInterfaceMethodRef();
+    JMethod* LookupInterfaceMethod(JClass*);
     JMethod* jmethod_;
 };
 }

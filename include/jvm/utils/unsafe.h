@@ -60,29 +60,29 @@ inline R ConvertFromInt32(T val, R)
     return ConvertAtLowLevel<T, R>(val);
 }
 
-template<>
-inline j_long ConvertFromInt32(std::pair<int32_t, int32_t> vals, j_long)
-{
-    j_long l = int64_t(vals.second) << 32 | int64_t(vals.first);
-    return l;
-}
+/*template<>*/
+//inline j_long ConvertFromInt32(std::pair<int32_t, int32_t> vals, j_long)
+//{
+    //j_long l = int64_t(vals.second) << 32 | int64_t(vals.first);
+    //return l;
+//}
 
-template<>
-inline j_double ConvertFromInt32(std::pair<int32_t, int32_t> vals, j_double)
-{
-    j_long l = int64_t(vals.second) << 32 | int64_t(vals.first);
-    return ConvertAtLowLevel<j_long, j_double>(l);
-}
+//template<>
+//inline j_double ConvertFromInt32(std::pair<int32_t, int32_t> vals, j_double)
+//{
+    //j_long l = int64_t(vals.second) << 32 | int64_t(vals.first);
+    //return ConvertAtLowLevel<j_long, j_double>(l);
+/*}*/
 
 
 inline j_long Convert2IntToLong(std::pair<int32_t, int32_t> vals)
 {
-    j_long l = int64_t(vals.second) << 32 | int64_t(vals.first);
+    j_long l = int64_t(vals.first) << 32 | int64_t(vals.second);
     return l;
 }
 inline j_double Convert2IntToDouble(std::pair<int, int> vals)
 {
-    j_long l = int64_t(vals.second) << 32 | int64_t(vals.first);
+    j_long l = int64_t(vals.first) << 32 | int64_t(vals.second);
     return ConvertAtLowLevel<j_long, j_double>(l);
 }
 }

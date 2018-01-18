@@ -3,17 +3,23 @@
 #include <jvm/rtdata/jvm_member.h>
 #include <jvm/rtdata/runtime_const_pool.h>
 
+#include <glog/logging.h>
+
 using namespace cyh;
 
 JClass::JClass(ClassFile* classfile, ClassLoader* class_loader)
     : class_loader_(class_loader)
+    , instance_slot_count_(0)
+    , static_slot_count_(0)
 {
     access_flags_ = classfile->AccessFlags();
     name_ = classfile->ClassName();
+    DLOG(INFO) << "class name: " << name_;
     if (name_ != "java/lang/Object") {
 	super_class_name_ = classfile->SuperClassName();
 	interface_names_ = classfile->InterfaceNames();
     }
+
     rt_const_pool_ = new RuntimeConstPool(this, &classfile->constant_pool);
 
     for (auto field_info : classfile->fields) {
@@ -53,6 +59,10 @@ bool JClass::IsAbstract()
 {
     return CheckAccess(access_flags_, ACC_CLASS::ABSTRACT);
 }
+bool JClass::IsSuper()
+{
+    return CheckAccess(access_flags_, ACC_CLASS::SUPER);
+}
 
 bool JClass::IsAssignableFrom(JClass* other)
 {
@@ -77,6 +87,10 @@ bool JClass::IsSubClassOf(JClass* other)
 	}
     }
     return false;
+}
+bool JClass::IsSuperClassOf(JClass* other)
+{
+    return other->IsSubClassOf(this);
 }
 bool JClass::IsSubInterfaceOf(JClass* iface)
 {

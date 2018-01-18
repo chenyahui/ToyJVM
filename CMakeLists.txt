@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.6)
 project(tinyjvm)
 
 if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE "Release")
+        set(CMAKE_BUILD_TYPE "DEBUG")
 endif()
 
 set(CMAKE_CXX_COMPILER "g++")
@@ -11,11 +11,11 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_LIST_DIR}/bin)
 #set(CMAKE_CXX_FLAGS "-O1")
 
 set(CXX_FLAGS
--g
--Wall
--Werror
--Woverloaded-virtual
-)
+        -g
+        -Wall
+        -Werror
+        -Woverloaded-virtual
+        )
 
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS "ON")
@@ -33,3 +33,5 @@ set(LIBRARIES "/usr/local/lib")
 link_directories(${LIBRARIES})
 
 add_executable(tinyjvm ${SOURCE_LIST})
+target_link_libraries(tinyjvm glog)
+#add_subdirectory(test)

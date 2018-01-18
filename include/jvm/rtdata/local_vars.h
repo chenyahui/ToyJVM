@@ -14,11 +14,9 @@ class LocalVarRefs {
 public:
     LocalVarRefs(int max_locals)
 	: max_locals_(max_locals)
-
+	, data_(max_locals)
     {
-	data_.resize(max_locals);
     }
-
     template <typename T>
     void Set(int index, T val)
     {
@@ -35,9 +33,8 @@ public:
     inline std::vector<LocalSlot>& InnerData() { return data_; }
 
 private:
-    std::vector<LocalSlot> data_;
-
     int max_locals_;
+    std::vector<LocalSlot> data_;
 };
 }
 
@@ -59,11 +56,16 @@ inline void LocalVarRefs::Set<j_double>(int index, j_double val)
 }
 
 template <>
+inline void LocalVarRefs::Set<LocalSlot>(int index, LocalSlot slot)
+{
+    data_[index] = slot;
+}
+
+template <>
 inline void LocalVarRefs::Set<j_ref>(int index, j_ref ref)
 {
     data_[index].ref = ref;
 }
-
 template <>
 inline j_long LocalVarRefs::Get<j_long>(int index)
 {

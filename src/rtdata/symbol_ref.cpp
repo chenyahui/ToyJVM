@@ -1,9 +1,10 @@
+#include <glog/logging.h>
 #include <jvm/rtdata/symbol_ref.h>
-
 using namespace cyh;
 
 JClass* SymbolRef::ResolveClass()
 {
+
     if (jclass_ == NULL) {
 	ResolveClassRef();
     }
@@ -47,7 +48,7 @@ void FieldRef::ResolveFieldRef()
 	throw "No found field!";
     }
 
-    if (field->IsAccessibleTo(d)) {
+    if (!field->IsAccessibleTo(d)) {
 	throw "Access Illegal Field!";
     }
 
@@ -74,4 +75,119 @@ JField* FieldRef::LookupField(JClass* jclass)
 	return LookupField(super_class);
     }
     return NULL;
+}
+
+JMethod* MethodRef::ResolveMethod()
+{
+    if (jmethod_ == NULL) {
+	ResolveMethodRef();
+    }
+
+    return jmethod_;
+}
+
+void MethodRef::ResolveMethodRef()
+{
+    auto d = rt_const_pool_->jclass();
+    auto c = ResolveClass();
+
+    if (c->IsInterface()) {
+	throw "不能直接访问interface的方法";
+    }
+
+    auto method = LookupMethod(c);
+    if (method == NULL) {
+	throw "no such method";
+    }
+
+    if (!method->IsAccessibleTo(d)) {
+	throw "illgeal access";
+    }
+
+    this->jmethod_ = method;
+}
+
+JMethod* MethodRef::LookupMethod(JClass* jclass)
+{
+    auto method = LookupMethodInClass(jclass, name_, descriptor_);
+
+    if (method == NULL) {
+	method = LookupMethodInInterfaces(jclass->interfaces(), name_, descriptor_);
+    }
+
+    return method;
+}
+
+JMethod* InterfaceMethodRef::ResolveInterfaceMethod()
+{
+    if (jmethod_ == NULL) {
+	ResolveInterfaceMethodRef();
+    }
+
+    return jmethod_;
+}
+
+void InterfaceMethodRef::ResolveInterfaceMethodRef()
+{
+    auto d = rt_const_pool_->jclass();
+    auto c = ResolveClass();
+
+    if (!c->IsInterface()) {
+	throw "不是interface的方法";
+    }
+
+    auto method = LookupInterfaceMethod(c);
+    if (method == NULL) {
+	throw "no such method";
+    }
+
+    if (!method->IsAccessibleTo(d)) {
+	throw "illgeal access";
+    }
+
+    this->jmethod_ = method;
+}
+
+JMethod* InterfaceMethodRef::LookupInterfaceMethod(JClass* iface)
+{
+    for (auto method : iface->methods()) {
+	if (method->name() == name_ && method->descriptor() == descriptor_) {
+	    return method;
+	}
+    }
+
+    auto method = LookupMethodInInterfaces(iface->interfaces(), name_, descriptor_);
+    return method;
+}
+namespace cyh {
+JMethod* LookupMethodInClass(JClass* jclass, std::string name, std::string descriptor)
+{
+    for (auto c = jclass; c != NULL; c = c->super_class()) {
+	for (auto method : c->methods()) {
+	    if (method->name() == name && method->descriptor() == descriptor) {
+		return method;
+	    }
+	}
+    }
+
+    return NULL;
+}
+
+JMethod* LookupMethodInInterfaces(std::vector<JClass*>& ifaces, std::string name, std::string descriptor)
+{
+    for (auto iface : ifaces) {
+	for (auto method : iface->methods()) {
+	    if (method->name() == name && method->descriptor() == descriptor) {
+		return method;
+	    }
+	}
+
+	auto method = LookupMethodInInterfaces(iface->interfaces(), name, descriptor);
+	if (method != NULL) {
+	    return method;
+	}
+    }
+
+    return NULL;
+}
 }

@@ -17,6 +17,7 @@ public:
     bool IsAccessibleTo(JClass* other);
     bool IsInterface();
     bool IsAbstract();
+    bool IsSuper();
 
     void ResolveSuperClass();
     void ResolveInterfaces();
@@ -26,9 +27,9 @@ public:
     bool IsSubClassOf(JClass*);
     bool IsImplements(JClass*);
     bool IsSubInterfaceOf(JClass*);
-
+    bool IsSuperClassOf(JClass*);
     // getter setter
-    inline std::string name()
+    inline std::string& name()
     {
 	return name_;
     }
@@ -53,7 +54,7 @@ public:
     {
 	return fields_;
     }
-    inline const std::vector<JMethod*> methods()
+    inline const std::vector<JMethod*>& methods()
     {
 	return methods_;
     }
@@ -73,25 +74,25 @@ public:
     {
 	return class_loader_;
     }
-    inline std::vector<JClass*> interfaces()
+    inline std::vector<JClass*>& interfaces()
     {
 	return interfaces_;
     }
 
 private:
-    u2 access_flags_;
+    u2 access_flags_ = 0;
     std::string name_;
     std::string super_class_name_;
     std::vector<std::string> interface_names_;
-    RuntimeConstPool* rt_const_pool_;
+    RuntimeConstPool* rt_const_pool_ = NULL;
     std::vector<JField*> fields_;
     std::vector<JMethod*> methods_;
-    ClassLoader* class_loader_;
-    JClass* super_class_;
+    ClassLoader* class_loader_ = NULL;
+    JClass* super_class_ = NULL;
     std::vector<JClass*> interfaces_;
-    u4 instance_slot_count_;
-    u4 static_slot_count_;
-    LocalVarRefs* static_vars_;
+    u4 instance_slot_count_ = 0;
+    u4 static_slot_count_ = 0;
+    LocalVarRefs* static_vars_ = NULL;
 };
 
 class JObject {
@@ -107,6 +108,11 @@ public:
     }
 
     bool IsInstanceOf(JClass*);
+
+    inline JClass* jclass()
+    {
+	return jclass_;
+    }
 
 private:
     JClass* jclass_;

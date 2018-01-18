@@ -1,8 +1,6 @@
 #include <jvm/classfile/constant_infos.h>
 #include <jvm/utils/bitutils.h>
-#include <jvm/utils/logutils.h>
 #include <jvm/utils/utf8utils.h>
-
 namespace cyh {
 
 void ConstantKlassInfo::ReadInfo(ClassReader& reader)
@@ -21,10 +19,11 @@ void ConstantMemberRefInfo::ReadInfo(ClassReader& reader)
 }
 std::string ConstantMemberRefInfo::ClassName()
 {
-    return constant_pool_->GetUtf8AsString(class_index_);
+    return constant_pool_->GetClassName(class_index_);
 }
 std::pair<std::string, std::string> ConstantMemberRefInfo::NameAndDescriptor()
 {
+
     auto name_type_info = constant_pool_->Get<ConstantNameAndTypeInfo*>(name_and_type_index_);
 
     auto name = constant_pool_->GetUtf8AsString(name_type_info->name_index());
