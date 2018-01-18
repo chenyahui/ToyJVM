@@ -11,7 +11,6 @@ class ConstInstruction : public NoOperandsInstruction {
 public:
     void Execute(JFrame* frame) override
     {
-	std::cout << "const" << num << std::endl;
 
 	frame->OpStack().Push<T>(static_cast<T>(num));
     }

@@ -1,8 +1,8 @@
+#include <glog/logging.h>
 #include <jvm/instruction/ref_instructions.h>
 #include <jvm/rtdata/jvm_frame.h>
 #include <jvm/rtdata/runtime_const_pool.h>
 #include <jvm/rtdata/symbol_ref.h>
-
 using namespace cyh;
 
 void NEW_Instruction::Execute(JFrame* jframe)
@@ -12,15 +12,20 @@ void NEW_Instruction::Execute(JFrame* jframe)
 			     ->rt_const_pool();
 
     auto class_ref = rt_const_pool->GetRef<ClassRef>(index);
-    auto jclass = class_ref->ResolveClass();
 
+    DLOG(INFO) << "begin resolve class in NEW Instruction " << class_ref->class_name();
+    auto jclass = class_ref->ResolveClass();
+    DLOG(INFO) << "resolve end";
     if (jclass->IsInterface() && jclass->IsAbstract()) {
+	DLOG(INFO) << "interface ABSTRACT exception";
 	throw "interface and abstract cannot instance";
     }
+    DLOG(INFO) << "check end" << jclass->name() << "##";
+    DLOG(INFO) << "class_name :" << jclass->name() << "begin new object " << jclass->instance_slot_count();
 
-    JObject* obj = new JObject(jclass);
+    auto obj = new JObject(jclass);
 
-    jframe->OpStack().Push<JObject*>(obj);
+    jframe->OpStack().Push<j_ref>(obj);
 }
 #define STATIC_GET(type)                           \
     opstack.Push<type>(slots->Get<type>(slot_id)); \
@@ -173,7 +178,7 @@ void PUTFIELD_Instruction::Execute(JFrame* frame)
     }
     }
 }
-#define FIELD_GET(type)                    \
+#define FIELD_GET(type)                           \
     opstack.Push<type>(slots.Get<type>(slot_id)); \
     break;
 void GETFIELD_Instruction::Execute(JFrame* jframe)
@@ -258,4 +263,3 @@ void CHECKCAST_Instruction::Execute(JFrame* jframe)
 	throw "class cast exception";
     }
 }
-

@@ -4,13 +4,14 @@
 #include <jvm/instruction/control_instructions.h>
 #include <jvm/instruction/convert_instructions.h>
 #include <jvm/instruction/extended_instructions.h>
+#include <jvm/instruction/invoke_instructions.h>
 #include <jvm/instruction/load_instructions.h>
 #include <jvm/instruction/math_instructions.h>
 #include <jvm/instruction/ref_instructions.h>
+#include <jvm/instruction/return_instructions.h>
 #include <jvm/instruction/stack_instructions.h>
 #include <jvm/instruction/store_instructions.h>
 #include <jvm/rtdata/jvm_thread.h>
-
 namespace cyh {
 void BranchJump(JFrame* frame, int offset)
 {
@@ -517,6 +518,36 @@ Instruction* InstructionFactory(u1 opcode)
     }
     case 0xc0: {
 	return new CHECKCAST_Instruction();
+    }
+    case 0xb7: {
+	return new INVOKE_SPECIAL_Instruction();
+    }
+    case 0xb9: {
+	return new INVOKE_INTERFACE_Instruction();
+    }
+    case 0xb8: {
+	return new INVOKE_STATIC_Instruction();
+    }
+    case 0xb6: {
+	return new INVOKE_VIRTUAL_Instruction();
+    }
+    case 0xac: {
+	return new IRETURN_Instruction();
+    }
+    case 0xad: {
+	return new LRETURN_Instruction();
+    }
+    case 0xae: {
+	return new FRETURN_Instruction();
+    }
+    case 0xaf: {
+	return new DRETURN_Instruction();
+    }
+    case 0xb0: {
+	return new ARETURN_Instruction();
+    }
+    case 0xb1: {
+	return new RETURN_Instruction();
     }
     }
 

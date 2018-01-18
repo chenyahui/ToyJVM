@@ -68,7 +68,6 @@ void BaseLdcInstruction<T>::Execute(JFrame* jframe)
     auto rt_const_pool = jframe->jmethod()->jclass()->rt_const_pool();
 
     auto tag = rt_const_pool->GetType(this->index);
-    std::cout << tag << std::endl;
     switch (tag) {
 	LDC_CASE(Integer, int)
 	LDC_CASE(Float, float)

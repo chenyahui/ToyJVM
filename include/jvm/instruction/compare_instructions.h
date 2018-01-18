@@ -1,6 +1,7 @@
 #ifndef MY_JVM_INSTRUCTION_COMPARE_INSTRUCTIONS_H
 #define MY_JVM_INSTRUCTION_COMPARE_INSTRUCTIONS_H
 
+#include <glog/logging.h>
 #include <iostream>
 #include <jvm/instruction/base_instruction.h>
 #include <math.h>
@@ -15,7 +16,7 @@ public:
 
 	auto v2 = op_stack.Pop<T>();
 	auto v1 = op_stack.Pop<T>();
-
+	DLOG(INFO) << "lcmp" << v2 << "#" << v1;
 	int result = 0;
 
 	if (isnan(v2) || isnan(v1)) {
@@ -51,16 +52,12 @@ public:
     {
 	auto& op_stack = frame->OpStack();
 
-	auto v1 = op_stack.Pop<T>();
-	T v2 = 0;
+	auto v2 = op_stack.Pop<T>();
+	T v1 = 0;
 
 	if (icmp) {
-	    v2 = op_stack.Pop<T>();
+	    v1 = op_stack.Pop<T>();
 	}
-
-	std::cout << "icmp v2:" << v2
-		  << "v1:" << v1
-		  << std::endl;
 
 	bool jump = false;
 	switch (cond) {
@@ -85,7 +82,7 @@ public:
 	}
 
 	if (jump) {
-	    std::cout << "jump to  " << offset << std::endl;
+	    // std::cout << "jump to  " << offset << std::endl;
 	    BranchJump(frame, this->offset);
 	}
     };
