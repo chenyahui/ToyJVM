@@ -5,7 +5,7 @@
 #include <jvm/utils/types.h>
 
 namespace cyh {
-class RETURN_Instruction : NoOperandsInstruction {
+class RETURN_Instruction : public NoOperandsInstruction {
 public:
     void Execute(JFrame* frame) override
     {
@@ -14,7 +14,7 @@ public:
 };
 
 template <typename T>
-class BaseReturnInstruction : NoOperandsInstruction {
+class BaseReturnInstruction : public NoOperandsInstruction {
 public:
     void Execute(JFrame* frame) override
     {
@@ -23,7 +23,7 @@ public:
 	auto invoker_frame = jthread->TopFrame();
 
 	auto ret = current_frame->OpStack().Pop<T>();
-	invoker_frame->OpStack().Push<T>();
+	invoker_frame->OpStack().Push<T>(ret);
     }
 };
 
