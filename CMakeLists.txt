@@ -32,6 +32,6 @@ include_directories("/usr/include/x86_64-linux-gnu/c++/6")
 set(LIBRARIES "/usr/local/lib")
 link_directories(${LIBRARIES})
 
-add_executable(tinyjvm ${SOURCE_LIST})
-target_link_libraries(tinyjvm glog)
+add_executable(toyjvm ${SOURCE_LIST})
+target_link_libraries(toyjvm glog)
 #add_subdirectory(test)
