@@ -120,7 +120,7 @@ inline JBaseArray* OperandStack::Pop<JBaseArray*>()
 }
 
 template <>
-void OperandStack::Push<JBaseArray*>(JBaseArray* array_item)
+inline void OperandStack::Push<JBaseArray*>(JBaseArray* array_item)
 {
     slots_.push(LocalSlot{.ref = array_item });
 }

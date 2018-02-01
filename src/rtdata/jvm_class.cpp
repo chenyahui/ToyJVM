@@ -39,7 +39,7 @@ std::string GetArrayClassName(const std::string& class_name)
 // for array class
 JClass::JClass(ClassLoader* class_loader, std::string name)
     : name_(name)
-    , access_flags_(ACC_CLASS::PUBLIC)
+    , access_flags_(static_cast<u2>(ACC_CLASS::PUBLIC))
     , class_loader_(class_loader)
     , instance_slot_count_(0)
     , static_slot_count_(0)
@@ -117,11 +117,47 @@ bool JClass::IsAssignableFrom(JClass* other)
 	return true;
     }
 
+    if (!s->IsArray()) {
+	if (!s->IsInterface()) {
+	    if (!t->IsInterface()) {
+		return s->IsSubClassOf(t);
+	    } else {
+		return s->IsImplements(t);
+	    }
+	}
+    } else {
+	if (!t->IsArray()) {
+	    if (!t->IsInterface()) {
+		return t->IsJlObject();
+	    } else {
+		return t->IsJlObject() || t->IsJioSerializable();
+	    }
+
+	} else {
+	    auto sc = s->ComponentClass();
+	    auto tc = t->ComponentClass();
+
+	    return sc == tc || tc->IsAssignableFrom(sc);
+	}
+    }
     if (!t->IsInterface()) {
 	return s->IsSubClassOf(t);
     } else {
 	return s->IsImplements(t);
     }
+}
+bool JClass::IsJlObject()
+{
+    return name_ == "java/lang/Object";
+}
+bool JClass::IsJlCloneable()
+{
+    return name_ == "java/lang/Cloneable";
+}
+
+bool JClass::IsJioSerializable()
+{
+    return name_ == "java/io/Serializable";
 }
 bool JClass::IsSubClassOf(JClass* other)
 {

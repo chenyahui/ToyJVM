@@ -34,6 +34,10 @@ public:
     bool IsSubInterfaceOf(JClass*);
     bool IsSuperClassOf(JClass*);
 
+    bool IsJlObject();
+    bool IsJlCloneable();
+    bool IsJioSerializable();
+
     bool IsArray();
     JBaseArray* ArrayFactory(u4);
     JClass* ArrayClass();

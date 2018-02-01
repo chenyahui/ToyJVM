@@ -1,3 +1,4 @@
+#include <jvm/instruction/array_instructions.h>
 #include <jvm/instruction/base_instruction.h>
 #include <jvm/instruction/compare_instructions.h>
 #include <jvm/instruction/const_instructions.h>
@@ -12,6 +13,7 @@
 #include <jvm/instruction/stack_instructions.h>
 #include <jvm/instruction/store_instructions.h>
 #include <jvm/rtdata/jvm_thread.h>
+
 namespace cyh {
 void BranchJump(JFrame* frame, int offset)
 {
@@ -548,6 +550,66 @@ Instruction* InstructionFactory(u1 opcode)
     }
     case 0xb1: {
 	return new RETURN_Instruction();
+    }
+    case 0xbc: {
+	return new NEW_ARRAY_Instruction();
+    }
+    case 0xbd: {
+	return new ANEW_ARRAY_Instruction();
+    }
+    case 0xbe: {
+	return new ARRAY_LENGTH_Instruction();
+    }
+    case 0x2e: {
+	return new IALOAD_Instruction();
+    }
+    case 0x2f: {
+	return new LALOAD_Instruction();
+    }
+    case 0x30: {
+	return new FALOAD_Instruction();
+    }
+    case 0x31: {
+	return new DALOAD_Instruction();
+    }
+    case 0x32: {
+	return new AALOAD_Instruction();
+    }
+    case 0x33: {
+	return new BALOAD_Instruction();
+    }
+    case 0x34: {
+	return new CALOAD_Instruction();
+    }
+    case 0x35: {
+	return new SALOAD_Instruction();
+    }
+    case 0x4f: {
+	return new IASTORE_Instruction();
+    }
+    case 0x50: {
+	return new LASTORE_Instruction();
+    }
+    case 0x51: {
+	return new FASTORE_Instruction();
+    }
+    case 0x52: {
+	return new DASTORE_Instruction();
+    }
+    case 0x53: {
+	return new AASTORE_Instruction();
+    }
+    case 0x54: {
+	return new BASTORE_Instruction();
+    }
+    case 0x55: {
+	return new CASTORE_Instruction();
+    }
+    case 0x56: {
+	return new SASTORE_Instruction();
+    }
+    case 0xc5: {
+	return new MULTI_ANEW_ARRAY_Instruction();
     }
     }
 

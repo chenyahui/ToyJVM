@@ -62,7 +62,7 @@ ALOAD_GENE(D, j_double)
 ALOAD_GENE(F, j_float)
 ALOAD_GENE(I, j_int)
 ALOAD_GENE(L, j_long)
-ALOAD_GENE(s, j_short)
+ALOAD_GENE(S, j_short)
 
 template <typename T>
 class BaseArrayStoreInst : public NoOperandsInstruction {
@@ -70,7 +70,7 @@ public:
     void Execute(JFrame* frame) override
     {
 	auto& opstack = frame->OpStack();
-	auto val = opstack.Pop<int>();
+	auto val = opstack.Pop<T>();
 	auto index = opstack.Pop<int>();
 	auto base_arr = opstack.Pop<JBaseArray*>();
 
@@ -98,7 +98,7 @@ ASTORE_GENE(D, j_double)
 ASTORE_GENE(F, j_float)
 ASTORE_GENE(I, j_int)
 ASTORE_GENE(L, j_long)
-ASTORE_GENE(s, j_short)
+ASTORE_GENE(S, j_short)
 
 class MULTI_ANEW_ARRAY_Instruction : public Instruction {
 public:

@@ -101,12 +101,12 @@ JMethod* GetMainFunc(JClass* jclass)
     throw "can't find main";
 }
 
-void startJvm(std::string& filename)
+void startJvm(std::string& class_name)
 {
     ClassLoader* loader = new ClassLoader();
-    auto jclass = loader->LoadClass(filename);
+    auto jclass = loader->LoadClass(class_name);
 
-    std::string config_json = "/home/cyhone/ToyJVM/etc/instructions.json";
+    std::string config_json = "/home/cyhone/MyProject/ToyJVM/etc/instructions.json";
     LoadInstructionConfig(config_json);
 
     interpret(GetMainFunc(jclass));

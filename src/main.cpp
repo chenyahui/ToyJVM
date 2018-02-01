@@ -35,10 +35,10 @@ void print_class_info(cyh::ClassFile c)
 int main(int argc, char* argv[])
 {
     google::InitGoogleLogging(argv[0]);
-    std::string filename(argv[1]);
+    std::string class_name(argv[1]);
     FLAGS_logtostderr = 1;
     try {
-	cyh::startJvm(filename);
+	cyh::startJvm(class_name);
     } catch (char const* e) {
 	cout << e << endl;
     } catch (std::string& e) {
