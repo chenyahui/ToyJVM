@@ -1,5 +1,4 @@
 #include <jvm/rtdata/jvm_thread.h>
-
 using namespace cyh;
 
 JFrame* JThread::PopFrame()

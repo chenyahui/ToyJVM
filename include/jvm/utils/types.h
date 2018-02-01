@@ -6,7 +6,7 @@
 #include <vector>
 
 namespace cyh {
-class JObject;
+class JReference;
 
 using u8 = uint64_t;
 using u4 = uint32_t;
@@ -21,7 +21,7 @@ using j_int = int32_t;
 using j_float = float;
 using j_long = int64_t;
 using j_double = double;
-using j_ref = JObject*;
+using j_ref = JReference*;
 /* 
 	* type map:
 	* Java  C++

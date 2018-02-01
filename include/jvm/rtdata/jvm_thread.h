@@ -2,13 +2,12 @@
 #define MY_JVM_RTDATA_JVM_THREAD_H
 
 #include <jvm/classfile/constant_pool.h>
-#include <jvm/rtdata/jvm_frame.h>
 #include <jvm/utils/unsafe.h>
 #include <stack>
 #include <vector>
 
 namespace cyh {
-
+class JFrame;
 using JStack = std::stack<JFrame*>;
 
 class JThread {

@@ -17,6 +17,7 @@ public:
 
 private:
     JClass* LoadNoArrayClass(std::string class_name);
+    JClass* LoadArrayClass(std::string class_name);
     JClass* defineClass(const bytes& data);
     void Link(JClass* jclass);
     void Verify(JClass* jclass);

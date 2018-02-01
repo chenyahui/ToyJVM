@@ -8,17 +8,22 @@ class JField;
 class JMethod;
 class RuntimeConstPool;
 class ClassLoader;
+class JReference;
+class JBaseArray;
 
 class JClass {
 public:
     JClass(ClassFile* classfile, ClassLoader* class_loader);
-
+    // for array class
+    JClass(ClassLoader*, std::string name);
     bool IsPublic();
     bool IsAccessibleTo(JClass* other);
     bool IsInterface();
     bool IsAbstract();
     bool IsSuper();
 
+    JClass* ComponentClass();
+    std::string GetComponentName();
     void ResolveSuperClass();
     void ResolveInterfaces();
     std::string GetPackageName();
@@ -28,6 +33,11 @@ public:
     bool IsImplements(JClass*);
     bool IsSubInterfaceOf(JClass*);
     bool IsSuperClassOf(JClass*);
+
+    bool IsArray();
+    JBaseArray* ArrayFactory(u4);
+    JClass* ArrayClass();
+
     // getter setter
     inline std::string& name()
     {
@@ -79,6 +89,16 @@ public:
 	return interfaces_;
     }
 
+    inline bool init_started()
+    {
+	return init_started_;
+    }
+
+    inline void start_init()
+    {
+	init_started_ = true;
+    }
+
 private:
     u2 access_flags_ = 0;
     std::string name_;
@@ -93,30 +113,7 @@ private:
     u4 instance_slot_count_ = 0;
     u4 static_slot_count_ = 0;
     LocalVarRefs* static_vars_ = NULL;
-};
-
-class JObject {
-public:
-    JObject(JClass* jclass)
-	: jclass_(jclass)
-	, fields_(jclass->instance_slot_count())
-    {
-    }
-    inline LocalVarRefs& fields()
-    {
-	return fields_;
-    }
-
-    bool IsInstanceOf(JClass*);
-
-    inline JClass* jclass()
-    {
-	return jclass_;
-    }
-
-private:
-    JClass* jclass_;
-    LocalVarRefs fields_;
+    bool init_started_ = false;
 };
 }
 

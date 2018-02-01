@@ -1,11 +1,55 @@
+#include <glog/logging.h>
 #include <jvm/rtdata/access_flag.h>
 #include <jvm/rtdata/jvm_class.h>
 #include <jvm/rtdata/jvm_member.h>
+#include <jvm/rtdata/jvm_reference.h>
 #include <jvm/rtdata/runtime_const_pool.h>
-
-#include <glog/logging.h>
-
+#include <jvm/utils/types.h>
+#include <unordered_map>
 using namespace cyh;
+
+const std::unordered_map<std::string, std::string> PrimitiveTypes = {
+    { "void", "V" },
+    { "boolean", "Z" },
+    { "byte", "B" },
+    { "short", "S" },
+    { "int", "I" },
+    { "long", "J" },
+    { "char", "C" },
+    { "float", "F" },
+    { "double", "D" }
+};
+std::string ToDescriptor(const std::string& class_name)
+{
+    if (class_name[0] == '[') {
+	return class_name;
+    }
+
+    auto data = PrimitiveTypes.find(class_name);
+    if (data != PrimitiveTypes.end()) {
+	return data->second;
+    }
+
+    return "L" + class_name + ";";
+}
+std::string GetArrayClassName(const std::string& class_name)
+{
+    return "[" + ToDescriptor(class_name);
+}
+// for array class
+JClass::JClass(ClassLoader* class_loader, std::string name)
+    : name_(name)
+    , access_flags_(ACC_CLASS::PUBLIC)
+    , class_loader_(class_loader)
+    , instance_slot_count_(0)
+    , static_slot_count_(0)
+    , init_started_(true)
+{
+    super_class_ = class_loader_->LoadClass("java/lang/Object");
+
+    interfaces_.push_back(class_loader_->LoadClass("java/lang/Cloneable"));
+    interfaces_.push_back(class_loader_->LoadClass("java/io/Serializable"));
+}
 
 JClass::JClass(ClassFile* classfile, ClassLoader* class_loader)
     : class_loader_(class_loader)
@@ -121,8 +165,65 @@ std::string JClass::GetPackageName()
     }
     return name_.substr(0, last_found);
 }
-
-bool JObject::IsInstanceOf(JClass* jclass)
+bool JClass::IsArray()
 {
-    return jclass->IsAssignableFrom(this->jclass_);
+    return name_[0] == '[';
+}
+
+#define NEW_ARRAY(name, type)                 \
+    if (name_ == "[##name##") {               \
+	return new JArray<type>(count, this); \
+    }
+
+JBaseArray* JClass::ArrayFactory(u4 count)
+{
+    if (!IsArray()) {
+	throw "Not Array Class" + name_;
+    }
+
+    NEW_ARRAY(Z, bool)
+    NEW_ARRAY(B, j_byte)
+    NEW_ARRAY(C, j_char)
+    NEW_ARRAY(S, j_short)
+    NEW_ARRAY(I, j_int)
+    NEW_ARRAY(J, j_long)
+    NEW_ARRAY(F, j_float)
+    NEW_ARRAY(D, j_double)
+
+    return new JArray<JReference*>(count, this);
+}
+std::string ToClassName(std::string& descriptor)
+{
+    if (descriptor[0] == '[') {
+	return descriptor;
+    }
+    if (descriptor[0] == 'L') {
+	return descriptor.substr(1, descriptor.size() - 1);
+    }
+
+    for (auto& kv : PrimitiveTypes) {
+	if (kv.second == descriptor) {
+	    return kv.first;
+	}
+    }
+
+    throw "invalid descriptor" + descriptor;
+}
+JClass* JClass::ComponentClass()
+{
+    return class_loader_->LoadClass(GetComponentName());
+}
+std::string JClass::GetComponentName()
+{
+    if (name_[0] == '[') {
+	auto component_type_descriptor = name_.substr(1);
+	return ToClassName(component_type_descriptor);
+    }
+    throw "not a array";
+}
+JClass* JClass::ArrayClass()
+{
+    auto array_class_name = GetArrayClassName(this->name_);
+
+    return class_loader_->LoadClass(array_class_name);
 }

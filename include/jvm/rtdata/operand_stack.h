@@ -1,6 +1,7 @@
 #ifndef MY_JVM_RUNTIMEARE_OPERAND_STACK_H
 #define MY_JVM_RUNTIMEARE_OPERAND_STACK_H
 #include <glog/logging.h>
+#include <jvm/rtdata/jvm_reference.h>
 #include <jvm/rtdata/local_vars.h>
 #include <jvm/utils/unsafe.h>
 #include <stack>
@@ -28,7 +29,6 @@ public:
 	slots_.pop();
 	return ConvertAtLowLevel<int, T>(val);
     }
-
     j_ref GetRefFromTop(int n);
     std::stack<LocalSlot> InnerData() { return std::stack<LocalSlot>(slots_); }
 private:
@@ -57,13 +57,6 @@ inline j_double OperandStack::Pop<j_double>()
     return ConvertAtLowLevel<j_long, j_double>(l);
 }
 template <>
-inline j_ref OperandStack::Pop<j_ref>()
-{
-    auto ref = slots_.top().ref;
-    slots_.pop();
-    return ref;
-}
-template <>
 inline LocalSlot OperandStack::Pop<LocalSlot>()
 {
     auto slot = slots_.top();
@@ -76,7 +69,7 @@ inline void OperandStack::Push<j_long>(j_long data)
 {
     auto vals = ConvertToInt32<j_long, std::pair<int, int> >(data);
 
-    slots_.push(LocalSlot{.val = vals.first }); // low
+    slots_.push(LocalSlot{.val = vals.first });  // low
     slots_.push(LocalSlot{.val = vals.second }); // high
 }
 template <>
@@ -88,14 +81,48 @@ inline void OperandStack::Push<j_double>(j_double data)
     slots_.push(LocalSlot{.val = vals.second });
 }
 template <>
-inline void OperandStack::Push<j_ref>(j_ref data)
+inline void OperandStack::Push<JObject*>(JObject* data)
 {
     slots_.push(LocalSlot{.ref = data });
 }
 template <>
+inline void OperandStack::Push<JReference*>(JReference* data)
+{
+    slots_.push(LocalSlot{.ref = data });
+}
+
+template <>
+inline j_ref OperandStack::Pop<JReference*>()
+{
+    auto ref = slots_.top().ref;
+    slots_.pop();
+    return ref;
+}
+template <>
+inline JObject* OperandStack::Pop<JObject*>()
+{
+    j_ref data = slots_.top().ref;
+    slots_.pop();
+    return dynamic_cast<JObject*>(data);
+}
+
+template <>
 inline void OperandStack::Push<LocalSlot>(LocalSlot slot)
 {
     slots_.push(slot);
+}
+template <>
+inline JBaseArray* OperandStack::Pop<JBaseArray*>()
+{
+    auto data = slots_.top().ref;
+    slots_.pop();
+    return dynamic_cast<JBaseArray*>(data);
+}
+
+template <>
+void OperandStack::Push<JBaseArray*>(JBaseArray* array_item)
+{
+    slots_.push(LocalSlot{.ref = array_item });
 }
 }
 

@@ -25,7 +25,7 @@ void NEW_Instruction::Execute(JFrame* jframe)
 
     auto obj = new JObject(jclass);
 
-    jframe->OpStack().Push<j_ref>(obj);
+    jframe->OpStack().Push<JObject*>(obj);
 }
 #define STATIC_GET(type)                           \
     opstack.Push<type>(slots->Get<type>(slot_id)); \
@@ -124,12 +124,12 @@ void PUTSTATIC_Instruction::Execute(JFrame* jframe)
 }
 #define FIELD_PUT(type)                    \
     auto val = opstack.Pop<type>();        \
-    auto ref = opstack.Pop<j_ref>();       \
+    auto ref = opstack.Pop<JObject*>();       \
                                            \
     if (ref == NULL) {                     \
 	throw "nullpointer";               \
     }                                      \
-    ref->fields().Set<type>(slot_id, val); \
+    ref->fields()->Set<type>(slot_id, val); \
     break;
 
 void PUTFIELD_Instruction::Execute(JFrame* frame)
@@ -179,7 +179,7 @@ void PUTFIELD_Instruction::Execute(JFrame* frame)
     }
 }
 #define FIELD_GET(type)                           \
-    opstack.Push<type>(slots.Get<type>(slot_id)); \
+    opstack.Push<type>(slots->Get<type>(slot_id)); \
     break;
 void GETFIELD_Instruction::Execute(JFrame* jframe)
 {
@@ -195,13 +195,13 @@ void GETFIELD_Instruction::Execute(JFrame* jframe)
     if (!jfield->IsStatic()) {
 	throw "put static must apply to static field";
     }
-    auto ref = opstack.Pop<j_ref>();
+    auto ref = opstack.Pop<JObject*>();
     if (ref == NULL) {
 	throw "null pointer";
     }
     auto descriptor = jfield->descriptor();
     auto slot_id = jfield->slot_index();
-    auto& slots = ref->fields();
+    auto slots = ref->fields();
     switch (descriptor[0]) {
     case 'Z':
     case 'B':
@@ -229,7 +229,7 @@ void GETFIELD_Instruction::Execute(JFrame* jframe)
 void INSTANCEOF_Instruction::Execute(JFrame* jframe)
 {
     auto& opstack = jframe->OpStack();
-    auto ref = opstack.Pop<j_ref>();
+    auto ref = opstack.Pop<JObject*>();
     if (ref == NULL) {
 	opstack.Push<int>(0);
 	return;
@@ -248,8 +248,8 @@ void INSTANCEOF_Instruction::Execute(JFrame* jframe)
 void CHECKCAST_Instruction::Execute(JFrame* jframe)
 {
     auto& opstack = jframe->OpStack();
-    auto ref = opstack.Pop<j_ref>();
-    opstack.Push<j_ref>(ref);
+    auto ref = opstack.Pop<JObject*>();
+    opstack.Push<JObject*>(ref);
 
     if (ref == NULL) {
 	return;

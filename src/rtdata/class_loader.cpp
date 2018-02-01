@@ -16,9 +16,20 @@ JClass* ClassLoader::LoadClass(std::string class_name)
 	return class_map_[class_name];
     }
 
-    return LoadNoArrayClass(class_name);
-}
+    JClass* jclass = NULL;
+    if (class_name[0] == '[') {
+	jclass = LoadArrayClass(class_name);
+    } else {
+	jclass = LoadNoArrayClass(class_name);
+    }
+    class_map_[class_name] = jclass;
 
+    return jclass;
+}
+JClass* ClassLoader::LoadArrayClass(std::string class_name)
+{
+    return new JClass(this, class_name);
+}
 JClass* ClassLoader::LoadNoArrayClass(std::string class_name)
 {
     auto data = class_path_->ReadClass(class_name);
@@ -36,8 +47,6 @@ JClass* ClassLoader::defineClass(const bytes& data)
     auto jclass = new JClass(classfile, this);
     jclass->ResolveSuperClass();
     jclass->ResolveInterfaces();
-
-    class_map_[jclass->name()] = jclass;
 
     return jclass;
 }

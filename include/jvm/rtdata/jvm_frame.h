@@ -4,7 +4,7 @@
 #include <jvm/rtdata/jvm_member.h>
 #include <jvm/rtdata/local_vars.h>
 #include <jvm/rtdata/operand_stack.h>
-
+#include <jvm/rtdata/jvm_thread.h>
 namespace cyh {
 class JThread;
 
@@ -23,7 +23,10 @@ public:
     inline JThread* Thread() { return current_thread_; }
     inline int NextPc() { return nextpc_; }
     inline void SetNextPc(int pc) { nextpc_ = pc; }
-
+    inline void RevertNextPc()
+    {
+	nextpc_ = current_thread_->Pc();
+    }
     inline JMethod* jmethod()
     {
 	return jmethod_;
