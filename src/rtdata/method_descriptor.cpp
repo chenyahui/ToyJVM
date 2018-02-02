@@ -48,7 +48,7 @@ std::string MethodDescriptorParser::ParseObjectType()
     // to check
     auto obj_end = descriptor_.find(';', offset_);
     if (obj_end != std::string::npos) {
-	std::string result = descriptor_.substr(offset_, obj_end + 1);
+	std::string result = descriptor_.substr(offset_, obj_end - offset_ + 1);
 	offset_ = obj_end + 1;
 	return result;
     }
@@ -59,7 +59,7 @@ std::string MethodDescriptorParser::ParseArrayType()
     auto arr_start = offset_ - 1;
     ParseFieldType();
     auto arr_end = offset_;
-    return descriptor_.substr(arr_start, arr_end);
+    return descriptor_.substr(arr_start, arr_end - arr_start);
 }
 std::string MethodDescriptorParser::ParseFieldType()
 {

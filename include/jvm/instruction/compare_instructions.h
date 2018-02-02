@@ -62,22 +62,22 @@ public:
 	bool jump = false;
 	switch (cond) {
 	case CondType::EQ:
-	    jump = v2 == v1;
+	    jump = v1 == v2;
 	    break;
 	case CondType::NE:
-	    jump = v2 != v1;
+	    jump = v1 != v2;
 	    break;
 	case CondType::LT:
-	    jump = v2 > v1;
+	    jump = v1 > v2;
 	    break;
 	case CondType::LE:
-	    jump = v2 >= v1;
+	    jump = v1 >= v2;
 	    break;
 	case CondType::GT:
-	    jump = v2 > v1;
+	    jump = v1 > v2;
 	    break;
 	case CondType::GE:
-	    jump = v2 >= v1;
+	    jump = v1 >= v2;
 	    break;
 	}
 

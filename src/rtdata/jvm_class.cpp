@@ -38,8 +38,8 @@ std::string GetArrayClassName(const std::string& class_name)
 }
 // for array class
 JClass::JClass(ClassLoader* class_loader, std::string name)
-    : name_(name)
-    , access_flags_(static_cast<u2>(ACC_CLASS::PUBLIC))
+    : access_flags_(static_cast<u2>(ACC_CLASS::PUBLIC))
+    , name_(name)
     , class_loader_(class_loader)
     , instance_slot_count_(0)
     , static_slot_count_(0)
@@ -89,7 +89,10 @@ void JClass::ResolveInterfaces()
 }
 bool JClass::IsAccessibleTo(JClass* other)
 {
-    return IsPublic() || (GetPackageName() == other->GetPackageName());
+    DLOG(INFO) << "package name compare : \"" << GetPackageName() << "\"#\""<<other->GetPackageName()<<"\"";
+    DLOG(INFO) << "pointer compare: " << this << "#" <<  other ;
+    DLOG(INFO) << "class_name compare: " << name_ << "#" <<  other->name_ ;
+    return this == other || IsPublic() || (GetPackageName() == other->GetPackageName());
 }
 bool JClass::IsPublic()
 {
@@ -207,7 +210,7 @@ bool JClass::IsArray()
 }
 
 #define NEW_ARRAY(name, type)                 \
-    if (name_ == "[##name##") {               \
+    if (name_ == "["#name"") {               \
 	return new JArray<type>(count, this); \
     }
 
@@ -234,7 +237,8 @@ std::string ToClassName(std::string& descriptor)
 	return descriptor;
     }
     if (descriptor[0] == 'L') {
-	return descriptor.substr(1, descriptor.size() - 1);
+    // L at begin, comma at end
+	return descriptor.substr(1, descriptor.size() - 2);
     }
 
     for (auto& kv : PrimitiveTypes) {

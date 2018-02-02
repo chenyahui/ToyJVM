@@ -12,7 +12,15 @@ static void AllocAndInitStaticVars(JClass* jclass);
 
 JClass* ClassLoader::LoadClass(std::string class_name)
 {
+    DLOG(INFO) << "begin to load class:#"<<class_name<<"#";
+    DLOG(INFO) << "cache size: " << class_map_.size();
+    
+    for(auto& kv:class_map_){
+        DLOG(INFO) << kv.first << "->"<<kv.second->name();
+    }
+
     if (class_map_.find(class_name) != class_map_.end()) {
+    DLOG(INFO) << "load from cache :" << class_name;
 	return class_map_[class_name];
     }
 
@@ -22,6 +30,8 @@ JClass* ClassLoader::LoadClass(std::string class_name)
     } else {
 	jclass = LoadNoArrayClass(class_name);
     }
+    
+    DLOG(INFO) << "load class :" << class_name;
     class_map_[class_name] = jclass;
 
     return jclass;

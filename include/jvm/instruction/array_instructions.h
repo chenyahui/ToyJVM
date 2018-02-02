@@ -75,9 +75,12 @@ public:
 	auto base_arr = opstack.Pop<JBaseArray*>();
 
 	auto arr_ref = dynamic_cast<JArray<T>*>(base_arr);
+	assert(arr_ref != NULL);
+	assert(index >= 0 && index < arr_ref->array_length());
 
 	if (arr_ref == NULL) {
 	    // TODO
+	    throw "不是一个合法的array";
 	}
 
 	if (index < 0 && index >= arr_ref->array_length()) {

@@ -70,6 +70,7 @@ public:
     }
     inline T& operator[](int index)
     {
+	assert(index < raw_data_.size());
 	return raw_data_[index];
     }
 

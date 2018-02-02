@@ -14,7 +14,9 @@ JClass* SymbolRef::ResolveClass()
 void SymbolRef::ResolveClassRef()
 {
     auto d = rt_const_pool_->jclass();
+    DLOG(INFO) << "ResolveClassRef:" << class_name_;
     auto c = d->class_loader()->LoadClass(class_name_);
+    DLOG(INFO) << "ResolveClassRef load class finish: " << class_name_;
     if (!c->IsAccessibleTo(d)) {
 	throw "access error";
     }
@@ -101,7 +103,7 @@ void MethodRef::ResolveMethodRef()
     }
 
     if (!method->IsAccessibleTo(d)) {
-	throw "illgeal access";
+	throw "Method illgeal access";
     }
 
     this->jmethod_ = method;

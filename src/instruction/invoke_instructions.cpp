@@ -65,8 +65,9 @@ void INVOKE_SPECIAL_Instruction::Execute(JFrame* frame)
 static void _println(OperandStack& opstack, std::string& descriptor)
 {
     if (descriptor == "(J)V") {
-	//std::cout<<"输出>>>";
 	std::cout << opstack.Pop<long>() << std::endl;
+    }else if (descriptor == "(I)V"){
+    std::cout << opstack.Pop<int>() << std::endl;
     }
 }
 void INVOKE_VIRTUAL_Instruction::Execute(JFrame* frame)
@@ -82,7 +83,6 @@ void INVOKE_VIRTUAL_Instruction::Execute(JFrame* frame)
     if (method->IsStatic()) {
 	throw "不应该是static";
     }
-
     DLOG(INFO) << "method: " << method->name()
 	       << " args count: " << method->args_slot_count();
     auto obj = frame->OpStack().GetRefFromTop(method->args_slot_count() - 1);

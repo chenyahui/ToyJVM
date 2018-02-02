@@ -1,3 +1,4 @@
+#include <glog/logging.h>
 #include <jvm/instruction/array_instructions.h>
 
 using namespace cyh;
@@ -12,13 +13,14 @@ enum {
     AT_INT = 10,
     AT_LONG = 11
 };
-#define GET_PARRAY(Type, Sign) \
-    case Type:                 \
-	return loader->LoadClass("[##Sign");
+#define GET_PARRAY(Type, Sign)           \
+    case Type:                           \
+	return loader->LoadClass("["#Sign"");
 
 void NEW_ARRAY_Instruction::FetchOperands(ByteCodeReader& reader)
 {
     atype_ = reader.Read<u1>();
+    DLOG(INFO) << "atype" << int(atype_);
 }
 
 void NEW_ARRAY_Instruction::Execute(JFrame* frame)
