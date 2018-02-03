@@ -1,8 +1,10 @@
 #ifndef MY_JVM_RUNTIMEAREA_LOCALVARS_H
 #define MY_JVM_RUNTIMEAREA_LOCALVARS_H
+#include <jvm/rtdata/jvm_reference.h>
 #include <jvm/utils/unsafe.h>
 #include <utility>
 #include <vector>
+
 namespace cyh {
 union LocalSlot {
     int32_t val;
@@ -59,6 +61,11 @@ template <>
 inline void LocalVarRefs::Set<LocalSlot>(int index, LocalSlot slot)
 {
     data_[index] = slot;
+}
+template <>
+inline void LocalVarRefs::Set<JObject*>(int index, JObject* obj)
+{
+    data_[index].ref = obj;
 }
 
 template <>

@@ -89,9 +89,9 @@ void JClass::ResolveInterfaces()
 }
 bool JClass::IsAccessibleTo(JClass* other)
 {
-    DLOG(INFO) << "package name compare : \"" << GetPackageName() << "\"#\""<<other->GetPackageName()<<"\"";
-    DLOG(INFO) << "pointer compare: " << this << "#" <<  other ;
-    DLOG(INFO) << "class_name compare: " << name_ << "#" <<  other->name_ ;
+    DLOG(INFO) << "package name compare : \"" << GetPackageName() << "\"#\"" << other->GetPackageName() << "\"";
+    DLOG(INFO) << "pointer compare: " << this << "#" << other;
+    DLOG(INFO) << "class_name compare: " << name_ << "#" << other->name_;
     return this == other || IsPublic() || (GetPackageName() == other->GetPackageName());
 }
 bool JClass::IsPublic()
@@ -210,7 +210,7 @@ bool JClass::IsArray()
 }
 
 #define NEW_ARRAY(name, type)                 \
-    if (name_ == "["#name"") {               \
+    if (name_ == "[" #name "") {              \
 	return new JArray<type>(count, this); \
     }
 
@@ -237,7 +237,7 @@ std::string ToClassName(std::string& descriptor)
 	return descriptor;
     }
     if (descriptor[0] == 'L') {
-    // L at begin, comma at end
+	// L at begin, comma at end
 	return descriptor.substr(1, descriptor.size() - 2);
     }
 
@@ -266,4 +266,17 @@ JClass* JClass::ArrayClass()
     auto array_class_name = GetArrayClassName(this->name_);
 
     return class_loader_->LoadClass(array_class_name);
+}
+JField* JClass::GetField(std::string& field_name, std::string& descriptor, bool is_static)
+{
+    for (auto c = this; c != NULL; c = c->super_class_) {
+	for (auto field : c->fields_) {
+	    if (field->IsStatic() == is_static
+		&& field->name() == field_name
+		&& field->descriptor() == descriptor) {
+	    	return field;
+	    }
+	}
+    }
+    return NULL;
 }

@@ -1,5 +1,6 @@
 #include <glog/logging.h>
 #include <jvm/instruction/invoke_instructions.h>
+#include <jvm/rtdata/jvm_reference.h>
 
 using namespace cyh;
 
@@ -66,9 +67,19 @@ static void _println(OperandStack& opstack, std::string& descriptor)
 {
     if (descriptor == "(J)V") {
 	std::cout << opstack.Pop<long>() << std::endl;
-    }else if (descriptor == "(I)V"){
-    std::cout << opstack.Pop<int>() << std::endl;
+    } else if (descriptor == "(I)V") {
+	std::cout << opstack.Pop<int>() << std::endl;
+    } else if (descriptor == "(Ljava/lang/String;)V") {
+	auto str_obj = opstack.Pop<JObject*>();
+
+	std::string name = "value", descriptor = "[C";
+	auto char_array_obj = dynamic_cast<JArray<char>*>(str_obj->GetRefVar(name, descriptor));
+	auto& char_vec = char_array_obj->raw_data();
+
+	std::string str(char_vec.begin(), char_vec.end());
+	std::cout << str << std::endl;
     }
+    opstack.Pop<j_ref>();
 }
 void INVOKE_VIRTUAL_Instruction::Execute(JFrame* frame)
 {
@@ -77,7 +88,7 @@ void INVOKE_VIRTUAL_Instruction::Execute(JFrame* frame)
 
     auto method_ref = const_pool->GetRef<MethodRef>(index);
 
-//    auto resolved_class = method_ref->ResolveClass();
+    //    auto resolved_class = method_ref->ResolveClass();
     auto method = method_ref->ResolveMethod();
 
     if (method->IsStatic()) {

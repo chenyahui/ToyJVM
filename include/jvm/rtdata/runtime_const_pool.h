@@ -23,7 +23,7 @@ public:
     }
 
     template <typename T>
-    T GetVal(int i)
+    T& GetVal(int i)
     {
 	return *(T*)(const_vars_[i]);
     }

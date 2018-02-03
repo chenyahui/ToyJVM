@@ -42,6 +42,7 @@ public:
     JBaseArray* ArrayFactory(u4);
     JClass* ArrayClass();
 
+    JField* GetField(std::string& name, std::string& descriptor, bool is_static);
     // getter setter
     inline std::string& name()
     {

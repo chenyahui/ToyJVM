@@ -5,6 +5,7 @@
 #include <jvm/instruction/ref_instructions.h>
 #include <jvm/rtdata/jvm_frame.h>
 #include <jvm/rtdata/runtime_const_pool.h>
+#include <jvm/rtdata/string_pool.h>
 #include <jvm/rtdata/symbol_ref.h>
 
 #include <iostream>
@@ -65,7 +66,8 @@ template <typename T>
 void BaseLdcInstruction<T>::Execute(JFrame* jframe)
 {
     auto& opstack = jframe->OpStack();
-    auto rt_const_pool = jframe->jmethod()->jclass()->rt_const_pool();
+    auto jclass = jframe->jmethod()->jclass();
+    auto rt_const_pool = jclass->rt_const_pool();
 
     auto tag = rt_const_pool->GetType(this->index);
     switch (tag) {
@@ -73,6 +75,13 @@ void BaseLdcInstruction<T>::Execute(JFrame* jframe)
 	LDC_CASE(Float, float)
 	LDC_CASE(Long, long)
 	LDC_CASE(Double, double)
+
+    case String: {
+	auto& str = rt_const_pool->GetVal<std::string>(this->index);
+	auto interned_str = GetStringFromPool(jclass->class_loader(), str);
+	opstack.Push<JObject*>(interned_str);
+	break;
+    }
     }
 }
 }

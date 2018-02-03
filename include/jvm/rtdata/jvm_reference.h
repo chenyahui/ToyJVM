@@ -1,8 +1,8 @@
 #ifndef TOYJVM_RTDATA_JVM_REFERENCE_H
 #define TOYJVM_RTDATA_JVM_REFERENCE_H
 #include <jvm/utils/types.h>
+#include <string>
 #include <vector>
-
 namespace cyh {
 class JClass;
 class LocalVarRefs;
@@ -30,6 +30,8 @@ public:
 	return fields_;
     }
 
+    void SetRefVar(std::string& name, std::string& descriptor, JReference* obj);
+    JReference* GetRefVar(std::string& name, std::string& descriptor);
     bool IsInstanceOf(JClass*);
     ~JObject() {}
 private:
@@ -64,6 +66,11 @@ public:
     {
     }
 
+    JArray(std::vector<T>& raw_data, JClass* jclass)
+	: JBaseArray(raw_data.size(), jclass)
+	, raw_data_(raw_data)
+    {
+    }
     std::vector<T>& raw_data()
     {
 	return raw_data_;

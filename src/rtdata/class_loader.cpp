@@ -2,6 +2,7 @@
 #include <jvm/rtdata/class_loader.h>
 #include <jvm/rtdata/jvm_member.h>
 #include <jvm/rtdata/runtime_const_pool.h>
+#include <jvm/rtdata/string_pool.h>
 #include <jvm/utils/types.h>
 using namespace cyh;
 
@@ -12,15 +13,15 @@ static void AllocAndInitStaticVars(JClass* jclass);
 
 JClass* ClassLoader::LoadClass(std::string class_name)
 {
-    DLOG(INFO) << "begin to load class:#"<<class_name<<"#";
+    DLOG(INFO) << "begin to load class:#" << class_name << "#";
     DLOG(INFO) << "cache size: " << class_map_.size();
-    
-    for(auto& kv:class_map_){
-        DLOG(INFO) << kv.first << "->"<<kv.second->name();
+
+    for (auto& kv : class_map_) {
+	DLOG(INFO) << kv.first << "->" << kv.second->name();
     }
 
     if (class_map_.find(class_name) != class_map_.end()) {
-    DLOG(INFO) << "load from cache :" << class_name;
+	DLOG(INFO) << "load from cache :" << class_name;
 	return class_map_[class_name];
     }
 
@@ -30,7 +31,7 @@ JClass* ClassLoader::LoadClass(std::string class_name)
     } else {
 	jclass = LoadNoArrayClass(class_name);
     }
-    
+
     DLOG(INFO) << "load class :" << class_name;
     class_map_[class_name] = jclass;
 
@@ -146,5 +147,8 @@ void InitStaticFinalVar(JClass* jclass, JField* field)
 	CONST_TO_LOCAL(double)
     } else if (descriptor == "Ljava/lang/String;") {
 	// TODO
+	auto& raw_str = rt_const_pool->GetVal<std::string>(cp_index);
+	auto str_obj = GetStringFromPool(jclass->class_loader(), raw_str);
+	static_vars->Set<JObject*>(slot_id, str_obj);
     }
 }
