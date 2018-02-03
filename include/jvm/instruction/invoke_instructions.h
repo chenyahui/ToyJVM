@@ -19,7 +19,6 @@ class INVOKE_VIRTUAL_Instruction : public Index16Instruction {
 public:
     void Execute(JFrame* frame) override;
 };
-
 class INVOKE_INTERFACE_Instruction : public Instruction {
 public:
     void FetchOperands(ByteCodeReader& reader) override;
@@ -27,6 +26,11 @@ public:
 
 private:
     int index_;
+};
+
+class INVOKE_NATIVE_Instruction : public NoOperandsInstruction {
+public:
+    void Execute(JFrame* frame) override;
 };
 }
 

@@ -66,6 +66,7 @@ class JMethod : public JMember {
 public:
     JMethod(JClass* jclass, MemberInfo* method_info);
     bool IsAbstract();
+    bool IsNative();
     // getter setter
     inline u4 max_stack()
     {
@@ -82,12 +83,14 @@ public:
 	return code_attr_;
     }
 
-    inline int args_slot_count(){
-    	return args_slot_count_;
+    inline int args_slot_count()
+    {
+	return args_slot_count_;
     }
-private:
-    void CalcArgsSlotCount();
 
+private:
+    void CalcArgsSlotCount(std::vector<std::string>& param_types);
+    void InjectCodeAttr(std::string& return_type);
     u4 max_stack_ = 0;
     u4 max_locals_ = 0;
     bytes code_;

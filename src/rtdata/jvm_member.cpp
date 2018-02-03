@@ -76,20 +76,59 @@ JMethod::JMethod(JClass* jclass, MemberInfo* method_info)
 	max_locals_ = code_attr_->max_locals_;
 	code_ = code_attr_->code_;
     }
+    MethodDescriptorParser parser(descriptor_);
+    auto parsed_descriptor = parser.Parse();
 
-    CalcArgsSlotCount();
+    CalcArgsSlotCount(parsed_descriptor.param_types);
+
+    if (IsNative()) {
+    }
+}
+bool JMethod::IsNative()
+{
+    return CheckAccess(access_flags_, ACC_METHOD::NATIVE);
 }
 bool JMethod::IsAbstract()
 {
     return CheckAccess(access_flags_, ACC_METHOD::ABSTRACT);
 }
-void JMethod::CalcArgsSlotCount()
+void JMethod::InjectCodeAttr(std::string& return_type)
+{
+    max_stack_ = 4;
+    max_locals_ = this->args_slot_count_;
+    switch (return_type[0]) {
+    case 'V': {
+	code_ = bytes{ 0xfe, 0xb1 };
+	return;
+    }
+    case 'D': {
+	code_ = bytes{ 0xfe, 0xaf };
+	return;
+    }
+    case 'F': {
+	code_ = bytes{ 0xfe, 0xae };
+	return;
+    }
+    case 'J': {
+	code_ = bytes{ 0xfe, 0xad };
+	return;
+    }
+    case '[':
+    case 'L': {
+	code_ = bytes{ 0xfe, 0xa0 };
+	return;
+    }
+    default: {
+	code_ = bytes{ 0xfe, 0xac };
+	return;
+    }
+    }
+}
+void JMethod::CalcArgsSlotCount(std::vector<std::string>& param_types)
 {
     DLOG(INFO) << "begin parse method descriptor:" << name_;
-    MethodDescriptorParser parser(descriptor_);
-    auto parsed_descriptor = parser.Parse();
 
-    for (auto param_type : parsed_descriptor.param_types) {
+    for (auto param_type : param_types) {
 	DLOG(INFO) << "param_type:" << param_type;
 	args_slot_count_++;
 	if (param_type == "J" || param_type == "D") {

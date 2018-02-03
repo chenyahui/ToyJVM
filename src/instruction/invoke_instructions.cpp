@@ -1,5 +1,6 @@
 #include <glog/logging.h>
 #include <jvm/instruction/invoke_instructions.h>
+#include <jvm/native/registy.h>
 #include <jvm/rtdata/jvm_reference.h>
 
 using namespace cyh;
@@ -166,6 +167,19 @@ void INVOKE_INTERFACE_Instruction::Execute(JFrame* frame)
     InvokeMethod(frame, methodToInvoked);
 }
 
+void INVOKE_NATIVE_Instruction::Execute(JFrame* frame)
+{
+    auto method = frame->jmethod();
+    auto class_name = method->jclass()->name();
+    auto method_name = method->name();
+    auto method_descriptor = method->descriptor();
+
+    auto native_method = FindNativeMethod(class_name, method_name, method_descriptor);
+    if (native_method == NULL) {
+	auto method_info = class_name + "." + method_name + method_descriptor;
+    }
+    (*native_method)(frame);
+}
 void InvokeMethod(JFrame* invoker, JMethod* method)
 {
     assert(method != NULL);

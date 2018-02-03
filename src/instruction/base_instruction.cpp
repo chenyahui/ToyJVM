@@ -611,6 +611,9 @@ Instruction* InstructionFactory(u1 opcode)
     case 0xc5: {
 	return new MULTI_ANEW_ARRAY_Instruction();
     }
+    case 0xfe: {
+	return new INVOKE_NATIVE_Instruction();
+    }
     }
 
     throw "unknown inst";
