@@ -14,7 +14,12 @@ public:
     virtual void ReadInfo(ClassReader&) = 0;
     virtual ~AttributeInfo() {}
 
+    inline std::string& attr_type()
+    {
+	return attr_type_;
+    }
     friend class MemberInfo;
+
 protected:
     std::string attr_type_;
 };
@@ -23,6 +28,12 @@ class AttributeTable {
 public:
     void Read(ClassReader& reader, ConstantPool*);
     friend class MemberInfo;
+
+    inline std::vector<AttributeInfo*>& attributes_infos()
+    {
+	return attributes_infos_;
+    }
+
 private:
     AttributeInfo* ReadAttributeInfo(ClassReader&, ConstantPool*);
     AttributeInfo* NewAttributeInfo(std::string attrname, ConstantPool*);

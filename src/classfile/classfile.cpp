@@ -118,4 +118,14 @@ void ClassFile::CheckMagicAndVersions()
 
     // TODO check versions
 }
+AttributeSourceFileInfo* ClassFile::source_file_attr()
+{
+    for (auto attr : attribute_table.attributes_infos()) {
+	if (attr->attr_type() == "SourceFile") {
+	    return dynamic_cast<AttributeSourceFileInfo*>(attr);
+	}
+    }
+
+    return NULL;
+}
 }

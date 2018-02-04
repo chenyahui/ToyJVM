@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <glog/logging.h>
 #include <jvm/rtdata/access_flag.h>
 #include <jvm/rtdata/jvm_class.h>
@@ -6,6 +7,7 @@
 #include <jvm/rtdata/runtime_const_pool.h>
 #include <jvm/utils/types.h>
 #include <unordered_map>
+
 using namespace cyh;
 
 const std::unordered_map<std::string, std::string> PrimitiveTypes = {
@@ -58,12 +60,13 @@ JClass::JClass(ClassFile* classfile, ClassLoader* class_loader)
 {
     access_flags_ = classfile->AccessFlags();
     name_ = classfile->ClassName();
-    DLOG(INFO) << "class name: " << name_;
     if (name_ != "java/lang/Object") {
 	super_class_name_ = classfile->SuperClassName();
 	interface_names_ = classfile->InterfaceNames();
     }
 
+    auto sf_attr = classfile->source_file_attr();
+    source_file_ = sf_attr == NULL ? "Unknown" : sf_attr->FileName();
     rt_const_pool_ = new RuntimeConstPool(this, &classfile->constant_pool);
 
     for (auto field_info : classfile->fields) {
@@ -89,9 +92,6 @@ void JClass::ResolveInterfaces()
 }
 bool JClass::IsAccessibleTo(JClass* other)
 {
-    DLOG(INFO) << "package name compare : \"" << GetPackageName() << "\"#\"" << other->GetPackageName() << "\"";
-    DLOG(INFO) << "pointer compare: " << this << "#" << other;
-    DLOG(INFO) << "class_name compare: " << name_ << "#" << other->name_;
     return this == other || IsPublic() || (GetPackageName() == other->GetPackageName());
 }
 bool JClass::IsPublic()
@@ -274,9 +274,17 @@ JField* JClass::GetField(std::string& field_name, std::string& descriptor, bool 
 	    if (field->IsStatic() == is_static
 		&& field->name() == field_name
 		&& field->descriptor() == descriptor) {
-	    	return field;
+		return field;
 	    }
 	}
     }
     return NULL;
+}
+
+std::string JClass::JavaName()
+{
+    std::string result;
+    result.resize(name_.size());
+    std::replace_copy(name_.begin(), name_.end(), result.begin(), '/', '.');
+    return result;
 }

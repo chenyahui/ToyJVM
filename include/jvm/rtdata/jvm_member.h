@@ -5,9 +5,11 @@
 #include <jvm/classfile/constant_infos.h>
 #include <jvm/classfile/member_info.h>
 
+#include <jvm/rtdata/exceptions.h>
 #include <jvm/rtdata/jvm_class.h>
 #include <string>
 #include <vector>
+
 namespace cyh {
 
 class JMember {
@@ -67,6 +69,8 @@ public:
     JMethod(JClass* jclass, MemberInfo* method_info);
     bool IsAbstract();
     bool IsNative();
+
+    int GetLineNumber(int pc);
     // getter setter
     inline u4 max_stack()
     {
@@ -83,19 +87,27 @@ public:
 	return code_attr_;
     }
 
+    inline bytes& code(){
+        return code_;
+    }
     inline int args_slot_count()
     {
 	return args_slot_count_;
     }
 
+    int FindExceptionHandler(JClass* jclass, int pc);
+
 private:
     void CalcArgsSlotCount(std::vector<std::string>& param_types);
     void InjectCodeAttr(std::string& return_type);
+    void CopyAttributes(MemberInfo*);
     u4 max_stack_ = 0;
     u4 max_locals_ = 0;
     bytes code_;
     AttributeCodeInfo* code_attr_ = NULL;
     int args_slot_count_ = 0;
+    ExceptionTable* exception_table_ = NULL;
+    AttributeLineNumberTableInfo* line_number_table_;
 };
 }
 

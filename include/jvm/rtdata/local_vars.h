@@ -34,6 +34,11 @@ public:
 
     inline std::vector<LocalSlot>& InnerData() { return data_; }
 
+    inline JObject* GetThis()
+    {
+	return dynamic_cast<JObject*>(data_[0].ref);
+    }
+
 private:
     int max_locals_;
     std::vector<LocalSlot> data_;

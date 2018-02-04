@@ -34,8 +34,23 @@ public:
     JReference* GetRefVar(std::string& name, std::string& descriptor);
     bool IsInstanceOf(JClass*);
     ~JObject() {}
+    inline void set_extra(char* extra)
+    {
+	extra_ = extra;
+    }
+
+    template <typename T>
+    T ExtraTo()
+    {
+	return (T)(extra_);
+    }
+
+    inline bool has_extra(){
+        return extra_ != NULL;
+    }
 private:
     LocalVarRefs* fields_;
+    char* extra_ = NULL;
 };
 
 class JBaseArray : public JReference {

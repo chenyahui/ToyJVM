@@ -2,6 +2,7 @@
 #include <jvm/instruction/invoke_instructions.h>
 #include <jvm/native/registy.h>
 #include <jvm/rtdata/jvm_reference.h>
+#include <jvm/rtdata/string_pool.h>
 
 using namespace cyh;
 
@@ -73,12 +74,7 @@ static void _println(OperandStack& opstack, std::string& descriptor)
     } else if (descriptor == "(Ljava/lang/String;)V") {
 	auto str_obj = opstack.Pop<JObject*>();
 
-	std::string name = "value", descriptor = "[C";
-	auto char_array_obj = dynamic_cast<JArray<char>*>(str_obj->GetRefVar(name, descriptor));
-	auto& char_vec = char_array_obj->raw_data();
-
-	std::string str(char_vec.begin(), char_vec.end());
-	std::cout << str << std::endl;
+	std::cout << TransJString(str_obj) << std::endl;
     }
     opstack.Pop<j_ref>();
 }
@@ -169,15 +165,18 @@ void INVOKE_INTERFACE_Instruction::Execute(JFrame* frame)
 
 void INVOKE_NATIVE_Instruction::Execute(JFrame* frame)
 {
+   
     auto method = frame->jmethod();
     auto class_name = method->jclass()->name();
     auto method_name = method->name();
     auto method_descriptor = method->descriptor();
-
+    
+    DLOG(INFO)<<"INVOKE_NATIVE"<<class_name<<"."<<method_name;
     auto native_method = FindNativeMethod(class_name, method_name, method_descriptor);
     if (native_method == NULL) {
 	auto method_info = class_name + "." + method_name + method_descriptor;
-    }
+    throw "INVOKE_NATIVE error" + method_info;
+    } 
     (*native_method)(frame);
 }
 void InvokeMethod(JFrame* invoker, JMethod* method)

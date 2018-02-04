@@ -11,6 +11,7 @@
 #include <jvm/utils/types.h>
 
 namespace cyh {
+class AttributeSourceFileInfo;
 class ClassFile {
 public:
     ClassFile(bytes data);
@@ -25,6 +26,8 @@ public:
     std::vector<std::string> InterfaceNames();
     std::vector<std::string> FieldNames();
     std::vector<std::string> MethodNames();
+
+    AttributeSourceFileInfo* source_file_attr();
 
 private:
     void CheckMagicAndVersions();

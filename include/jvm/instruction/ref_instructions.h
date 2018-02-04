@@ -8,8 +8,6 @@
 #include <jvm/rtdata/string_pool.h>
 #include <jvm/rtdata/symbol_ref.h>
 
-#include <iostream>
-
 namespace cyh {
 class NEW_Instruction : public Index16Instruction {
 public:
@@ -78,11 +76,20 @@ void BaseLdcInstruction<T>::Execute(JFrame* jframe)
 
     case String: {
 	auto& str = rt_const_pool->GetVal<std::string>(this->index);
+    DLOG(INFO)<<"LDC string:"<<str;
 	auto interned_str = GetStringFromPool(jclass->class_loader(), str);
 	opstack.Push<JObject*>(interned_str);
 	break;
     }
     }
 }
+class ATHROW_Instruction : public NoOperandsInstruction {
+public:
+    void Execute(JFrame*) override;
+
+private:
+    bool FindAndGotoExceptionHandler(JThread* jthread, JObject*);
+    void HandleUncaughtException(JThread* jthread, JObject*);
+};
 }
 #endif /* end of include guard: TOYJVM_INSTRUCTION_REF_INSTRUCTIONS_H */

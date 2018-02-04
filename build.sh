@@ -4,7 +4,7 @@ set -x
 ulimit -c unlimited 
 
 BUILD_DIR=${BUILD_DIR:-./build}
-BUILD_TYPE=${BUILD_TYPE:-Release}
+BUILD_TYPE=${BUILD_TYPE:-Debug}
 INSTALL_DIR=${INSTALL_DIR:-${BUILD_DIR}/${BUILD_TYPE}}
 
 mkdir -p $INSTALL_DIR \

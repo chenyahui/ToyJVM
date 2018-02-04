@@ -22,7 +22,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS "ON")
 file(GLOB_RECURSE SOURCE_LIST "src/*.cpp")
 set(CMAKE_CXX_COMPILER "g++")
 set(CMAKE_CXX_FLAGS_DEBUG "-O0")
-set(CMAKE_CXX_FLAGS_RELEASE "-O2 -finline-limit=1000 -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -finline-limit=1000 -DDEBUG")
 
 
 include_directories("${CMAKE_CURRENT_LIST_DIR}/include")

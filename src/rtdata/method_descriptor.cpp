@@ -46,9 +46,10 @@ void MethodDescriptorParser::CausePanic()
 std::string MethodDescriptorParser::ParseObjectType()
 {
     // to check
+    auto arr_start = offset_ - 1;
     auto obj_end = descriptor_.find(';', offset_);
     if (obj_end != std::string::npos) {
-	std::string result = descriptor_.substr(offset_, obj_end - offset_ + 1);
+	std::string result = descriptor_.substr(arr_start , obj_end - arr_start + 1);
 	offset_ = obj_end + 1;
 	return result;
     }

@@ -53,7 +53,7 @@ AttributeInfo* AttributeTable::NewAttributeInfo(std::string attr_name, ConstantP
     } else if (attr_name == "Signature") {
 	return new AttributeSignatureInfo();
     } else if (attr_name == "SourceFile") {
-	return new AttributeSourceFileInfo();
+	return new AttributeSourceFileInfo(pool);
     } else if (attr_name == "Synthetic") {
 	return new AttributeSyntheticInfo<>();
     }

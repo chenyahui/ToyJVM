@@ -22,6 +22,10 @@ public:
 	return stack_.empty();
     }
 
+    void ClearStack();
+
+    std::vector<JFrame*> GetFrames();
+
 private:
     int pc_;
     JStack stack_;

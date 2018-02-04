@@ -59,6 +59,7 @@ class FieldRef : public MemberRef {
 public:
     FieldRef(RuntimeConstPool* rt_const_pool, ConstantFieldRefInfo* field_ref_info)
 	: MemberRef(rt_const_pool, field_ref_info)
+    , jfield_(NULL)    
     {
     }
     JField* ResolveField();

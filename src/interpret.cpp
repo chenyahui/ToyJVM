@@ -3,10 +3,11 @@
 #include <jvm/interpret.h>
 #include <jvm/rtdata/class_loader.h>
 #include <jvm/utils/instructionutils.h>
+#include <jvm/native/registy.h>
 #include <typeinfo>
 using namespace std;
-const bool is_log = false;
 
+const bool is_log = true;
 namespace cyh {
 void loop(JThread* thread);
 void interpret(JMethod* method)
@@ -61,12 +62,13 @@ void loop(JThread* thread)
 	int pc = frame->NextPc();
 	thread->SetPc(pc);
 
-	reader.Reset(frame->jmethod()->CodeAttribute()->code_, pc);
+	reader.Reset(frame->jmethod()->code(), pc);
 	auto opcode = reader.Read<u1>();
 //	getchar();
 	if (is_log) {
 	    cout << "==========================" << endl;
-	    cout << "now method : " << frame->jmethod()->name() << endl;
+        auto method = frame->jmethod();
+	    cout << "now method : " << method->jclass()->name() << "->" << method->name() << endl;
 	    cout << ">>>>>>>" << GetInstrutionByTag(opcode) << endl;
 	}
 
@@ -103,6 +105,7 @@ JMethod* GetMainFunc(JClass* jclass)
 
 void startJvm(std::string& class_name)
 {
+    InitNativeMethods();
     ClassLoader* loader = new ClassLoader();
     auto jclass = loader->LoadClass(class_name);
 

@@ -70,18 +70,28 @@ bool JField::IsFinal()
 JMethod::JMethod(JClass* jclass, MemberInfo* method_info)
     : JMember(jclass, method_info)
 {
+    CopyAttributes(method_info);
+    MethodDescriptorParser parser(descriptor_);
+    auto parsed_descriptor = parser.Parse();
+
+    DLOG(INFO) << "parse method descriptor:" << name_<<"#"<<descriptor_; 
+    CalcArgsSlotCount(parsed_descriptor.param_types);
+
+    if (IsNative()) {
+    DLOG(INFO)<<"+++++++++++++++method is native === "<< jclass->name()<<"."<<name_ << "#" << parsed_descriptor.return_type;
+	InjectCodeAttr(parsed_descriptor.return_type);
+    }
+}
+
+void JMethod::CopyAttributes(MemberInfo* method_info)
+{
     code_attr_ = method_info->CodeAttribute();
     if (code_attr_ != NULL) {
 	max_stack_ = code_attr_->max_stack_;
 	max_locals_ = code_attr_->max_locals_;
 	code_ = code_attr_->code_;
-    }
-    MethodDescriptorParser parser(descriptor_);
-    auto parsed_descriptor = parser.Parse();
-
-    CalcArgsSlotCount(parsed_descriptor.param_types);
-
-    if (IsNative()) {
+	exception_table_ = new ExceptionTable(code_attr_->exception_table(), jclass_->rt_const_pool());
+	line_number_table_ = code_attr_->LineNumberTable();
     }
 }
 bool JMethod::IsNative()
@@ -116,6 +126,7 @@ void JMethod::InjectCodeAttr(std::string& return_type)
     case '[':
     case 'L': {
 	code_ = bytes{ 0xfe, 0xa0 };
+    DLOG(INFO) << "inject code: "<< code_.size();
 	return;
     }
     default: {
@@ -123,11 +134,28 @@ void JMethod::InjectCodeAttr(std::string& return_type)
 	return;
     }
     }
+
+}
+int JMethod::FindExceptionHandler(JClass* jclass, int pc)
+{
+    auto handler = exception_table_->FindExceptionHandler(jclass, pc);
+
+    return handler == NULL ? -1 : handler->handler_pc;
+}
+int JMethod::GetLineNumber(int pc)
+{
+    if (IsNative()) {
+	return -2;
+    }
+
+    if (line_number_table_ == NULL) {
+	return -1;
+    }
+
+    return line_number_table_->GetLineNumber(pc);
 }
 void JMethod::CalcArgsSlotCount(std::vector<std::string>& param_types)
 {
-    DLOG(INFO) << "begin parse method descriptor:" << name_;
-
     for (auto param_type : param_types) {
 	DLOG(INFO) << "param_type:" << param_type;
 	args_slot_count_++;
@@ -138,6 +166,4 @@ void JMethod::CalcArgsSlotCount(std::vector<std::string>& param_types)
     if (!IsStatic()) {
 	args_slot_count_++;
     }
-
-    DLOG(INFO) << "end parse method descriptor:" << name_ << " args slot count : " << args_slot_count_;
 }

@@ -614,6 +614,9 @@ Instruction* InstructionFactory(u1 opcode)
     case 0xfe: {
 	return new INVOKE_NATIVE_Instruction();
     }
+    case 0xbf: {
+	return new ATHROW_Instruction();
+    }
     }
 
     throw "unknown inst";

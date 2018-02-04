@@ -3,6 +3,15 @@
 #include <vector>
 using namespace cyh;
 
+void OperandStack::Clear()
+{
+    // 这里应该对localslot的ref做一个delete，但是localslot是一个union。。。是不是改成struct才行呢。。
+    // 这里暂时内存泄露吧
+
+    while (!slots_.empty()) {
+	slots_.pop();
+    }
+}
 j_ref OperandStack::GetRefFromTop(int n)
 {
     DLOG(INFO) << "get ref from top : " << n;

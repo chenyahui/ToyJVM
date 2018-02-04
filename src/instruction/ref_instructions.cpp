@@ -1,8 +1,13 @@
 #include <glog/logging.h>
 #include <jvm/instruction/ref_instructions.h>
+#include <jvm/native/throwable.h>
 #include <jvm/rtdata/jvm_frame.h>
 #include <jvm/rtdata/runtime_const_pool.h>
+#include <jvm/rtdata/string_pool.h>
 #include <jvm/rtdata/symbol_ref.h>
+
+#include <iostream>
+
 using namespace cyh;
 
 void NEW_Instruction::Execute(JFrame* jframe)
@@ -13,16 +18,10 @@ void NEW_Instruction::Execute(JFrame* jframe)
 
     auto class_ref = rt_const_pool->GetRef<ClassRef>(index);
 
-    DLOG(INFO) << "begin resolve class in NEW Instruction " << class_ref->class_name();
     auto jclass = class_ref->ResolveClass();
-    DLOG(INFO) << "resolve end";
     if (jclass->IsInterface() && jclass->IsAbstract()) {
-	DLOG(INFO) << "interface ABSTRACT exception";
 	throw "interface and abstract cannot instance";
     }
-    DLOG(INFO) << "check end" << jclass->name() << "##";
-    DLOG(INFO) << "class_name :" << jclass->name() << "begin new object " << jclass->instance_slot_count();
-
     auto obj = new JObject(jclass);
 
     jframe->OpStack().Push<JObject*>(obj);
@@ -36,6 +35,8 @@ void GETSTATIC_Instruction::Execute(JFrame* jframe)
     auto rt_const_pool = jframe->jmethod()->jclass()->rt_const_pool();
     auto field_ref = rt_const_pool->GetRef<FieldRef>(index);
     auto jfield = field_ref->ResolveField();
+    assert(jfield != NULL);
+    DLOG(INFO)<<"jfield->"<<jfield->name();
     auto jclass = jfield->jclass();
 
     if (!jfield->IsStatic()) {
@@ -122,13 +123,13 @@ void PUTSTATIC_Instruction::Execute(JFrame* jframe)
     }
     }
 }
-#define FIELD_PUT(type)                    \
-    auto val = opstack.Pop<type>();        \
-    auto ref = opstack.Pop<JObject*>();       \
-                                           \
-    if (ref == NULL) {                     \
-	throw "nullpointer";               \
-    }                                      \
+#define FIELD_PUT(type)                     \
+    auto val = opstack.Pop<type>();         \
+    auto ref = opstack.Pop<JObject*>();     \
+                                            \
+    if (ref == NULL) {                      \
+	throw "nullpointer";                \
+    }                                       \
     ref->fields()->Set<type>(slot_id, val); \
     break;
 
@@ -142,7 +143,7 @@ void PUTFIELD_Instruction::Execute(JFrame* frame)
 
     auto jclass = jfield->jclass();
 
-    if (!jfield->IsStatic()) {
+    if (jfield->IsStatic()) {
 	throw "put static must apply to static field";
     }
 
@@ -178,7 +179,7 @@ void PUTFIELD_Instruction::Execute(JFrame* frame)
     }
     }
 }
-#define FIELD_GET(type)                           \
+#define FIELD_GET(type)                            \
     opstack.Push<type>(slots->Get<type>(slot_id)); \
     break;
 void GETFIELD_Instruction::Execute(JFrame* jframe)
@@ -192,7 +193,7 @@ void GETFIELD_Instruction::Execute(JFrame* jframe)
     //auto jclass = jfield->jclass();
     auto& opstack = jframe->OpStack();
 
-    if (!jfield->IsStatic()) {
+    if (jfield->IsStatic()) {
 	throw "put static must apply to static field";
     }
     auto ref = opstack.Pop<JObject*>();
@@ -200,6 +201,7 @@ void GETFIELD_Instruction::Execute(JFrame* jframe)
 	throw "null pointer";
     }
     auto descriptor = jfield->descriptor();
+    DLOG(INFO)<<"Get field: " << jfield->name() << "#" << descriptor;
     auto slot_id = jfield->slot_index();
     auto slots = ref->fields();
     switch (descriptor[0]) {
@@ -261,5 +263,58 @@ void CHECKCAST_Instruction::Execute(JFrame* jframe)
 		      ->ResolveClass();
     if (!ref->IsInstanceOf(jclass)) {
 	throw "class cast exception";
+    }
+}
+
+void ATHROW_Instruction::Execute(JFrame* frame)
+{
+    auto ex_obj = frame->OpStack().Pop<JObject*>();
+
+    if (ex_obj == NULL) {
+	throw "null pointer";
+    }
+
+    auto jthread = frame->Thread();
+    if (!FindAndGotoExceptionHandler(jthread, ex_obj)) {
+	HandleUncaughtException(jthread, ex_obj);
+    }
+}
+
+bool ATHROW_Instruction::FindAndGotoExceptionHandler(JThread* jthread, JObject* obj)
+{
+    while (true) {
+	auto frame = jthread->TopFrame();
+	auto pc = frame->NextPc() - 1;
+
+	auto handler_pc = frame->jmethod()->FindExceptionHandler(obj->jclass(), pc);
+	if (handler_pc > 0) {
+	    auto& opstack = frame->OpStack();
+	    opstack.Clear();
+	    opstack.Push<JObject*>(obj);
+	    frame->SetNextPc(handler_pc);
+	    return true;
+	}
+	jthread->PopFrame();
+	if (jthread->IsStackEmpty()) {
+	    break;
+	}
+    }
+
+    return false;
+}
+
+void ATHROW_Instruction::HandleUncaughtException(JThread* jthread, JObject* exobj)
+{
+    jthread->ClearStack();
+    std::string name = "detailMessage", descriptor = "Ljava/lang/String;";
+    auto msg_obj = dynamic_cast<JObject*>(exobj->GetRefVar(name, descriptor));
+    std::string msg = TransJString(msg_obj);
+    std::cout << exobj->jclass()->JavaName() << ":" << msg << std::endl;
+    if(exobj->has_extra()){
+        auto stack_traces = exobj->ExtraTo<std::vector<StackTraceElement>*>();
+
+        for (auto& trace_item : *stack_traces) {
+        std::cout << "\t at " << trace_item.ToString() << std::endl;
+        }
     }
 }

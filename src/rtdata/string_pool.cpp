@@ -26,4 +26,14 @@ JObject* GetStringFromPool(ClassLoader* loader, std::string str)
 
     return str_obj;
 }
+
+std::string TransJString(JObject* str_obj)
+{
+    assert(str_obj != NULL);
+    std::string name = "value", descriptor = "[C";
+    auto char_array_obj = dynamic_cast<JArray<char>*>(str_obj->GetRefVar(name, descriptor));
+    auto& char_vec = char_array_obj->raw_data();
+
+    return { char_vec.begin(), char_vec.end() };
+}
 }

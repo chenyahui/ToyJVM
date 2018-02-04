@@ -15,6 +15,7 @@ public:
     {
     }
 
+    void Clear();
     template <typename T>
     void Push(T data)
     {

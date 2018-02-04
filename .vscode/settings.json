@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "array": "cpp",
+        "*.ipp": "cpp",
+        "*.tcc": "cpp",
+        "initializer_list": "cpp"
+    }
+}

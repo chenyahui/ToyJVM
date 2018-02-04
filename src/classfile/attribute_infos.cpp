@@ -28,6 +28,16 @@ void AttributeCodeInfo::ReadInfo(ClassReader& reader)
     attribute_table_.Read(reader, pool_);
 }
 
+AttributeLineNumberTableInfo* AttributeCodeInfo::LineNumberTable()
+{
+    for (auto attr : attribute_table_.attributes_infos()) {
+	if (attr->attr_type() == "LineNumberTable") {
+	    return dynamic_cast<AttributeLineNumberTableInfo*>(attr);
+	}
+    }
+
+    return NULL;
+}
 void AttributeExceptionsInfo::ReadInfo(ClassReader& reader)
 {
     exception_index_table_ = reader.ReadU2s();
@@ -59,6 +69,10 @@ void AttributeSignatureInfo::ReadInfo(ClassReader& reader)
     signature_index_ = reader.ReadU2();
 }
 
+std::string AttributeSourceFileInfo::FileName()
+{
+    return const_pool_->GetUtf8AsString(sourcefile_index_);
+}
 void AttributeSourceFileInfo::ReadInfo(ClassReader& reader)
 {
     sourcefile_index_ = reader.ReadU2();
@@ -76,6 +90,17 @@ void AttributeLineNumberTableInfo::ReadInfo(ClassReader& reader)
 
 	line_number_table_.push_back(l);
     }
+}
+
+int AttributeLineNumberTableInfo::GetLineNumber(int pc)
+{
+    for (int i = line_number_table_.size() - 1; i >= 0; --i) {
+	if (pc >= line_number_table_[i].start_pc) {
+	    return line_number_table_[i].line_number;
+	}
+    }
+
+    return -1;
 }
 void AttributeLocalVariableTableInfo::ReadInfo(ClassReader& reader)
 {

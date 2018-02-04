@@ -29,6 +29,8 @@ struct ExceptionInfo {
     u2 catch_type;
 };
 
+class AttributeLineNumberTableInfo;
+
 class AttributeCodeInfo : public AttributeInfo {
 public:
     AttributeCodeInfo(ConstantPool* pool)
@@ -37,6 +39,12 @@ public:
     {
     }
     void ReadInfo(ClassReader&) override;
+    inline std::vector<ExceptionInfo>& exception_table()
+    {
+	return exception_table_;
+    }
+
+    AttributeLineNumberTableInfo* LineNumberTable();
 
 public:
     u2 max_stack_;
@@ -116,14 +124,17 @@ private:
 };
 class AttributeSourceFileInfo : public AttributeInfo {
 public:
-    AttributeSourceFileInfo()
+    AttributeSourceFileInfo(ConstantPool* pool)
 	: AttributeInfo("SourceFile")
+	, const_pool_(pool)
     {
     }
     void ReadInfo(ClassReader&) override;
+    std::string FileName();
 
 private:
     u2 sourcefile_index_;
+    ConstantPool* const_pool_;
 };
 
 struct LineNumberInfo {
@@ -137,6 +148,8 @@ public:
     {
     }
     void ReadInfo(ClassReader&) override;
+
+    int GetLineNumber(int pc);
 
 private:
     std::vector<LineNumberInfo> line_number_table_;

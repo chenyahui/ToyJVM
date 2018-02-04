@@ -27,6 +27,7 @@ public:
     void ResolveSuperClass();
     void ResolveInterfaces();
     std::string GetPackageName();
+    std::string JavaName();
 
     bool IsAssignableFrom(JClass*);
     bool IsSubClassOf(JClass*);
@@ -104,6 +105,11 @@ public:
 	init_started_ = true;
     }
 
+    inline std::string source_file()
+    {
+	return source_file_;
+    }
+
 private:
     u2 access_flags_ = 0;
     std::string name_;
@@ -119,6 +125,7 @@ private:
     u4 static_slot_count_ = 0;
     LocalVarRefs* static_vars_ = NULL;
     bool init_started_ = false;
+    std::string source_file_;
 };
 }
 
