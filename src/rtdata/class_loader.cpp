@@ -11,6 +11,17 @@ static void InitStaticFinalVar(JClass* jclass, JField*);
 static void CalcStaticFieldSlotIds(JClass*);
 static void AllocAndInitStaticVars(JClass* jclass);
 
+void ClassLoader::LoadPrimitiveClasses()
+{
+    for (auto& kv : PrimitiveTypes) {
+	LoadPrimitiveClass(const_cast<std::string&>(kv.first));
+    }
+}
+
+void ClassLoader::LoadPrimitiveClass(std::string& class_name)
+{
+    class_map_[class_name] = new JClass(this, class_name, false);
+}
 JClass* ClassLoader::LoadClass(std::string class_name)
 {
     if (class_map_.find(class_name) != class_map_.end()) {

@@ -6,21 +6,8 @@
 #include <jvm/rtdata/jvm_reference.h>
 #include <jvm/rtdata/runtime_const_pool.h>
 #include <jvm/utils/types.h>
-#include <unordered_map>
-
 using namespace cyh;
 
-const std::unordered_map<std::string, std::string> PrimitiveTypes = {
-    { "void", "V" },
-    { "boolean", "Z" },
-    { "byte", "B" },
-    { "short", "S" },
-    { "int", "I" },
-    { "long", "J" },
-    { "char", "C" },
-    { "float", "F" },
-    { "double", "D" }
-};
 std::string ToDescriptor(const std::string& class_name)
 {
     if (class_name[0] == '[') {
@@ -39,7 +26,7 @@ std::string GetArrayClassName(const std::string& class_name)
     return "[" + ToDescriptor(class_name);
 }
 // for array class
-JClass::JClass(ClassLoader* class_loader, std::string name)
+JClass::JClass(ClassLoader* class_loader, std::string name, bool load_parent)
     : access_flags_(static_cast<u2>(ACC_CLASS::PUBLIC))
     , name_(name)
     , class_loader_(class_loader)
@@ -47,10 +34,11 @@ JClass::JClass(ClassLoader* class_loader, std::string name)
     , static_slot_count_(0)
     , init_started_(true)
 {
-    super_class_ = class_loader_->LoadClass("java/lang/Object");
-
-    interfaces_.push_back(class_loader_->LoadClass("java/lang/Cloneable"));
-    interfaces_.push_back(class_loader_->LoadClass("java/io/Serializable"));
+    if (load_parent) {
+	super_class_ = class_loader_->LoadClass("java/lang/Object");
+	interfaces_.push_back(class_loader_->LoadClass("java/lang/Cloneable"));
+	interfaces_.push_back(class_loader_->LoadClass("java/io/Serializable"));
+    }
 }
 
 JClass::JClass(ClassFile* classfile, ClassLoader* class_loader)

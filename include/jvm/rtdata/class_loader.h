@@ -12,6 +12,7 @@ public:
     ClassLoader()
 	: class_path_(new ClassPath())
     {
+	LoadPrimitiveClasses();
     }
     JClass* LoadClass(std::string class_name);
 
@@ -19,6 +20,9 @@ private:
     JClass* LoadNoArrayClass(std::string class_name);
     JClass* LoadArrayClass(std::string class_name);
     JClass* defineClass(const bytes& data);
+
+    void LoadPrimitiveClasses();
+    void LoadPrimitiveClass(std::string&);
     void Link(JClass* jclass);
     void Verify(JClass* jclass);
     void Prepare(JClass* jclass);

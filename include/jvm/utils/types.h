@@ -3,8 +3,8 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <unordered_map>
 #include <vector>
-
 namespace cyh {
 class JReference;
 
@@ -34,6 +34,17 @@ using j_ref = JReference*;
 	* long  int64_t
 	* double double
  	*/
+const std::unordered_map<std::string, std::string> PrimitiveTypes = {
+    { "void", "V" },
+    { "boolean", "Z" },
+    { "byte", "B" },
+    { "short", "S" },
+    { "int", "I" },
+    { "long", "J" },
+    { "char", "C" },
+    { "float", "F" },
+    { "double", "D" }
+};
 }
 
 #endif /* ifndef  */

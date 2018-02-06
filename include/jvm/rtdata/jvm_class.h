@@ -15,7 +15,7 @@ class JClass {
 public:
     JClass(ClassFile* classfile, ClassLoader* class_loader);
     // for array class
-    JClass(ClassLoader*, std::string name);
+    JClass(ClassLoader*, std::string name, bool load_parent = true);
     bool IsPublic();
     bool IsAccessibleTo(JClass* other);
     bool IsInterface();

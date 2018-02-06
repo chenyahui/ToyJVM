@@ -1,3 +1,4 @@
+#include <glog/logging.h>
 #include <jvm/native/array_copy.h>
 #include <jvm/rtdata/jvm_frame.h>
 #include <jvm/rtdata/jvm_reference.h>
@@ -8,6 +9,7 @@ static bool CheckArrayCopy(JBaseArray* src, JBaseArray* dest);
 
 void arraycopy(JFrame* frame)
 {
+    DLOG(INFO) << "array copy native method";
     auto& local_vars = frame->LocalVars();
     auto src = local_vars.Get<JBaseArray*>(0);
     auto src_pos = local_vars.Get<int>(1);
@@ -26,6 +28,11 @@ void arraycopy(JFrame* frame)
     if (src_pos < 0 || dest_pos < 0 || length < 0
 	|| src_pos + length > src->array_length()
 	|| dest_pos + length > dest->array_length()) {
+	DLOG(INFO) << "src_pos: " << src_pos
+		   << "dest_pos: " << dest_pos
+		   << "length: " << length
+		   << "src length: " << src->array_length()
+		   << "dest length: " << dest->array_length();
 	throw "index bounds exception";
     }
 }
