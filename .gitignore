@@ -1,5 +1,5 @@
 bin/*
 build/*
 .ycm_extra_conf.py
-**/*.swap
+**/*.swp
 .vscode/*
