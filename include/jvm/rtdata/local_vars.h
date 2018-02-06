@@ -101,6 +101,16 @@ inline j_ref LocalVarRefs::Get<j_ref>(int index)
 {
     return data_[index].ref;
 }
+template <>
+inline JBaseArray* LocalVarRefs::Get<JBaseArray*>(int index)
+{
+    return dynamic_cast<JBaseArray*>(data_[index].ref);
+}
+template <>
+inline JObject* LocalVarRefs::Get<JObject*>(int index)
+{
+    return dynamic_cast<JObject*>(data_[index].ref);
+}
 }
 
 #endif /* ifndef  */

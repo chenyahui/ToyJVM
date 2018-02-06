@@ -35,6 +35,7 @@ public:
     bool IsSubInterfaceOf(JClass*);
     bool IsSuperClassOf(JClass*);
 
+    bool IsPrimitive();
     bool IsJlObject();
     bool IsJlCloneable();
     bool IsJioSerializable();

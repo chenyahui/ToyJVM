@@ -281,6 +281,10 @@ JField* JClass::GetField(std::string& field_name, std::string& descriptor, bool 
     return NULL;
 }
 
+bool JClass::IsPrimitive()
+{
+    return PrimitiveTypes.find(name_) != PrimitiveTypes.end();
+}
 std::string JClass::JavaName()
 {
     std::string result;

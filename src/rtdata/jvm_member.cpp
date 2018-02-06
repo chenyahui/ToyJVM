@@ -74,11 +74,11 @@ JMethod::JMethod(JClass* jclass, MemberInfo* method_info)
     MethodDescriptorParser parser(descriptor_);
     auto parsed_descriptor = parser.Parse();
 
-    DLOG(INFO) << "parse method descriptor:" << name_<<"#"<<descriptor_; 
+    DLOG(INFO) << "parse method descriptor:" << name_ << "#" << descriptor_;
     CalcArgsSlotCount(parsed_descriptor.param_types);
 
     if (IsNative()) {
-    DLOG(INFO)<<"+++++++++++++++method is native === "<< jclass->name()<<"."<<name_ << "#" << parsed_descriptor.return_type;
+	DLOG(INFO) << "+++++++++++++++method is native === " << jclass->name() << "." << name_ << "#" << parsed_descriptor.return_type;
 	InjectCodeAttr(parsed_descriptor.return_type);
     }
 }
@@ -126,7 +126,7 @@ void JMethod::InjectCodeAttr(std::string& return_type)
     case '[':
     case 'L': {
 	code_ = bytes{ 0xfe, 0xa0 };
-    DLOG(INFO) << "inject code: "<< code_.size();
+	DLOG(INFO) << "inject code: " << code_.size();
 	return;
     }
     default: {
@@ -134,7 +134,6 @@ void JMethod::InjectCodeAttr(std::string& return_type)
 	return;
     }
     }
-
 }
 int JMethod::FindExceptionHandler(JClass* jclass, int pc)
 {
