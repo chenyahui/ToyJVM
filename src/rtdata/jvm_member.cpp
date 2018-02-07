@@ -125,8 +125,7 @@ void JMethod::InjectCodeAttr(std::string& return_type)
     }
     case '[':
     case 'L': {
-	code_ = bytes{ 0xfe, 0xa0 };
-	DLOG(INFO) << "inject code: " << code_.size();
+	code_ = bytes{ 0xfe, 0xb0 };
 	return;
     }
     default: {

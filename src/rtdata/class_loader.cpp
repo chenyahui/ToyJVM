@@ -52,9 +52,11 @@ JClass* ClassLoader::LoadClass(std::string class_name)
 	jclass = LoadNoArrayClass(class_name);
     }
 
-    auto jlc_obj = new JObject(class_map_["java/lang/Class"]);
-    jlc_obj->set_extra((char*)jclass);
-    jclass->set_jl_class(jlc_obj);
+    if (class_map_.find("java/lang/Class") != class_map_.end()) {
+	auto jlc_obj = new JObject(class_map_["java/lang/Class"]);
+	jlc_obj->set_extra((char*)jclass);
+	jclass->set_jl_class(jlc_obj);
+    }
 
     class_map_[class_name] = jclass;
     return jclass;

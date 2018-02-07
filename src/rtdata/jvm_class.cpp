@@ -312,8 +312,11 @@ void JClass::InvokeClinit(JThread* jthread)
     auto clinit_method = GetMethod(name, descriptor, true);
 
     if (clinit_method != NULL) {
+    DLOG(INFO) << "invoke clinit method";
 	auto new_frame = new JFrame(jthread, clinit_method);
 	jthread->PushFrame(new_frame);
+    }else{
+         DLOG(INFO) << "invoke clinit method is null";
     }
 }
 void JClass::InitSuperClass(JThread* jthread)

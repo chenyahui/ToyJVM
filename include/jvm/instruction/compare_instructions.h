@@ -59,6 +59,7 @@ public:
 	    v1 = op_stack.Pop<T>();
 	}
 
+	DLOG(INFO) << "v1 # v2 : " << v1 << "#" << v2;
 	bool jump = false;
 	switch (cond) {
 	case CondType::EQ:
