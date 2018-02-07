@@ -45,9 +45,11 @@ public:
 	return (T)(extra_);
     }
 
-    inline bool has_extra(){
-        return extra_ != NULL;
+    inline bool has_extra()
+    {
+	return extra_ != NULL;
     }
+
 private:
     LocalVarRefs* fields_;
     char* extra_ = NULL;
@@ -55,34 +57,27 @@ private:
 
 class JBaseArray : public JReference {
 public:
-    JBaseArray(u4 count, JClass* jclass)
+    JBaseArray(JClass* jclass)
 	: JReference(jclass)
-	, count_(count)
     {
     }
 
-    virtual int array_length()
-    {
-	return count_;
-    }
+    virtual int array_length() = 0;
     ~JBaseArray()
     {
     }
-
-protected:
-    u4 count_;
 };
 template <typename T>
 class JArray : public JBaseArray {
 public:
     JArray(u4 count, JClass* jclass)
-	: JBaseArray(count, jclass)
+	: JBaseArray(jclass)
 	, raw_data_(count)
     {
     }
 
     JArray(std::vector<T>& raw_data, JClass* jclass)
-	: JBaseArray(raw_data.size(), jclass)
+	: JBaseArray(jclass)
 	, raw_data_(raw_data)
     {
     }
@@ -94,6 +89,11 @@ public:
     {
 	assert(index < raw_data_.size());
 	return raw_data_[index];
+    }
+
+    inline int array_length() override
+    {
+	return raw_data_.size();
     }
 
 private:

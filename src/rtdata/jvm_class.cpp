@@ -2,10 +2,13 @@
 #include <glog/logging.h>
 #include <jvm/rtdata/access_flag.h>
 #include <jvm/rtdata/jvm_class.h>
+#include <jvm/rtdata/jvm_frame.h>
 #include <jvm/rtdata/jvm_member.h>
 #include <jvm/rtdata/jvm_reference.h>
+#include <jvm/rtdata/jvm_thread.h>
 #include <jvm/rtdata/runtime_const_pool.h>
 #include <jvm/utils/types.h>
+
 using namespace cyh;
 
 std::string ToDescriptor(const std::string& class_name)
@@ -257,6 +260,7 @@ JClass* JClass::ArrayClass()
 }
 JField* JClass::GetField(std::string& field_name, std::string& descriptor, bool is_static)
 {
+    // static 这里好像有点问题，因为static只属于这个类，而不属于子类
     for (auto c = this; c != NULL; c = c->super_class_) {
 	for (auto field : c->fields_) {
 	    if (field->IsStatic() == is_static
@@ -279,4 +283,48 @@ std::string JClass::JavaName()
     result.resize(name_.size());
     std::replace_copy(name_.begin(), name_.end(), result.begin(), '/', '.');
     return result;
+}
+
+void JClass::InitClass(JThread* jthread)
+{
+    init_started_ = true;
+    InvokeClinit(jthread);
+    InitSuperClass(jthread);
+}
+JMethod* JClass::GetMethod(std::string& name, std::string& descriptor, bool is_static)
+{
+    // static 这里好像有点问题，因为static只属于这个类，而不属于子类
+    for (auto c = this; c != NULL; c = c->super_class_) {
+	for (auto method : c->methods_) {
+	    if (method->IsStatic() == is_static
+		&& method->name() == name
+		&& method->descriptor() == descriptor) {
+		return method;
+	    }
+	}
+    }
+    return NULL;
+}
+
+void JClass::InvokeClinit(JThread* jthread)
+{
+    std::string name = "<clinit>", descriptor = "()V";
+    auto clinit_method = GetMethod(name, descriptor, true);
+
+    if (clinit_method != NULL) {
+	auto new_frame = new JFrame(jthread, clinit_method);
+	jthread->PushFrame(new_frame);
+    }
+}
+void JClass::InitSuperClass(JThread* jthread)
+{
+    // 这里的执行顺序是不是有问题啊。。。我咋记得是先执行父类的static
+    // 方法，然后执行子类的
+
+    // 是的，这里并没有初始化，只是把帧放进去了，所以最开始的父类的帧是最先执行的
+    if (!IsInterface()) {
+	if (super_class_ != NULL && !super_class_->init_started_) {
+	    super_class_->InitClass(jthread);
+	}
+    }
 }

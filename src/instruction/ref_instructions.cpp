@@ -17,8 +17,13 @@ void NEW_Instruction::Execute(JFrame* jframe)
 			     ->rt_const_pool();
 
     auto class_ref = rt_const_pool->GetRef<ClassRef>(index);
-
     auto jclass = class_ref->ResolveClass();
+
+    if (!jclass->init_started()) {
+	jframe->RevertNextPc();
+	jclass->InitClass(jframe->Thread());
+	return;
+    }
     if (jclass->IsInterface() && jclass->IsAbstract()) {
 	throw "interface and abstract cannot instance";
     }
@@ -36,7 +41,7 @@ void GETSTATIC_Instruction::Execute(JFrame* jframe)
     auto field_ref = rt_const_pool->GetRef<FieldRef>(index);
     auto jfield = field_ref->ResolveField();
     assert(jfield != NULL);
-    DLOG(INFO)<<"jfield->"<<jfield->name();
+    DLOG(INFO) << "jfield->" << jfield->name();
     auto jclass = jfield->jclass();
 
     if (!jfield->IsStatic()) {
@@ -201,7 +206,7 @@ void GETFIELD_Instruction::Execute(JFrame* jframe)
 	throw "null pointer";
     }
     auto descriptor = jfield->descriptor();
-    DLOG(INFO)<<"Get field: " << jfield->name() << "#" << descriptor;
+    DLOG(INFO) << "Get field: " << jfield->name() << "#" << descriptor;
     auto slot_id = jfield->slot_index();
     auto slots = ref->fields();
     switch (descriptor[0]) {
@@ -310,11 +315,11 @@ void ATHROW_Instruction::HandleUncaughtException(JThread* jthread, JObject* exob
     auto msg_obj = dynamic_cast<JObject*>(exobj->GetRefVar(name, descriptor));
     std::string msg = TransJString(msg_obj);
     std::cout << exobj->jclass()->JavaName() << ":" << msg << std::endl;
-    if(exobj->has_extra()){
-        auto stack_traces = exobj->ExtraTo<std::vector<StackTraceElement>*>();
+    if (exobj->has_extra()) {
+	auto stack_traces = exobj->ExtraTo<std::vector<StackTraceElement>*>();
 
-        for (auto& trace_item : *stack_traces) {
-        std::cout << "\t at " << trace_item.ToString() << std::endl;
-        }
+	for (auto& trace_item : *stack_traces) {
+	    std::cout << "\t at " << trace_item.ToString() << std::endl;
+	}
     }
 }

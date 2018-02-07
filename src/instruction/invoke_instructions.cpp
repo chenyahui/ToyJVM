@@ -15,8 +15,16 @@ void INVOKE_STATIC_Instruction::Execute(JFrame* frame)
     auto method_ref = const_pool->GetRef<MethodRef>(index);
 
     auto method = method_ref->ResolveMethod();
+
     if (!method->IsStatic()) {
 	throw "不是static";
+    }
+
+    auto jclass = method->jclass();
+    if (!jclass->init_started()) {
+	frame->RevertNextPc();
+	jclass->InitClass(frame->Thread());
+	return;
     }
 
     InvokeMethod(frame, method);
@@ -165,18 +173,17 @@ void INVOKE_INTERFACE_Instruction::Execute(JFrame* frame)
 
 void INVOKE_NATIVE_Instruction::Execute(JFrame* frame)
 {
-   
     auto method = frame->jmethod();
     auto class_name = method->jclass()->name();
     auto method_name = method->name();
     auto method_descriptor = method->descriptor();
-    
-    DLOG(INFO)<<"INVOKE_NATIVE"<<class_name<<"."<<method_name;
+
+    DLOG(INFO) << "INVOKE_NATIVE" << class_name << "." << method_name;
     auto native_method = FindNativeMethod(class_name, method_name, method_descriptor);
     if (native_method == NULL) {
 	auto method_info = class_name + "." + method_name + method_descriptor;
-    throw "INVOKE_NATIVE error" + method_info;
-    } 
+	throw "INVOKE_NATIVE error" + method_info;
+    }
     (*native_method)(frame);
 }
 void InvokeMethod(JFrame* invoker, JMethod* method)

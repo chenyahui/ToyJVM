@@ -10,6 +10,7 @@ class RuntimeConstPool;
 class ClassLoader;
 class JReference;
 class JBaseArray;
+class JThread;
 
 class JClass {
 public:
@@ -45,6 +46,12 @@ public:
     JClass* ArrayClass();
 
     JField* GetField(std::string& name, std::string& descriptor, bool is_static);
+    JMethod* GetMethod(std::string& name, std::string& descriptor, bool is_static);
+
+    void InitClass(JThread*);
+    void InvokeClinit(JThread*);
+    void InitSuperClass(JThread*);
+
     // getter setter
     inline std::string& name()
     {

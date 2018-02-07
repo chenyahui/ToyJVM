@@ -10,11 +10,15 @@ static bool CheckArrayCopy(JBaseArray* src, JBaseArray* dest);
 void arraycopy(JFrame* frame)
 {
     DLOG(INFO) << "array copy native method";
+
     auto& local_vars = frame->LocalVars();
+
     auto src = local_vars.Get<JBaseArray*>(0);
     auto src_pos = local_vars.Get<int>(1);
+
     auto dest = local_vars.Get<JBaseArray*>(2);
     auto dest_pos = local_vars.Get<int>(3);
+
     auto length = local_vars.Get<int>(4);
 
     if (src == NULL || dest == NULL) {
