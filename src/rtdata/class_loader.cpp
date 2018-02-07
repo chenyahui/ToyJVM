@@ -11,6 +11,18 @@ static void InitStaticFinalVar(JClass* jclass, JField*);
 static void CalcStaticFieldSlotIds(JClass*);
 static void AllocAndInitStaticVars(JClass* jclass);
 
+void ClassLoader::LoadBasicClasses()
+{
+    auto jl_class_class = LoadClass("java/lang/Class");
+    for (auto& kv : class_map_) {
+	auto jclass = kv.second;
+	if (jclass->jl_class() == NULL) {
+	    auto jlc_obj = new JObject(jl_class_class);
+	    jlc_obj->set_extra((char*)jclass);
+	    jclass->set_jl_class(jlc_obj);
+	}
+    }
+}
 void ClassLoader::LoadPrimitiveClasses()
 {
     for (auto& kv : PrimitiveTypes) {
@@ -20,7 +32,12 @@ void ClassLoader::LoadPrimitiveClasses()
 
 void ClassLoader::LoadPrimitiveClass(std::string& class_name)
 {
-    class_map_[class_name] = new JClass(this, class_name, false);
+    auto jclass = new JClass(this, class_name, false);
+    auto jlc_obj = new JObject(class_map_["java/lang/Class"]);
+    jlc_obj->set_extra((char*)jclass);
+    jclass->set_jl_class(jlc_obj);
+
+    class_map_[class_name] = jclass;
 }
 JClass* ClassLoader::LoadClass(std::string class_name)
 {
@@ -35,8 +52,11 @@ JClass* ClassLoader::LoadClass(std::string class_name)
 	jclass = LoadNoArrayClass(class_name);
     }
 
-    class_map_[class_name] = jclass;
+    auto jlc_obj = new JObject(class_map_["java/lang/Class"]);
+    jlc_obj->set_extra((char*)jclass);
+    jclass->set_jl_class(jlc_obj);
 
+    class_map_[class_name] = jclass;
     return jclass;
 }
 JClass* ClassLoader::LoadArrayClass(std::string class_name)

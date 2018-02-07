@@ -118,6 +118,16 @@ public:
 	return source_file_;
     }
 
+    inline JObject* jl_class()
+    {
+	return jl_class_;
+    }
+
+    inline void set_jl_class(JObject* jl_class)
+    {
+	jl_class_ = jl_class;
+    }
+
 private:
     u2 access_flags_ = 0;
     std::string name_;
@@ -134,6 +144,8 @@ private:
     LocalVarRefs* static_vars_ = NULL;
     bool init_started_ = false;
     std::string source_file_;
+
+    JObject* jl_class_ = NULL;
 };
 }
 

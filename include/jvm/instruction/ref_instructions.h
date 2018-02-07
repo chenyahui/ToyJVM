@@ -73,10 +73,15 @@ void BaseLdcInstruction<T>::Execute(JFrame* jframe)
 	LDC_CASE(Float, float)
 	LDC_CASE(Long, long)
 	LDC_CASE(Double, double)
-
+    case Klass: {
+	auto class_ref = rt_const_pool->GetRef<ClassRef>(this->index);
+	auto jl_class_obj = class_ref->ResolveClass()->jl_class();
+	opstack.Push<JObject*>(jl_class_obj);
+	break;
+    }
     case String: {
 	auto& str = rt_const_pool->GetVal<std::string>(this->index);
-    DLOG(INFO)<<"LDC string:"<<str;
+	DLOG(INFO) << "LDC string:" << str;
 	auto interned_str = GetStringFromPool(jclass->class_loader(), str);
 	opstack.Push<JObject*>(interned_str);
 	break;

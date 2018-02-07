@@ -1,8 +1,9 @@
+#include <glog/logging.h>
+#include <jvm/native/array_copy.h>
+#include <jvm/native/get_primitive_class.h>
 #include <jvm/native/registy.h>
 #include <jvm/native/throwable.h>
-#include <jvm/native/array_copy.h>
 #include <map>
-#include <glog/logging.h>
 
 namespace cyh {
 using std::placeholders::_1;
@@ -39,12 +40,13 @@ NativeMethod* FindNativeMethod(std::string& class_name, std::string& method_name
     if (method_descriptor == "()V" && method_name == "registerNatives") {
 	return &g_empty_func;
     }
-    DLOG(INFO) << "not found native method :"<< key;
+    DLOG(INFO) << "not found native method :" << key;
     return NULL;
 }
 void InitNativeMethods()
 {
     Register("java/lang/System", "arraycopy", "(Ljava/lang/Object;ILjava/lang/Object;II)V", std::bind(arraycopy, _1));
     Register("java/lang/Throwable", "fillInStackTrace", "(I)Ljava/lang/Throwable;", std::bind(fillInStackTrace, _1));
+    Register("java/lang/Class", "getPrimitiveClass", "(Ljava/lang/String;)Ljava/lang/Class;", std::bind(getPrimitiveClass, _1));
 }
 }
