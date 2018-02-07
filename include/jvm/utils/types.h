@@ -15,7 +15,7 @@ using u1 = uint8_t;
 using bytes = std::vector<u1>;
 
 using j_byte = int8_t;
-using j_char = uint8_t;
+using j_char = char16_t;
 using j_short = int16_t;
 using j_int = int32_t;
 using j_float = float;

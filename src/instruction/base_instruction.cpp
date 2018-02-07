@@ -1,3 +1,4 @@
+#include <glog/logging.h>
 #include <jvm/instruction/array_instructions.h>
 #include <jvm/instruction/base_instruction.h>
 #include <jvm/instruction/compare_instructions.h>
@@ -17,9 +18,9 @@
 namespace cyh {
 void BranchJump(JFrame* frame, int offset)
 {
+    DLOG(INFO) << "跳转 to " << offset;
     auto thread = frame->Thread();
     auto nextpc = thread->Pc() + offset;
-
     frame->SetNextPc(nextpc);
 }
 

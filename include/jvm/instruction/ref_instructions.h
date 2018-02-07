@@ -81,7 +81,7 @@ void BaseLdcInstruction<T>::Execute(JFrame* jframe)
     }
     case String: {
 	auto& str = rt_const_pool->GetVal<std::string>(this->index);
-	DLOG(INFO) << "LDC string:" << str;
+	DLOG(INFO) << "LDC string:[" << str << "]";
 	auto interned_str = GetStringFromPool(jclass->class_loader(), str);
 	opstack.Push<JObject*>(interned_str);
 	break;

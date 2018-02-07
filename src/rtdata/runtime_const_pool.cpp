@@ -1,15 +1,16 @@
+#include <glog/logging.h>
 #include <jvm/rtdata/runtime_const_pool.h>
-#include <string>
 #include <jvm/rtdata/symbol_ref.h>
-
+#include <string>
 using namespace cyh;
 #define ADD_VAL(CONSTINFO, TYPE)                                   \
     auto info = dynamic_cast<Constant##CONSTINFO##Info*>(cp_info); \
+    assert(info != NULL);                                          \
     PutVal<TYPE>(i, info->val());
 
-#define ADD_REF(CINFO, REF)                                              \
+#define ADD_REF(CINFO, REF)                                    \
     auto info = dynamic_cast<Constant##CINFO##Info*>(cp_info); \
-    auto ref_info = new REF(this, info); \
+    auto ref_info = new REF(this, info);                       \
     PutRef<REF>(i, ref_info);
 
 RuntimeConstPool::RuntimeConstPool(JClass* jclass, ConstantPool* const_pool)
@@ -25,15 +26,18 @@ RuntimeConstPool::RuntimeConstPool(JClass* jclass, ConstantPool* const_pool)
 	auto cp_info = infos[i];
 	auto tag = cp_info->tag();
 
-	var_types_[i] = tag;
+	DLOG(INFO) << "jclass: " << jclass->name()
+		   << "; index:" << i
+		   << "; tag:" << int(tag);
 
+	var_types_[i] = tag;
 	switch (cp_info->tag()) {
 	case Integer: {
 	    ADD_VAL(Integer, int)
 	    break;
 	}
 	case Float: {
-	    ADD_VAL(Integer, float)
+	    ADD_VAL(Float, float)
 	    break;
 	}
 	case Double: {

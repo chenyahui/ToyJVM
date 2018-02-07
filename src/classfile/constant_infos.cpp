@@ -23,7 +23,6 @@ std::string ConstantMemberRefInfo::ClassName()
 }
 std::pair<std::string, std::string> ConstantMemberRefInfo::NameAndDescriptor()
 {
-
     auto name_type_info = constant_pool_->Get<ConstantNameAndTypeInfo*>(name_and_type_index_);
 
     auto name = constant_pool_->GetUtf8AsString(name_type_info->name_index());

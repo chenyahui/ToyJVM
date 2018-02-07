@@ -11,9 +11,7 @@ static void InvokeMethod(JFrame* invoker, JMethod* method);
 void INVOKE_STATIC_Instruction::Execute(JFrame* frame)
 {
     auto const_pool = frame->jmethod()->jclass()->rt_const_pool();
-
     auto method_ref = const_pool->GetRef<MethodRef>(index);
-
     auto method = method_ref->ResolveMethod();
 
     if (!method->IsStatic()) {
@@ -90,10 +88,7 @@ void INVOKE_VIRTUAL_Instruction::Execute(JFrame* frame)
 {
     auto current_class = frame->jmethod()->jclass();
     auto const_pool = current_class->rt_const_pool();
-
     auto method_ref = const_pool->GetRef<MethodRef>(index);
-
-    //    auto resolved_class = method_ref->ResolveClass();
     auto method = method_ref->ResolveMethod();
 
     if (method->IsStatic()) {
@@ -101,6 +96,7 @@ void INVOKE_VIRTUAL_Instruction::Execute(JFrame* frame)
     }
     DLOG(INFO) << "method: " << method->name()
 	       << " args count: " << method->args_slot_count();
+
     auto obj = frame->OpStack().GetRefFromTop(method->args_slot_count() - 1);
     if (obj == NULL) {
 	// hack!
@@ -190,15 +186,16 @@ void InvokeMethod(JFrame* invoker, JMethod* method)
 {
     assert(method != NULL);
     auto jthread = invoker->Thread();
-    auto new_frame = new JFrame(jthread, method);
 
+    auto new_frame = new JFrame(jthread, method);
     jthread->PushFrame(new_frame);
+
     auto slot_num = method->args_slot_count();
 
     auto& opstack = invoker->OpStack();
     auto& local_vars = new_frame->LocalVars();
 
-    for (auto i = slot_num - 1; i >= 0; i--) {
+    for (int i = slot_num - 1; i >= 0; i--) {
 	auto slot = opstack.Pop<LocalSlot>();
 	local_vars.Set<LocalSlot>(i, slot);
     }

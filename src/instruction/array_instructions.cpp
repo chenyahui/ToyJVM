@@ -20,7 +20,6 @@ enum {
 void NEW_ARRAY_Instruction::FetchOperands(ByteCodeReader& reader)
 {
     atype_ = reader.Read<u1>();
-    DLOG(INFO) << "atype" << int(atype_);
 }
 
 void NEW_ARRAY_Instruction::Execute(JFrame* frame)

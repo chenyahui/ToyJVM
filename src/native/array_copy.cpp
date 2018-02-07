@@ -66,7 +66,7 @@ bool CheckArrayCopy(JBaseArray* src, JBaseArray* dest)
 	auto src_begin = src_arr->raw_data().begin();                                                \
 	auto dest_it = dest_arr->raw_data().begin() + dest_pos;                                      \
 	for (auto src_it = src_begin + src_pos; src_it != src_begin + length; ++src_it, ++dest_it) { \
-	    *src_it = *dest_it;                                                                      \
+	    *dest_it = *src_it;                                                                      \
 	}                                                                                            \
 	return;                                                                                      \
     }

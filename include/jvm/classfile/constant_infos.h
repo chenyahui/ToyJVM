@@ -110,12 +110,15 @@ public:
     }
     void ReadInfo(ClassReader&) override;
 
-    inline u2 name_index(){
-    	return name_index_;
+    inline u2 name_index()
+    {
+	return name_index_;
     }
-    inline u2 descriptor_index(){
-    	return descriptor_index_;
+    inline u2 descriptor_index()
+    {
+	return descriptor_index_;
     }
+
 private:
     ConstantPool* pool_;
     u2 name_index_;       // index of utf8 type
@@ -124,8 +127,6 @@ private:
 class ConstantUtf8Info : public ConstantInfo {
 public:
     ConstantUtf8Info()
-	: cached_()
-	, data_()
     {
     }
     void ReadInfo(ClassReader&) override;

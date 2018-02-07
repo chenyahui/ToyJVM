@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <functional>
+#include <glog/logging.h>
 #include <jvm/instruction/base_instruction.h>
 
 namespace cyh {
@@ -33,6 +34,7 @@ public:
 	result = op(v1, v2);
 
 	op_stack.Push<T>(result);
+	DLOG(INFO) << "result is " << result;
     }
 };
 template <typename T>

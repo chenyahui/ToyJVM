@@ -11,7 +11,6 @@ class ConstInstruction : public NoOperandsInstruction {
 public:
     void Execute(JFrame* frame) override
     {
-
 	frame->OpStack().Push<T>(static_cast<T>(num));
     }
 };
@@ -24,8 +23,6 @@ public:
     }
 };
 using NOP_Instruction = Instruction;
-
-//using ACONST_NULL_Instruction = ConstInstruction<j_ref, 0>;
 
 using DCONST_0_Instruction = ConstInstruction<double, 0>;
 using DCONST_1_Instruction = ConstInstruction<double, 1>;

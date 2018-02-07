@@ -1,6 +1,7 @@
 #include <glog/logging.h>
 #include <jvm/native/array_copy.h>
-#include <jvm/native/get_primitive_class.h>
+#include <jvm/native/jl_math.h>
+#include <jvm/native/reflect.h>
 #include <jvm/native/registy.h>
 #include <jvm/native/throwable.h>
 #include <map>
@@ -45,8 +46,19 @@ NativeMethod* FindNativeMethod(std::string& class_name, std::string& method_name
 }
 void InitNativeMethods()
 {
-    Register("java/lang/System", "arraycopy", "(Ljava/lang/Object;ILjava/lang/Object;II)V", std::bind(arraycopy, _1));
-    Register("java/lang/Throwable", "fillInStackTrace", "(I)Ljava/lang/Throwable;", std::bind(fillInStackTrace, _1));
-    Register("java/lang/Class", "getPrimitiveClass", "(Ljava/lang/String;)Ljava/lang/Class;", std::bind(getPrimitiveClass, _1));
+    Register("java/lang/System", "arraycopy",
+	"(Ljava/lang/Object;ILjava/lang/Object;II)V", std::bind(arraycopy, _1));
+    Register("java/lang/Throwable", "fillInStackTrace",
+	"(I)Ljava/lang/Throwable;", std::bind(fillInStackTrace, _1));
+    Register("java/lang/Class", "getPrimitiveClass",
+	"(Ljava/lang/String;)Ljava/lang/Class;", std::bind(getPrimitiveClass, _1));
+    Register("java/lang/Class", "desiredAssertionStatus0",
+	"(Ljava/lang/Class;)Z", std::bind(desiredAssertionStatus0, _1));
+    Register("java/lang/Float", "floatToRawIntBits",
+	"(F)I", std::bind(floatToRawIntBits, _1));
+    Register("java/lang/Double", "doubleToRawLongBits",
+	"(D)J", std::bind(doubleToRawLongBits, _1));
+    Register("java/lang/Double", "longBitsToDouble",
+	"(J)D", std::bind(longBitsToDouble, _1));
 }
 }

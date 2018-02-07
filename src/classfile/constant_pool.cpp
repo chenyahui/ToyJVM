@@ -1,12 +1,12 @@
-#include <cassert>
 #include <cstring>
 
+#include <assert.h>
+#include <glog/logging.h>
 #include <jvm/classfile/constant_infos.h>
 #include <jvm/classfile/constant_pool.h>
 #include <jvm/utils/logutils.h>
 #include <string>
 #include <typeinfo>
-#include <glog/logging.h>
 
 namespace cyh {
 void ConstantPool::Read(ClassReader& reader)
@@ -19,6 +19,7 @@ void ConstantPool::Read(ClassReader& reader)
 
 	cpinfos_[i] = ReadConstantInfo(tag, reader);
 	cpinfos_[i]->set_tag(tag);
+
 	// according the jvms
 	if (tag == Long || tag == Double) {
 	    ++i;
@@ -28,7 +29,7 @@ void ConstantPool::Read(ClassReader& reader)
 
 std::string ConstantPool::GetClassName(int index)
 {
-    assert(index > 0 & index < cpinfos_.size());
+    assert(index > 0 & index < int(cpinfos_.size()));
     auto class_info = dynamic_cast<ConstantKlassInfo*>(cpinfos_[index]);
 
     assert(class_info != NULL);
@@ -43,20 +44,16 @@ ConstantInfo* ConstantPool::operator[](int index)
 
 ConstantInfo* ConstantPool::ReadConstantInfo(u1 tag, ClassReader& reader)
 {
-    //auto tag = reader.ReadU1();
-
     // 根据tag类型分发
     ConstantInfo* constant_info = NewConstantInfo(tag);
-
     // 读取该constant_info的内容
     constant_info->ReadInfo(reader);
-
     return constant_info;
 }
 
 std::string ConstantPool::GetUtf8AsString(int index)
 {
-    assert(index >= 1 && index < cpinfos_.size());
+    assert(index >= 1 && index < int(cpinfos_.size()));
 
     auto info = dynamic_cast<ConstantUtf8Info*>(cpinfos_[index]);
     if (info == NULL) {
@@ -64,6 +61,7 @@ std::string ConstantPool::GetUtf8AsString(int index)
     }
     return info->AsString();
 }
+
 ConstantInfo* ConstantPool::NewConstantInfo(u1 tag)
 {
     switch (tag) {

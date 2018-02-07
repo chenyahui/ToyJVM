@@ -1,9 +1,9 @@
 #include <cstdio>
 #include <iostream>
 #include <jvm/interpret.h>
+#include <jvm/native/registy.h>
 #include <jvm/rtdata/class_loader.h>
 #include <jvm/utils/instructionutils.h>
-#include <jvm/native/registy.h>
 #include <typeinfo>
 using namespace std;
 
@@ -64,11 +64,11 @@ void loop(JThread* thread)
 
 	reader.Reset(frame->jmethod()->code(), pc);
 	auto opcode = reader.Read<u1>();
-//	getchar();
+
 	if (is_log) {
 	    cout << "==========================" << endl;
-        auto method = frame->jmethod();
-	    cout << "now method : " << method->jclass()->name() << "->" << method->name() << endl;
+	    auto method = frame->jmethod();
+	    cout << "now method : " << method->jclass()->name() << "->" << method->name() << "->" << method->descriptor() << endl;
 	    cout << ">>>>>>>" << GetInstrutionByTag(opcode) << endl;
 	}
 

@@ -52,12 +52,11 @@ public:
     {
 	auto& op_stack = frame->OpStack();
 
-	auto v2 = op_stack.Pop<T>();
-	T v1 = 0;
-
+	T v1, v2 = 0;
 	if (icmp) {
-	    v1 = op_stack.Pop<T>();
+	    v2 = op_stack.Pop<T>();
 	}
+	v1 = op_stack.Pop<T>();
 
 	DLOG(INFO) << "v1 # v2 : " << v1 << "#" << v2;
 	bool jump = false;
@@ -83,7 +82,7 @@ public:
 	}
 
 	if (jump) {
-	    // std::cout << "jump to  " << offset << std::endl;
+	    DLOG(INFO) << "跳转条件成立!";
 	    BranchJump(frame, this->offset);
 	}
     };
