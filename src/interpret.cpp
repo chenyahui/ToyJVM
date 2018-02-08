@@ -6,8 +6,11 @@
 #include <jvm/utils/instructionutils.h>
 #include <typeinfo>
 using namespace std;
-
+#ifdef DEBUG
 const bool is_log = true;
+#else
+const bool is_log = false;
+#endif
 namespace cyh {
 void loop(JThread* thread);
 void interpret(JMethod* method)

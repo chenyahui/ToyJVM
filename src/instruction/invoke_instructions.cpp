@@ -19,6 +19,7 @@ void INVOKE_STATIC_Instruction::Execute(JFrame* frame)
     }
 
     auto jclass = method->jclass();
+
     if (!jclass->init_started()) {
 	frame->RevertNextPc();
 	jclass->InitClass(frame->Thread());
@@ -79,8 +80,10 @@ static void _println(OperandStack& opstack, std::string& descriptor)
 	std::cout << opstack.Pop<int>() << std::endl;
     } else if (descriptor == "(Ljava/lang/String;)V") {
 	auto str_obj = opstack.Pop<JObject*>();
-
-	std::cout << TransJString(str_obj) << std::endl;
+	std::string str_raw = TransJString(str_obj);
+	std::cout << str_raw << std::endl;
+    } else {
+	std::cout << "尚不支持的类型" << descriptor << std::endl;
     }
     opstack.Pop<j_ref>();
 }
@@ -92,19 +95,20 @@ void INVOKE_VIRTUAL_Instruction::Execute(JFrame* frame)
     auto method = method_ref->ResolveMethod();
 
     if (method->IsStatic()) {
-	throw "不应该是static";
+	throw "invoke virtual 不应该是static";
     }
+
     DLOG(INFO) << "method: " << method->name()
-	       << " args count: " << method->args_slot_count();
+	       << "; args count: " << method->args_slot_count();
+    // hack!
+    if (method->name() == "println") {
+	_println(frame->OpStack(), method_ref->descriptor());
+	return;
+    }
 
     auto obj = frame->OpStack().GetRefFromTop(method->args_slot_count() - 1);
     if (obj == NULL) {
-	// hack!
-	if (method->name() == "println") {
-	    _println(frame->OpStack(), method_ref->descriptor());
-	    return;
-	}
-	throw "null pointer exception";
+	throw "null pointer exception; " + method->jclass()->name() + "~" + method->name();
     }
     if (method->IsProtected()
 	&& method->jclass()->IsSuperClassOf(current_class)
@@ -134,9 +138,7 @@ void INVOKE_INTERFACE_Instruction::FetchOperands(ByteCodeReader& reader)
 void INVOKE_INTERFACE_Instruction::Execute(JFrame* frame)
 {
     auto const_pool = frame->jmethod()->jclass()->rt_const_pool();
-
     auto method_ref = const_pool->GetRef<InterfaceMethodRef>(index_);
-
     auto resolved_method = method_ref->ResolveInterfaceMethod();
 
     if (resolved_method->IsStatic() || resolved_method->IsPrivate()) {

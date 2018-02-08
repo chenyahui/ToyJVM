@@ -9,7 +9,7 @@ JObject::JObject(JClass* jclass)
 {
     fields_ = new LocalVarRefs(jclass->instance_slot_count());
 }
-bool JObject::IsInstanceOf(JClass* jclass)
+bool JReference::IsInstanceOf(JClass* jclass)
 {
     return jclass->IsAssignableFrom(this->jclass_);
 }

@@ -41,12 +41,21 @@ void GETSTATIC_Instruction::Execute(JFrame* jframe)
     auto field_ref = rt_const_pool->GetRef<FieldRef>(index);
     auto jfield = field_ref->ResolveField();
     assert(jfield != NULL);
-    DLOG(INFO) << "jfield->" << jfield->name();
+    DLOG(INFO) << "index: " << index
+	       << "; jfield->" << jfield->name()
+	       << ";" << jfield->descriptor();
     auto jclass = jfield->jclass();
 
     if (!jfield->IsStatic()) {
 	throw "put static must apply to static field";
     }
+
+    if (!jclass->init_started()) {
+	jframe->RevertNextPc();
+	jclass->InitClass(jframe->Thread());
+	return;
+    }
+
     auto descriptor = jfield->descriptor();
     auto slot_id = jfield->slot_index();
     auto slots = jclass->static_vars();
@@ -93,6 +102,12 @@ void PUTSTATIC_Instruction::Execute(JFrame* jframe)
 	if (current_class != jclass && current_method->name() != "<clinit>") {
 	    throw "java illegal access error";
 	}
+    }
+
+    if (!jclass->init_started()) {
+	jframe->RevertNextPc();
+	jclass->InitClass(jframe->Thread());
+	return;
     }
 
     auto descriptor = jfield->descriptor();
@@ -236,7 +251,7 @@ void GETFIELD_Instruction::Execute(JFrame* jframe)
 void INSTANCEOF_Instruction::Execute(JFrame* jframe)
 {
     auto& opstack = jframe->OpStack();
-    auto ref = opstack.Pop<JObject*>();
+    auto ref = opstack.Pop<JReference*>();
     if (ref == NULL) {
 	opstack.Push<int>(0);
 	return;
@@ -255,8 +270,8 @@ void INSTANCEOF_Instruction::Execute(JFrame* jframe)
 void CHECKCAST_Instruction::Execute(JFrame* jframe)
 {
     auto& opstack = jframe->OpStack();
-    auto ref = opstack.Pop<JObject*>();
-    opstack.Push<JObject*>(ref);
+    auto ref = opstack.Pop<JReference*>();
+    opstack.Push<JReference*>(ref);
 
     if (ref == NULL) {
 	return;
@@ -314,7 +329,7 @@ void ATHROW_Instruction::HandleUncaughtException(JThread* jthread, JObject* exob
     std::string name = "detailMessage", descriptor = "Ljava/lang/String;";
     auto msg_obj = dynamic_cast<JObject*>(exobj->GetRefVar(name, descriptor));
     std::string msg = TransJString(msg_obj);
-    std::cout << exobj->jclass()->JavaName() << ":" << msg << std::endl;
+    std::cout << "Exception in thread \"main\" " << exobj->jclass()->JavaName() << ":" << msg << std::endl;
     if (exobj->has_extra()) {
 	auto stack_traces = exobj->ExtraTo<std::vector<StackTraceElement>*>();
 

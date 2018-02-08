@@ -1,7 +1,9 @@
+#include <glog/logging.h>
 #include <jvm/rtdata/class_loader.h>
 #include <jvm/rtdata/jvm_reference.h>
 #include <jvm/rtdata/string_pool.h>
 #include <map>
+
 namespace cyh {
 
 std::map<std::string, JObject*> g_innered_strs;
@@ -31,9 +33,9 @@ std::vector<j_char> StringToUtf16Arr(std::string& str)
 {
     std::vector<j_char> result;
     for (size_t i = 0; i < str.size(); i++) {
-	j_char item = str[i];
-	result.push_back(item);
+	result.push_back(j_char(str[i]));
     }
+    //getchar();
     return result;
 }
 
@@ -44,6 +46,11 @@ std::string TransJString(JObject* str_obj)
     auto char_array_obj = dynamic_cast<JArray<j_char>*>(str_obj->GetRefVar(name, descriptor));
     auto& char_vec = char_array_obj->raw_data();
 
-    return { char_vec.begin(), char_vec.end() };
+    std::string str;
+    str.reserve(char_vec.size());
+    for (auto item : char_vec) {
+	str.push_back(char(item));
+    }
+    return str;
 }
 }

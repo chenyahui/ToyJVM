@@ -1,3 +1,4 @@
+#include <glog/logging.h>
 #include <jvm/classfile/member_info.h>
 
 namespace cyh {
@@ -33,7 +34,7 @@ AttributeConstantValueInfo* MemberInfo::ConstantValueAttribute()
 	    return dynamic_cast<AttributeConstantValueInfo*>(attr_info);
     }
 
+    DLOG(INFO) << "找不到 constant value attr";
     return NULL;
-    //throw "can not find Code attribute";
 }
 }

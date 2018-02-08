@@ -139,8 +139,10 @@ void CalcStaticFieldSlotIds(JClass* jclass)
 
 void AllocAndInitStaticVars(JClass* jclass)
 {
+    DLOG(INFO) << jclass->name() << " 开始初始化! ";
     for (auto field : jclass->fields()) {
 	if (field->IsStatic() && field->IsFinal()) {
+	    DLOG(INFO) << "static final " << field->name() << " " << field->descriptor();
 	    InitStaticFinalVar(jclass, field);
 	}
     }
@@ -154,6 +156,7 @@ void InitStaticFinalVar(JClass* jclass, JField* field)
 {
     auto cp_index = field->const_value_index();
     if (cp_index <= 0) {
+	DLOG(INFO) << field->name() << " cp index is " << cp_index;
 	return;
     }
     auto static_vars = jclass->static_vars();
@@ -174,5 +177,7 @@ void InitStaticFinalVar(JClass* jclass, JField* field)
 	auto& raw_str = rt_const_pool->GetVal<std::string>(cp_index);
 	auto str_obj = GetStringFromPool(jclass->class_loader(), raw_str);
 	static_vars->Set<JObject*>(slot_id, str_obj);
+    } else if (descriptor[0] == 'L') {
+	DLOG(INFO) << "尚未初始化" << field->name() << "." << field->descriptor();
     }
 }

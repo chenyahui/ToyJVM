@@ -17,7 +17,7 @@ inline std::string MUtf8ToString(bytes& data)
     bool flag = true;
     for (size_t i = 0; i < data.size(); i++) {
 	auto item = data[i];
-	if (item <= 127) {
+	if (item <= 255) {
 	    // ascii
 	    flag = false;
 	    result << char(item);

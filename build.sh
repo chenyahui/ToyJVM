@@ -1,10 +1,10 @@
 #!/bin/sh
 
 set -x
-ulimit -c unlimited 
+ulimit -c unlimited
 
 BUILD_DIR=${BUILD_DIR:-./build}
-BUILD_TYPE=${BUILD_TYPE:-Debug}
+BUILD_TYPE=${BUILD_TYPE:-Release}
 INSTALL_DIR=${INSTALL_DIR:-${BUILD_DIR}/${BUILD_TYPE}}
 
 mkdir -p $INSTALL_DIR \

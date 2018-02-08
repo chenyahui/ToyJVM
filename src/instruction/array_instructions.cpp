@@ -13,9 +13,9 @@ enum {
     AT_INT = 10,
     AT_LONG = 11
 };
-#define GET_PARRAY(Type, Sign)           \
-    case Type:                           \
-	return loader->LoadClass("["#Sign"");
+#define GET_PARRAY(Type, Sign) \
+    case Type:                 \
+	return loader->LoadClass("[" #Sign "");
 
 void NEW_ARRAY_Instruction::FetchOperands(ByteCodeReader& reader)
 {
@@ -74,6 +74,7 @@ void ARRAY_LENGTH_Instruction::Execute(JFrame* frame)
     auto arr_ref = opstack.Pop<JBaseArray*>();
     if (arr_ref == NULL) {
 	// TODO
+	throw "null array pointer";
     }
     opstack.Push<int>(arr_ref->array_length());
 }

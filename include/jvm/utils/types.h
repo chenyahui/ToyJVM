@@ -22,18 +22,7 @@ using j_float = float;
 using j_long = int64_t;
 using j_double = double;
 using j_ref = JReference*;
-/* 
-	* type map:
-	* Java  C++
-	* byte  int8_t
-	* char  uint8_t
-	* short int16_t
-	* int   int32_t
-	* float float
-	* 
-	* long  int64_t
-	* double double
- 	*/
+
 const std::unordered_map<std::string, std::string> PrimitiveTypes = {
     { "void", "V" },
     { "boolean", "Z" },

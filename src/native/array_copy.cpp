@@ -6,6 +6,7 @@
 
 namespace cyh {
 static bool CheckArrayCopy(JBaseArray* src, JBaseArray* dest);
+void ArrayCopy(JBaseArray* src, JBaseArray* dest, int src_pos, int dest_pos, int length);
 
 void arraycopy(JFrame* frame)
 {
@@ -39,6 +40,7 @@ void arraycopy(JFrame* frame)
 		   << "dest length: " << dest->array_length();
 	throw "index bounds exception";
     }
+    ArrayCopy(src, dest, src_pos, dest_pos, length);
 }
 
 bool CheckArrayCopy(JBaseArray* src, JBaseArray* dest)

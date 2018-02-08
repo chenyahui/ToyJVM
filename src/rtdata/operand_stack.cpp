@@ -13,6 +13,7 @@ void OperandStack::Clear()
 }
 j_ref OperandStack::GetRefFromTop(int n)
 {
+    // 这里会不会有点问题呢。。。因为double和long都占据2个位置!!
     DLOG(INFO) << "get ref from top : " << n;
     std::vector<LocalSlot> temp;
 

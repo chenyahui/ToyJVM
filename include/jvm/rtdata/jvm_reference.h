@@ -17,6 +17,7 @@ public:
     {
 	return jclass_;
     }
+    bool IsInstanceOf(JClass*);
     virtual ~JReference() {}
 protected:
     JClass* jclass_;
@@ -32,7 +33,6 @@ public:
 
     void SetRefVar(std::string& name, std::string& descriptor, JReference* obj);
     JReference* GetRefVar(std::string& name, std::string& descriptor);
-    bool IsInstanceOf(JClass*);
     ~JObject() {}
     inline void set_extra(char* extra)
     {
