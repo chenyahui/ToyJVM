@@ -68,7 +68,7 @@ public:
 	    jump = v1 != v2;
 	    break;
 	case CondType::LT:
-	    jump = v1 > v2;
+	    jump = v1 < v2;
 	    break;
 	case CondType::LE:
 	    jump = v1 <= v2;

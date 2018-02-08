@@ -28,10 +28,8 @@ public:
 	auto v2 = op_stack.Pop<T>();
 
 	Op op;
-	T result;
-
 	auto v1 = op_stack.Pop<T>();
-	result = op(v1, v2);
+	T result = op(v1, v2);
 
 	op_stack.Push<T>(result);
 	DLOG(INFO) << "result is " << result;
@@ -77,6 +75,7 @@ public:
 	auto v2 = op_stack.Pop<int>();
 	auto v1 = op_stack.Pop<T>();
 
+	DLOG(INFO) << "shift :" << v1 << "#" << v2;
 	T result;
 	if (is_left) {
 	    result = v1 << v2;
