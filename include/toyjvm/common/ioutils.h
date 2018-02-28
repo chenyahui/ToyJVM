@@ -6,6 +6,7 @@
 #define TOYJVM_IOUTILS_H
 
 #include <string>
+#include <functional>
 #include "jvm_types.h"
 
 namespace jvm {

@@ -3,7 +3,6 @@
 //
 #include <iostream>
 #include "toyjvm/common/cmdline.h"
-
 namespace jvm {
 
     DEFINE_string(cp, "", "class path");

@@ -4,8 +4,8 @@
 //
 #include <toyjvm/classpath/class_path.h>
 #include <toyjvm/common/ioutils.h>
-#include <libzippp/libzippp.h>
 #include <toyjvm/common/strutils.h>
+#include <functional>
 
 namespace jvm {
     bytes DirPathEntry::ReadClass(const std::string &class_name)
@@ -16,7 +16,7 @@ namespace jvm {
 
     bytes ZipPathEntry::ReadClass(const std::string &class_name)
     {
-        bytes result;
+       /* bytes result;
         libzippp::ZipArchive zf(class_name);
         zf.open(libzippp::ZipArchive::READ_ONLY);
 
@@ -35,7 +35,8 @@ namespace jvm {
         }
 
         zf.close();
-        return result;
+        return result;*/
+		return bytes();
     }
 
     CompositePathEntry::CompositePathEntry(const std::string &path_list)
@@ -55,16 +56,17 @@ namespace jvm {
         }
     }
 
+	void walk_test()
+	{
+
+	}
+
     WildCardPathEntry::WildCardPathEntry(const const std::string &path)
     {
         auto base_dir = path.substr(0, path.size() - 1);
-        WalkPath(base_dir, std::bind1st(test));
+        WalkPath(base_dir, std::bind(walk_test));
     }
 
-    void WildCardPathEntry::walk()
-    {
-
-    }
 
     BasePathEntry *PathEntryFactory(const std::string &class_path)
     {

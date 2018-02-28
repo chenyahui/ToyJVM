@@ -61,7 +61,7 @@ namespace jvm {
         {
 
         }
-
+		bytes ReadClass(const std::string &class_name) override;
         std::vector<BasePathEntry *> entrys_;
     };
 

@@ -47,6 +47,7 @@ namespace jvm {
 
     std::string GetJreDir(const std::string &jre_option)
     {
+	
         if (!jre_option.empty() && FileExists(jre_option)) {
             return jre_option;
         }
