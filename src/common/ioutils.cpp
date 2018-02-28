@@ -18,15 +18,9 @@ namespace jvm {
 		return "";
 	}
 
-
-
 	bytes ReadFileToBytes(const std::string filename)
 	{
 		std::ifstream file(filename, std::ifstream::binary);
-
-		if (!file.good()) {
-			throw "文件" + filename + "不存在";
-		}
 
 		bytes data;
 		char c = '\0';

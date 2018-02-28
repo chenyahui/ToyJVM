@@ -6,18 +6,17 @@
 #define TOYJVM_CONST_INFOS_H
 
 #include <toyjvm/common/basereader.h>
-#include "toyjvm/common/uncopyable.h"
 #include "toyjvm/common/jvm_types.h"
 #include "toyjvm/classfile/const_pool.h"
-
+#include <boost/noncopyable.hpp>
 namespace jvm {
-    class BaseConstInfo : UnCopyable {
+    class BaseConstInfo : boost::noncopyable {
     public:
         BaseConstInfo(ConstPool::ConstType tag, ConstPool *const_pool)
                 : tag_(tag), const_pool_(const_pool)
         {}
 
-        virtual ~ConstantInfo()
+        virtual ~BaseConstInfo()
         {}
 
         virtual void Read(BaseReader &)

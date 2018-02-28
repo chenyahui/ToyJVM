@@ -5,12 +5,12 @@
 #ifndef TOYJVM_PATH_ENTRY_H
 #define TOYJVM_PATH_ENTRY_H
 
-#include <toyjvm/common/uncopyable.h>
 #include <toyjvm/common/jvm_types.h>
 #include <string>
+#include <boost/noncopyable.hpp>
 
 namespace jvm {
-    class BasePathEntry : UnCopyable {
+    class BasePathEntry : boost::noncopyable {
     public:
         virtual bytes ReadClass(const std::string &class_name) = 0;
 

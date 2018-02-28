@@ -7,7 +7,6 @@
 
 #include <gflags/gflags.h>
 #include <string>
-#include <toyjvm/common/uncopyable.h>
 
 namespace jvm {
     struct CmdArgs {

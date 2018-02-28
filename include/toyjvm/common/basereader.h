@@ -5,12 +5,12 @@
 #ifndef NEWJVM_BASEREADER_H
 #define NEWJVM_BASEREADER_H
 
-#include <toyjvm/common/uncopyable.h>
+#include <boost/noncopyable.hpp>
 #include <toyjvm/common/jvm_types.h>
 #include <toyjvm/common/type_cast.h>
 
 namespace jvm {
-    class BaseReader : UnCopyable {
+    class BaseReader : boost::noncopyable {
     public:
         BaseReader()
         {}

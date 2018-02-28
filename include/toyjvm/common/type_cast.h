@@ -14,7 +14,5 @@ namespace jvm {
         assert(sizeof(From) == sizeof(To));
         return *((To *) &from);
     }
-    
-};
 }
 #endif //TOYJVM_TYPE_CAST_H

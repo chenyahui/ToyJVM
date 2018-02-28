@@ -22,8 +22,11 @@ add_subdirectory(third_party)
 add_subdirectory(src/common)
 add_subdirectory(src/classpath)
 
+file(GLOB_RECURSE HEADERS "include/toyjvm/*.h")
 
 set(SOURCE_FILES
+        ${HEADERS}
         src/main.cpp)
+
 add_executable(toyjvm ${SOURCE_FILES})
 target_link_libraries(toyjvm toyjvm_common)

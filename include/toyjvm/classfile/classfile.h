@@ -5,13 +5,13 @@
 #ifndef NEWJVM_CLASSFILE_H
 #define NEWJVM_CLASSFILE_H
 
-#include "toyjvm/common/uncopyable.h"
-#include "toyjvm/base/const_pool.h"
+#include <toyjvm/classfile/const_pool.h>
 #include <toyjvm/common/jvm_types.h>
 #include <vector>
+#include <boost\noncopyable.hpp>
 
 namespace jvm {
-    class ClassFile : UnCopyable {
+    class ClassFile : boost::noncopyable {
     public:
         ClassFile()
         {}
