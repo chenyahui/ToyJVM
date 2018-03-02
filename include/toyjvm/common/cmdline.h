@@ -18,29 +18,6 @@ namespace jvm {
         std::string class_name;
     };
 
-    class CmdParser : boost::noncopyable {
-    public:
-
-        CmdParser() = delete;
-
-        static CmdArgs parse(int argc, char *argv[]);
-
-    public:
-        static po::options_description init_options() noexcept {
-            po::options_description opts;
-            opts.add_options()
-                    ("cp", po::value<std::string>(&classpath), "<class search path of directories and zip/jar files>")
-                    ("classpath", po::value<std::string>(&classpath),
-                     "<class search path of directories and zip/jar files>")
-                    ("help,h", "help info")
-                    ("version", "print product version and exit");
-            return opts;
-        }
-
-    private:
-        static po::options_description opts;
-        static std::string classpath;
-    };
-
+    CmdArgs parseCmd(int argc, char **argv);
 }
 #endif //TOYJVM_CMDLINE_H

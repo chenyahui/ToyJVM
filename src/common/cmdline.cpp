@@ -6,10 +6,19 @@
 #include <boost/program_options.hpp>
 
 namespace jvm {
-    po::options_description CmdParser::opts = CmdParser::init_options();
-    std::string CmdParser::classpath;
 
-    CmdArgs CmdParser::parse(int argc, char **argv) {
+    CmdArgs parseCmd(int argc, char **argv) {
+        CmdArgs cmd_args;
+
+        po::options_description opts;
+        opts.add_options()
+                ("cp", po::value<std::string>(&cmd_args.class_path),
+                 "<class search path of directories and zip/jar files>")
+                ("classpath", po::value<std::string>(&cmd_args.class_path),
+                 "<class search path of directories and zip/jar files>")
+                ("help,h", "help info")
+                ("version", "print product version and exit");
+
         po::variables_map vm;
         po::store(po::command_line_parser(argc, argv)
                           .options(opts)
@@ -18,8 +27,8 @@ namespace jvm {
                           .run(),
                   vm);
         po::notify(vm);
-        return {"", "", ""};
-    }
 
+        return cmd_args;
+    }
 }
 
