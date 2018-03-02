@@ -2,8 +2,8 @@
 // Created by cyhone on 18-1-30.
 //
 
-#ifndef NEWJVM_CLASSFILE_H
-#define NEWJVM_CLASSFILE_H
+#ifndef TOYJVM_CLASSFILE_H
+#define TOYJVM_CLASSFILE_H
 
 #include <toyjvm/classfile/const_pool.h>
 #include <toyjvm/common/jvm_types.h>

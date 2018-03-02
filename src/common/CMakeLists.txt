@@ -3,4 +3,4 @@ set(common_SRCS
         ioutils.cpp system.cpp)
 
 add_library(toyjvm_common ${common_SRCS})
-target_link_libraries(toyjvm_common gflags_nothreads)
+target_link_libraries(toyjvm_common ${Boost_LIBRARIES})

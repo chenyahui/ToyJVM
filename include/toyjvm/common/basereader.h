@@ -2,8 +2,8 @@
 // Created by cyhone on 18-1-30.
 //
 
-#ifndef NEWJVM_BASEREADER_H
-#define NEWJVM_BASEREADER_H
+#ifndef TOYJVM_BASEREADER_H
+#define TOYJVM_BASEREADER_H
 
 #include <boost/noncopyable.hpp>
 #include <toyjvm/common/jvm_types.h>
