@@ -19,7 +19,6 @@ namespace jvm {
                 : data_(data)
         {}
 
-        // TODO float and double
         template<typename T>
         T Read()
         {

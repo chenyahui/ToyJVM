@@ -10,24 +10,24 @@ if (MSVC)
 endif (MSVC)
 
 #setup boost
-find_package(Boost COMPONENTS program_options REQUIRED)
+find_package(Boost COMPONENTS program_options filesystem REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 message(STATUS ${Boost_INCLUDE_DIRS})
 #setup gtest
 find_package(GTest REQUIRED)
 
-include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_SOURCE_DIR}/third_party)
 
-#add_subdirectory(third_party)
-add_subdirectory(src/common)
-#add_subdirectory(src/classpath)
+add_subdirectory(third_party)
+add_subdirectory(toyjvm/common)
+add_subdirectory(toyjvm/classpath)
 
 file(GLOB_RECURSE HEADERS "include/toyjvm/*.h")
 
 set(SOURCE_FILES
         ${HEADERS}
-        src/main.cpp)
+        toyjvm/main.cpp)
 
 add_executable(toyjvm ${SOURCE_FILES})
 target_link_libraries(toyjvm toyjvm_common)

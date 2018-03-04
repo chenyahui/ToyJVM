@@ -15,16 +15,16 @@ namespace jvm {
     public:
         ClassPath(const std::string &jre_option, const std::string &cp_option);
 
-        bytes ReadClass(const std::string &class_name);
+        bytes readClass(const std::string &class_name);
 
     private:
-        void ParseBootAndExtClassPath(const std::string &jre_option);
+        void parseBootAndExtClassPath(const std::string &jre_option);
 
-        void ParseUserClassPath(const std::string &class_path);
+        void parseUserClassPath(const std::string &class_path);
 
-        BasePathEntry *boot_path_;
-        BasePathEntry *ext_path_;
-        BasePathEntry *user_path_;
+        BasePathEntry *bootPath_;
+        BasePathEntry *extPath_;
+        BasePathEntry *userPath_;
     };
 }
 #endif //TOYJVM_PATH_ENTRY_H

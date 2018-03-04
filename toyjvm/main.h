@@ -8,6 +8,6 @@
 #include <toyjvm/common/cmdline.h>
 
 namespace jvm {
-    void StartJVM(CmdArgs &);
+    void startJVM(CmdArgs &);
 }
 #endif //TOYJVM_MAIN_H

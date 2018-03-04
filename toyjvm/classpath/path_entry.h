@@ -8,64 +8,62 @@
 #include <toyjvm/common/jvm_types.h>
 #include <string>
 #include <boost/noncopyable.hpp>
+#include <boost/filesystem/path.hpp>
+
+namespace bfs = boost::filesystem;
 
 namespace jvm {
     class BasePathEntry : boost::noncopyable {
     public:
         virtual bytes ReadClass(const std::string &class_name) = 0;
 
-        virtual ~BasePathEntry()
-        {}
+        virtual ~BasePathEntry() {}
     };
 
+    // -cp /home/cyhone/com/cyhone
     class DirPathEntry : public BasePathEntry {
     public:
-        explicit DirPathEntry(const std::string &abs_path)
-                : abs_path_(abs_path)
-        {}
+        explicit DirPathEntry(const bfs::path &abs_path)
+                : absDirPath_(abs_path) {}
 
         bytes ReadClass(const std::string &class_name) override;
 
     private:
-        std::string abs_path_;
+        bfs::path absDirPath_;
     };
 
+    // -cp /home/cyhone/com.cyhone.test.jar
     class ZipPathEntry : public BasePathEntry {
     public:
-        explicit ZipPathEntry(const std::string &abs_path)
-                : abs_path_(abs_path)
-        {}
+        explicit ZipPathEntry(const bfs::path &abs_path)
+                : absZipPath_(abs_path) {}
 
         bytes ReadClass(const std::string &class_name) override;
 
     private:
-        std::string abs_path_;
+        bfs::path absZipPath_;
     };
 
+    // -cp /home/cyhone/com.cyhone.test.jar;/home/cyhone/com/cyhone
     class CompositePathEntry : public BasePathEntry {
     public:
-        explicit CompositePathEntry(const std::string &);
+        explicit CompositePathEntry(const std::string &path_list);
+
+        CompositePathEntry() = default;
 
         bytes ReadClass(const std::string &class_name) override;
 
-    private:
+    protected:
         std::vector<BasePathEntry *> entrys_;
     };
 
-    class WildCardPathEntry : public BasePathEntry {
+    // -cp /home/cyhone/com/cyhone/*
+    class WildCardPathEntry : public CompositePathEntry {
     public:
         explicit WildCardPathEntry(const const std::string &);
-
-    private:
-        void walk()
-        {
-
-        }
-		bytes ReadClass(const std::string &class_name) override;
-        std::vector<BasePathEntry *> entrys_;
     };
 
-    BasePathEntry *PathEntryFactory(const std::string &class_path);
+    BasePathEntry *pathEntryFactory(const std::string &class_path);
 
 }
 
