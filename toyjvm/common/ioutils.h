@@ -18,6 +18,6 @@ namespace jvm {
 
     using WalkPathFunc = std::function<void(const boost::filesystem::path &)>;
 
-    void walkDir(const std::string &path, WalkPathFunc &walk_func);
+    void walkDir(const std::string &path, const WalkPathFunc &walk_func);
 }
 #endif //TOYJVM_IOUTILS_H

@@ -16,5 +16,11 @@ namespace jvm{
     using bytes = std::vector<u1>;
 
 
+    using jdouble = double;
+    using jint = int32_t;
+    using jchar = char;
+    using jbyte = uint8_t;
+    using jlong = long;
+
 }
 #endif //TOYJVM_TYPES_H

@@ -4,6 +4,7 @@
 #include <toyjvm/classpath/class_path.h>
 #include <toyjvm/common/ioutils.h>
 #include <boost/filesystem.hpp>
+#include <toyjvm/common/exception.h>
 
 namespace jvm {
     static std::string GetJreDir(const std::string &jre_option);
@@ -26,7 +27,7 @@ namespace jvm {
             }
         }
 
-        // todo  throw class not found
+        throw ClassNotFound();
     }
 
     void ClassPath::parseBootAndExtClassPath(const std::string &jre_option) {
@@ -37,8 +38,11 @@ namespace jvm {
     }
 
     void ClassPath::parseUserClassPath(const std::string &class_path) {
-        const std::string path = class_path.empty() ? "." : class_path;
-        userPath_ = pathEntryFactory(path);
+        if (class_path.empty()) {
+            userPath_ = pathEntryFactory(".");
+        } else {
+            userPath_ = pathEntryFactory(class_path);
+        }
     }
 
     std::string GetJreDir(const std::string &jre_option) {
@@ -56,6 +60,6 @@ namespace jvm {
             return java_home + "/" + "jre";
         }
 
-        throw "can not find jre folder";
+        throw JVMError("Can not find jre folder");
     }
 }

@@ -5,8 +5,8 @@
 #include <toyjvm/classpath/class_path.h>
 #include <toyjvm/common/ioutils.h>
 #include <functional>
-#include <libzippp/libzippp.h>
 #include <boost/algorithm/string.hpp>
+#include <toyjvm/common/exception.h>
 
 namespace jvm {
     jvm::bytes DirPathEntry::ReadClass(const std::string &class_name) {
@@ -17,31 +17,14 @@ namespace jvm {
 
     jvm::bytes ZipPathEntry::ReadClass(const std::string &class_name) {
 
-        bytes result;
-        libzippp::ZipArchive zf(class_name);
-        zf.open(libzippp::ZipArchive::READ_ONLY);
-
-        auto entries = zf.getEntries();
-        for (const auto &entry: entries) {
-            if (entry.getName() == class_name) {
-                auto size = entry.getSize();
-                auto data = reinterpret_cast<u1 *>(entry.readAsBinary());
-                result.reserve(size);
-                for (int i = 0; i < size; i++, data++) {
-                    result.push_back(*data);
-                }
-                return result;
-            }
-        }
-        // todo throw 'class not found' exception
-        throw "class not found";
+        return jvm::bytes();
     }
 
     CompositePathEntry::CompositePathEntry(const std::string &path_list) {
         std::vector<std::string> path_vec;
-        boost::split(path_vec, path_list, ';');
+        boost::split(path_vec, path_list, boost::is_any_of(";"));
         for (const auto &path: path_vec) {
-            entrys_.push_back(PathEntryFactory(path));
+            entrys_.push_back(pathEntryFactory(path));
         }
     }
 
@@ -49,27 +32,28 @@ namespace jvm {
         for (auto entry: entrys_) {
             try {
                 return entry->ReadClass(class_name);
-            } catch (...) {
-                // to catch class not found
+            } catch (ClassNotFound) {
             }
         }
-
-        // todo throw class not found
+        throw ClassNotFound();
     }
 
-    WildCardPathEntry::WildCardPathEntry(const const std::string &path) {
+    void WildCardPathEntry::walkHandler(const boost::filesystem::path &file_path) {
+        if (boost::filesystem::is_regular_file(file_path)) {
+            auto &filename = file_path.filename().string();
+            if (boost::iends_with(filename, ".jar")) {
+                entrys_.push_back(new ZipPathEntry(filename));
+            }
+        }
+    }
+
+    WildCardPathEntry::WildCardPathEntry(const std::string &path)
+            : CompositePathEntry() {
         auto base_dir = path.substr(0, path.size() - 1); // remove *
 
-        auto walk_func = std::bind([](const boost::filesystem::path &file_path) {
-            if (boost::filesystem::is_regular_file(file_path)) {
-                auto &filename = file_path.filename().string();
-                if (boost::iends_with(filename, ".jar")) {
-                    entrys_.push_back(new ZipPathEntry(filename));
-                }
-            }
-        });
-
-        walkDir(base_dir, walk_func);
+        walkDir(base_dir, std::bind(&WildCardPathEntry::walkHandler,
+                                    this,
+                                    std::placeholders::_1));
     }
 
     BasePathEntry *pathEntryFactory(const std::string &class_path) {

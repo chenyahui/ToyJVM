@@ -60,7 +60,10 @@ namespace jvm {
     // -cp /home/cyhone/com/cyhone/*
     class WildCardPathEntry : public CompositePathEntry {
     public:
-        explicit WildCardPathEntry(const const std::string &);
+        explicit WildCardPathEntry(const std::string &);
+
+    private:
+        void walkHandler(const boost::filesystem::path &file_path);
     };
 
     BasePathEntry *pathEntryFactory(const std::string &class_path);

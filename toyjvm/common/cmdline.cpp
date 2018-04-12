@@ -3,6 +3,7 @@
 //
 #include <iostream>
 #include <toyjvm/common/cmdline.h>
+
 namespace jvm {
 
     static void initParser(po::options_description &opts,
@@ -15,13 +16,23 @@ namespace jvm {
                 ("classpath", po::value<std::string>(&cmd_args.class_path),
                  "<class search path of directories and zip/jar files>")
 
-                ("help,h", "help info")
+                ("help", "help info")
 
                 ("version", "print product version and exit")
 
                 ("class", po::value<std::string>(&cmd_args.class_name), "class name");
 
         pos_opts.add("class", -1);
+    }
+
+    static void printUsage(po::options_description &opts) {
+        std::cout << opts << std::endl;
+        exit(0);
+    }
+
+    static void printVersion() {
+        std::cout << "v0.1" << std::endl;
+        exit(0);
     }
 
     CmdArgs parseCmd(int argc, char **argv) {
@@ -40,6 +51,13 @@ namespace jvm {
                           .run(),
                   vm);
         po::notify(vm);
+
+        if (cmd_args.class_path.empty()
+            || vm.count("help")) {
+            printUsage(opts);
+        } else if (vm.count("version")) {
+            printVersion();
+        }
 
         return cmd_args;
     }

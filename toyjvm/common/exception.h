@@ -6,21 +6,27 @@
 #define TOYJVM_EXCEPTION_H
 
 #include <exception>
+#include <string>
 
 namespace jvm {
-    class RuntimeException : public std::exception {
+    class RuntimeException : public std::runtime_error {
     public:
         explicit RuntimeException(const std::string &msg)
-                : std::exception(msg)
-        {
+                : std::runtime_error(msg) {
         }
     };
 
-    class JVMError : public std::exception {
+    class JVMError : public std::runtime_error {
     public:
         explicit JVMError(const std::string &msg)
-        {
+                : std::runtime_error(msg) {
+        }
+    };
 
+    class ClassNotFound : public JVMError {
+    public:
+        ClassNotFound()
+                : JVMError("class not found") {
         }
     };
 
