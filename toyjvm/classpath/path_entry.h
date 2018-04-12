@@ -17,14 +17,16 @@ namespace jvm {
     public:
         virtual bytes ReadClass(const std::string &class_name) = 0;
 
-        virtual ~BasePathEntry() {}
+        virtual ~BasePathEntry()
+        {}
     };
 
     // -cp /home/cyhone/com/cyhone
     class DirPathEntry : public BasePathEntry {
     public:
         explicit DirPathEntry(const bfs::path &abs_path)
-                : absDirPath_(abs_path) {}
+                : absDirPath_(abs_path)
+        {}
 
         bytes ReadClass(const std::string &class_name) override;
 
@@ -36,7 +38,8 @@ namespace jvm {
     class ZipPathEntry : public BasePathEntry {
     public:
         explicit ZipPathEntry(const bfs::path &abs_path)
-                : absZipPath_(abs_path) {}
+                : absZipPath_(abs_path)
+        {}
 
         bytes ReadClass(const std::string &class_name) override;
 
@@ -61,11 +64,13 @@ namespace jvm {
     class WildCardPathEntry : public CompositePathEntry {
     public:
         explicit WildCardPathEntry(const std::string &);
-
-    private:
-        void walkHandler(const boost::filesystem::path &file_path);
     };
 
+    /**
+     *
+     * @param class_path
+     * @return nullptr or object
+     */
     BasePathEntry *pathEntryFactory(const std::string &class_path);
 
 }

@@ -7,7 +7,7 @@
 
 #include <string>
 #include "const_pool.h"
-#include <boost\noncopyable.hpp>
+#include <boost/noncopyable.hpp>
 
 namespace jvm {
     class BaseAttrInfo : boost::noncopyable {

@@ -5,6 +5,7 @@
 #include <fstream>
 #include <functional>
 #include <boost/filesystem.hpp>
+#include <iostream>
 
 namespace bfs = boost::filesystem;
 namespace jvm {

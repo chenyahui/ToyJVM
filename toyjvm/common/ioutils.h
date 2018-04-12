@@ -15,7 +15,6 @@ namespace jvm {
 
     jvm::bytes ReadFileToBytes(const std::string &filename);
 
-
     using WalkPathFunc = std::function<void(const boost::filesystem::path &)>;
 
     void walkDir(const std::string &path, const WalkPathFunc &walk_func);

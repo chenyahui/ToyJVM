@@ -23,6 +23,7 @@ find_package(Boost REQUIRED COMPONENTS
         program_options
         filesystem
         )
+message(STATUS "test" ${Boost_INCLUDE_DIRS})
 include_directories(${Boost_INCLUDE_DIRS})
 #setup gtest
 find_package(GTest REQUIRED)

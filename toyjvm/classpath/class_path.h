@@ -17,13 +17,20 @@ namespace jvm {
 
         bytes readClass(const std::string &class_name);
 
+        ~ClassPath()
+        {
+            delete bootPath_;
+            delete extPath_;
+            delete userPath_;
+        }
+
     private:
         void parseBootAndExtClassPath(const std::string &jre_option);
 
         void parseUserClassPath(const std::string &class_path);
 
-        BasePathEntry *bootPath_;
-        BasePathEntry *extPath_;
+        WildCardPathEntry *bootPath_;
+        WildCardPathEntry *extPath_;
         BasePathEntry *userPath_;
     };
 }

@@ -1,5 +1,6 @@
 Rewriteing
 
 
+# TODO
+1. read CLASSPATH from env arguments
 Depending on:
-[ziplib](https://bitbucket.org/wbenny/ziplib/wiki/Home)

@@ -8,7 +8,8 @@ namespace jvm {
 
     static void initParser(po::options_description &opts,
                            po::positional_options_description &pos_opts,
-                           CmdArgs &cmd_args) {
+                           CmdArgs &cmd_args)
+    {
         opts.add_options()
                 ("cp", po::value<std::string>(&cmd_args.class_path),
                  "<class search path of directories and zip/jar files>")
@@ -25,17 +26,20 @@ namespace jvm {
         pos_opts.add("class", -1);
     }
 
-    static void printUsage(po::options_description &opts) {
+    static void printUsage(po::options_description &opts)
+    {
         std::cout << opts << std::endl;
         exit(0);
     }
 
-    static void printVersion() {
+    static void printVersion()
+    {
         std::cout << "v0.1" << std::endl;
         exit(0);
     }
 
-    CmdArgs parseCmd(int argc, char **argv) {
+    CmdArgs parseCmd(int argc, char **argv)
+    {
         CmdArgs cmd_args;
         po::options_description opts;
         po::positional_options_description pos_opts;
@@ -52,7 +56,7 @@ namespace jvm {
                   vm);
         po::notify(vm);
 
-        if (cmd_args.class_path.empty()
+        if (cmd_args.class_name.empty()
             || vm.count("help")) {
             printUsage(opts);
         } else if (vm.count("version")) {
