@@ -6,24 +6,39 @@
 #define TOYJVM_CLASSFILE_H
 
 #include <toyjvm/classfile/const_pool.h>
+#include <toyjvm/classfile/member_info.h>
+#include <toyjvm/classfile/attribute_table.h>
 #include <toyjvm/common/jvm_types.h>
+
+#include <boost/noncopyable.hpp>
 #include <vector>
-#include <boost\noncopyable.hpp>
 
 namespace jvm {
     class ClassFile : boost::noncopyable {
     public:
-        ClassFile()
+        explicit ClassFile(bytes data)
+                : reader_(data),
+                  const_pool_(reader_)
         {}
 
-        void Parse(bytes);
+        void Parse();
 
     private:
+        void checkMagicAndVersions();
+
+        std::vector<MemberInfo> readMembers();
+
+    private:
+        BaseReader reader_;
+
         ConstPool const_pool_;
         u2 access_flags_;
         u2 this_class_;
         u2 super_class_;
-        std::vector<u2> interfaces;
+        std::vector<MemberInfo> fields_;
+        std::vector<MemberInfo> methods_;
+        std::vector<u2> interfaces_;
+        AttrTable attr_table_;
     };
 }
 

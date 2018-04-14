@@ -27,7 +27,7 @@ namespace jvm {
             try {
                 return extPath_->ReadClass(cname);
             } catch (...) {
-                if (userPath_ != NULL) {
+                if (userPath_ != nullptr) {
                     return userPath_->ReadClass(cname);
                 }
             }

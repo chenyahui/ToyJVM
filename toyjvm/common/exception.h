@@ -25,6 +25,15 @@ namespace jvm {
         }
     };
 
+    class ClassFormatError : public JVMError {
+    public:
+        explicit ClassFormatError(const std::string &msg)
+                : JVMError("class file format error: " + msg)
+        {
+
+        }
+    };
+
     class ClassNotFound : public JVMError {
     public:
         explicit ClassNotFound(const std::string &class_name)

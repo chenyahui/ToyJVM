@@ -10,7 +10,7 @@
 namespace jvm {
     class BaseConstInfo;
 
-    class ConstPool {
+    class ConstPool : boost::noncopyable {
     public:
         enum ConstType {
             Class = 7,
@@ -29,11 +29,17 @@ namespace jvm {
             InvokeDynamic = 18
         };
 
-        void Read(BaseReader &);
+        explicit ConstPool(BaseReader &reader) : reader_(reader)
+        {}
+
+        void read();
 
         BaseConstInfo *ConstInfoFactory(ConstType tag);
 
+        std::string string_at(int index);
+
     private:
+        BaseReader &reader_;
         std::vector<BaseConstInfo *> const_infos_;
     };
 

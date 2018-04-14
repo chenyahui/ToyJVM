@@ -10,9 +10,13 @@
 #include <toyjvm/common/type_cast.h>
 
 namespace jvm {
+    class BaseReader;
+
     class BaseReader : boost::noncopyable {
     public:
-        BaseReader()
+        BaseReader(const BaseReader &reader)
+                : data_(reader.data_),
+                  pc_(reader.pc_)
         {}
 
         explicit BaseReader(bytes &data)
@@ -20,7 +24,7 @@ namespace jvm {
         {}
 
         template<typename T>
-        T Read()
+        T read()
         {
             auto num = sizeof(T);
 
@@ -34,33 +38,33 @@ namespace jvm {
         }
 
         template<>
-        float Read<float>()
+        float read<float>()
         {
-            auto raw_bits = Read<int>();
+            auto raw_bits = read<int>();
             return bits_cast<int, float>(raw_bits);
         };
 
         template<>
-        double Read<double>()
+        double read<double>()
         {
-            auto raw_bits = Read<long>();
+            auto raw_bits = read<long>();
             return bits_cast<long, double>(raw_bits);
         };
 
         template<typename Counter, typename Item>
-        std::vector<Item> BatchRead()
+        std::vector<Item> batchRead()
         {
-            Counter count = Read<Counter>();
+            Counter count = read<Counter>();
             std::vector<Item> result(count);
 
             for (auto i = 0; i < count; i++) {
-                result[i] = Read<Item>();
+                result[i] = read<Item>();
             }
 
             return result;
         };
     private:
-        bytes data_;
+        bytes &data_;
         int pc_ = 0;
     };
 }

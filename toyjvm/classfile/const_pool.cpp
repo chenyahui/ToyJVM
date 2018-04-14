@@ -7,15 +7,15 @@
 
 using namespace jvm;
 
-void ConstPool::Read(BaseReader &reader)
+void ConstPool::read()
 {
-    auto count = reader.Read<u2>();
+    auto count = reader_.read<u2>();
     const_infos_.resize(count);
 
     for (auto i = 1; i < count; i++) {
-        auto tag = static_cast<ConstType>(reader.Read<u1>());
+        auto tag = static_cast<ConstType>(reader_.read<u1>());
         auto info = ConstInfoFactory(tag);
-        info->Read(reader);
+        info->read(reader_);
         const_infos_[i] = info;
 
         if (tag == ConstType::Long || tag == ConstType::Double) {
@@ -24,6 +24,10 @@ void ConstPool::Read(BaseReader &reader)
     }
 }
 
+std::string ConstPool::string_at(int index)
+{
+
+}
 BaseConstInfo *ConstPool::ConstInfoFactory(jvm::ConstPool::ConstType tag)
 {
     switch (tag) {
@@ -56,6 +60,6 @@ BaseConstInfo *ConstPool::ConstInfoFactory(jvm::ConstPool::ConstType tag)
         case ConstPool::InvokeDynamic:
             return new ConstInvokeDynamicInfo(this);
         default:
-            throw RuntimeError();
+            throw JVMError("unsupported constant type");
     }
 }
