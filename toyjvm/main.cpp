@@ -6,6 +6,8 @@
 #include <iostream>
 #include <toyjvm/classpath/class_path.h>
 #include <toyjvm/common/exception.h>
+#include <toyjvm/classfile/classfile.h>
+#include <utility>
 
 namespace jvm {
     void startJVM(CmdArgs &args)
@@ -15,7 +17,8 @@ namespace jvm {
             auto class_name = args.class_name;
             std::replace(class_name.begin(), class_name.end(), '.', '/');
             auto class_bytes = class_path.readClass(class_name);
-            std::cout << class_bytes.size() << std::endl;
+            ClassFile classFile(std::move(class_bytes));
+            classFile.Parse();
         } catch (ClassNotFound &e) {
             std::cout << e.what() << std::endl;
         }
@@ -24,6 +27,7 @@ namespace jvm {
 
 int main(int argc, char *argv[])
 {
+    //google::InitGoogleLogging(argv[0]);
     auto cmd_args = jvm::parseCmd(argc, argv);
     jvm::startJVM(cmd_args);
     return 0;

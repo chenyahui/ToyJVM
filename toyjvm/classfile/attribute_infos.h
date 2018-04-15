@@ -108,7 +108,7 @@ namespace jvm {
         u2 method_index_;
     };
 
-    template<const std::string attr_type>
+    template<char const *attr_type>
     class EmptyAttrInfo : public BaseAttrInfo {
     public:
         explicit EmptyAttrInfo(const ConstPool &const_pool)
@@ -116,8 +116,12 @@ namespace jvm {
         {}
     };
 
-    using AttrSynthetic = EmptyAttrInfo<"Synthetic">;
-    using AttrDeprecated = EmptyAttrInfo<"Deprecated">;
+    // 所以！！！ char* 和 char[]的区别
+    static constexpr const char Synthetic[] = "Synthetic";
+    static constexpr const char Deprecated[] = "Deprecated";
+
+    using AttrSynthetic = EmptyAttrInfo<Synthetic>;
+    using AttrDeprecated = EmptyAttrInfo<Deprecated>;
 
     class AttrSignature : public BaseAttrInfo {
     public:

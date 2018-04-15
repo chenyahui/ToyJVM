@@ -5,7 +5,8 @@
 #ifndef TOYJVM_CONST_POOL_H
 #define TOYJVM_CONST_POOL_H
 
-#include "toyjvm/common/basereader.h"
+#include <toyjvm/common/basereader.h>
+#include <string>
 
 namespace jvm {
     class BaseConstInfo;
@@ -29,14 +30,28 @@ namespace jvm {
             InvokeDynamic = 18
         };
 
-        explicit ConstPool(BaseReader &reader) : reader_(reader)
+        explicit ConstPool(BaseReader &reader)
+                : reader_(reader)
         {}
+
 
         void read();
 
         BaseConstInfo *ConstInfoFactory(ConstType tag);
 
-        std::string string_at(int index);
+        ~ConstPool();
+
+    public:
+        std::string stringAt(int index) const;
+
+        template<typename T>
+        T *constInfoAt(int index) const
+        {
+            assert(index >= 1 && index < const_infos_.size());
+            auto info = dynamic_cast<T *>(const_infos_[index]);
+            assert(info != nullptr);
+            return info;
+        }
 
     private:
         BaseReader &reader_;

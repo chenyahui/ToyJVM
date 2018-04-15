@@ -11,17 +11,20 @@
 namespace jvm {
     class MemberInfo {
     public:
-        explicit MemberInfo(ConstPool &const_pool)
+        explicit MemberInfo(const ConstPool &const_pool)
                 : const_pool_(const_pool)
         {}
 
         void read(BaseReader &reader);
 
+        std::string memberName();
+
     private:
+        const ConstPool &const_pool_;
+
         u2 access_flags_;
         u2 name_index_;
         u2 descriptor_index_;
-        ConstPool &const_pool_;
         AttrTable attr_table_;
     };
 }

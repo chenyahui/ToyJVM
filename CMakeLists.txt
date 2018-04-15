@@ -38,10 +38,12 @@ file(GLOB_RECURSE HEADERS "toyjvm/*.h")
 
 set(SOURCE_FILES
         ${HEADERS}
-        toyjvm/main.cpp toyjvm/runtime/jvm_class.h)
+        toyjvm/main.cpp)
 
 add_executable(toyjvm ${SOURCE_FILES})
 target_link_libraries(toyjvm
         toyjvm_common
         toyjvm_classpath
+        toyjvm_classfile
+        glog
         )

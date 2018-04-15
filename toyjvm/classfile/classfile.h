@@ -9,7 +9,7 @@
 #include <toyjvm/classfile/member_info.h>
 #include <toyjvm/classfile/attribute_table.h>
 #include <toyjvm/common/jvm_types.h>
-
+#include <utility>
 #include <boost/noncopyable.hpp>
 #include <vector>
 
@@ -17,16 +17,20 @@ namespace jvm {
     class ClassFile : boost::noncopyable {
     public:
         explicit ClassFile(bytes data)
-                : reader_(data),
+                : reader_(std::move(data)),
                   const_pool_(reader_)
         {}
 
         void Parse();
 
+        void logClassInfo();
+
     private:
         void checkMagicAndVersions();
 
         std::vector<MemberInfo> readMembers();
+
+        const std::string &classNameOf(u2 class_index);
 
     private:
         BaseReader reader_;

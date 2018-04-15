@@ -21,16 +21,18 @@ namespace jvm {
     {
         auto attr_name_index = reader.read<u2>();
         auto attr_len = reader.read<u4>();
+        auto attr_name = const_pool.stringAt(attr_name_index);
 
+        return attrInfoFactory(attr_name, attr_len, const_pool);
     }
 
-    BaseAttrInfo *AttrTable::AttrInfoFactory(std::string &attr_name,
+    BaseAttrInfo *AttrTable::attrInfoFactory(std::string &attr_name,
                                              u4 attr_len,
                                              const jvm::ConstPool &const_pool)
     {
-#define PARSE_ATTR(attr_type) \
-if(attr_name == #attr_type){ \
-    return new Attr##attr_type##(const_pool); \
+#define PARSE_ATTR(TAG) \
+if(attr_name == #TAG){ \
+    return new Attr##TAG(const_pool); \
 }
         PARSE_ATTR(BootstrapMethods)
         PARSE_ATTR(Code)

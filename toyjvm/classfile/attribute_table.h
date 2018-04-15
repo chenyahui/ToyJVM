@@ -12,7 +12,7 @@
 namespace jvm {
     class BaseAttrInfo;
 
-    class AttrTable : boost::noncopyable {
+    class AttrTable {
     public:
         AttrTable() = default;
 
@@ -21,7 +21,7 @@ namespace jvm {
     private:
         BaseAttrInfo *readAttrInfo(BaseReader &reader, const ConstPool &);
 
-        BaseAttrInfo *AttrInfoFactory(std::string &attr_name,
+        BaseAttrInfo *attrInfoFactory(std::string &attr_name,
                                       u4 attr_len,
                                       const jvm::ConstPool &const_pool);
 

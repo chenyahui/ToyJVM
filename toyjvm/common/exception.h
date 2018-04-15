@@ -7,14 +7,15 @@
 
 #include <exception>
 #include <string>
+#include <stdexcept>
 
 namespace jvm {
-    class RuntimeException : public std::runtime_error {
+    class RuntimeException : public std::logic_error {
     public:
-        explicit RuntimeException(const std::string &msg)
-                : std::runtime_error(msg)
-        {
-        }
+        explicit RuntimeException(const std::string& msg)
+                : std::logic_error(msg)
+        {}
+
     };
 
     class JVMError : public std::runtime_error {
