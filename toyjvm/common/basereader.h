@@ -43,6 +43,19 @@ namespace jvm {
 
             return result;
         };
+
+        template<typename T>
+        std::vector<T> batchRead(int count)
+        {
+            std::vector<T> result(count);
+
+            for (auto i = 0; i < count; i++) {
+                result[i] = read<T>();
+            }
+
+            return result;
+        }
+
     private:
         bytes data_;
         int pc_ = 0;

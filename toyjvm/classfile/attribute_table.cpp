@@ -4,6 +4,7 @@
 
 #include <toyjvm/classfile/attribute_table.h>
 #include <toyjvm/classfile/attribute_infos.h>
+#include <glog/logging.h>
 
 namespace jvm {
     void AttrTable::read(BaseReader &reader, const ConstPool &pool)
@@ -22,7 +23,6 @@ namespace jvm {
         auto attr_name_index = reader.read<u2>();
         auto attr_len = reader.read<u4>();
         auto attr_name = const_pool.stringAt(attr_name_index);
-
         return attrInfoFactory(attr_name, attr_len, const_pool);
     }
 

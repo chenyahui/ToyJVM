@@ -121,6 +121,6 @@ namespace jvm {
 
     void AttrUnparsed::read(jvm::BaseReader &reader)
     {
-        data_ = reader.batchRead<u2, u1>();
+        data_ = reader.batchRead<u1>(attr_len_);
     }
 }
