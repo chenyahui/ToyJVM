@@ -8,6 +8,7 @@
 #include <boost/noncopyable.hpp>
 #include <toyjvm/common/jvm_types.h>
 #include <toyjvm/common/type_cast.h>
+#include <algorithm>
 
 namespace jvm {
     class BaseReader : boost::noncopyable {
@@ -20,14 +21,10 @@ namespace jvm {
         T read()
         {
             auto num = sizeof(T);
-
-            T result = T();
-            for (decltype(num) i = 0; i < num; ++i) {
-                result |= data_[pc_ + i] << ((num - i - 1) * 8);
-            }
-
+            std::array<u1, sizeof(T)> raw_byte;
+            std::reverse_copy(data_.begin() + pc_, data_.begin() + pc_ + num, raw_byte.begin());
             pc_ += num;
-            return result;
+            return union_cast<std::array<u1, sizeof(T)>, T>(raw_byte);
         }
 
 
@@ -61,11 +58,6 @@ namespace jvm {
         int pc_ = 0;
     };
 
-    template<>
-    double BaseReader::read<double>();
-
-    template<>
-    float BaseReader::read<float>();
 }
 
 #endif //NEWJVM_BASEREADER_H

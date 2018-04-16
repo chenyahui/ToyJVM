@@ -48,6 +48,9 @@ namespace jvm {
         u2 catch_type;
     };
 
+    /*
+     * TODO 对于bytes data类型的数据，没有必要再存储一份吧，直接建立映射
+     */
     class AttrCode : public BaseAttrInfo {
     public:
         explicit AttrCode(const ConstPool &const_pool)

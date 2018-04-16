@@ -21,7 +21,7 @@ namespace jvm {
                   const_pool_(reader_)
         {}
 
-        void Parse();
+        void parse();
 
         void logClassInfo();
 

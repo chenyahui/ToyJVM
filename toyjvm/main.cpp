@@ -18,7 +18,7 @@ namespace jvm {
             std::replace(class_name.begin(), class_name.end(), '.', '/');
             auto class_bytes = class_path.readClass(class_name);
             ClassFile classFile(std::move(class_bytes));
-            classFile.Parse();
+            classFile.parse();
         } catch (ClassNotFound &e) {
             std::cout << e.what() << std::endl;
         }

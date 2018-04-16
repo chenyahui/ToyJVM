@@ -20,7 +20,7 @@ namespace jvm {
     using jint = int32_t;
     using jchar = char;
     using jbyte = uint8_t;
-    using jlong = long;
+    using jlong = int64_t;
 
 }
 #endif //TOYJVM_TYPES_H

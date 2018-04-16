@@ -15,7 +15,7 @@ using namespace jvm;
 #define JAVA_MAX_SUPPORTED_MAJOR_VERSION 52
 #define JAVA_MAX_SUPPORTED_MINOR_VERSION 0
 
-void ClassFile::Parse()
+void ClassFile::parse()
 {
     checkMagicAndVersions();
     const_pool_.read();

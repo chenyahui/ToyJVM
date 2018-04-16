@@ -34,6 +34,8 @@ include_directories(${PROJECT_SOURCE_DIR}/third_party)
 add_subdirectory(toyjvm/common)
 add_subdirectory(toyjvm/classpath)
 add_subdirectory(toyjvm/classfile)
+add_subdirectory(toyjvm/runtime)
+
 file(GLOB_RECURSE HEADERS "toyjvm/*.h")
 
 set(SOURCE_FILES
