@@ -21,6 +21,8 @@ namespace jvm {
     using jchar = char;
     using jbyte = uint8_t;
     using jlong = int64_t;
+    using jshort = short;
 
+    using jref = char *;
 }
 #endif //TOYJVM_TYPES_H
