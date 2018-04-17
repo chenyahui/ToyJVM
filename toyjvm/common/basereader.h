@@ -22,6 +22,7 @@ namespace jvm {
         {
             auto num = sizeof(T);
             std::array<u1, sizeof(T)> raw_byte;
+            // 因为小端序，所以要倒序拷贝
             std::reverse_copy(data_.begin() + pc_, data_.begin() + pc_ + num, raw_byte.begin());
             pc_ += num;
             return union_cast<std::array<u1, sizeof(T)>, T>(raw_byte);

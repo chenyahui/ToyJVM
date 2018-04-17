@@ -23,13 +23,11 @@ find_package(Boost REQUIRED COMPONENTS
         program_options
         filesystem
         )
-message(STATUS "test" ${Boost_INCLUDE_DIRS})
 include_directories(${Boost_INCLUDE_DIRS})
 #setup gtest
 find_package(GTest REQUIRED)
 
 include_directories(${PROJECT_SOURCE_DIR})
-include_directories(${PROJECT_SOURCE_DIR}/third_party)
 
 add_subdirectory(toyjvm/common)
 add_subdirectory(toyjvm/classpath)

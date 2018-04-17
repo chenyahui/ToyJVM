@@ -10,7 +10,6 @@ using namespace jvm;
 TEST(test_type_cast, splitLongTo2Bit32)
 {
     auto assert_long = [](long val, int high, int low) {
-        // auto two = splitBit64<long>(val);
         auto two = union_cast<long, std::array<int, 2>>(val);
         ASSERT_EQ(two[1], high);
         ASSERT_EQ(two[0], low);

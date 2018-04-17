@@ -27,8 +27,9 @@ namespace jvm {
         template<typename T>
         T pop()
         {
-            auto result = at<T>(stack_num_ - 1);
-            stack_num_ -= use_two_slot<T>::value ? 2 : 1;
+            size_t index = stack_num_ - (use_two_slot<T>::value ? 2 : 1);
+            auto result = at<T>(index);
+            stack_num_ = index;
             return result;
         }
 
