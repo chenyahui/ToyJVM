@@ -29,22 +29,4 @@ find_package(GTest REQUIRED)
 
 include_directories(${PROJECT_SOURCE_DIR})
 
-add_subdirectory(toyjvm/common)
-add_subdirectory(toyjvm/classpath)
-add_subdirectory(toyjvm/classfile)
-add_subdirectory(toyjvm/runtime)
-add_subdirectory(toyjvm/instruction)
-
-file(GLOB_RECURSE HEADERS "toyjvm/*.h")
-
-set(SOURCE_FILES
-        ${HEADERS}
-        toyjvm/main.cpp toyjvm/instruction/base_instruction.h toyjvm/instruction/const_instructions.h)
-
-add_executable(toyjvm ${SOURCE_FILES})
-target_link_libraries(toyjvm
-        toyjvm_common
-        toyjvm_classpath
-        toyjvm_classfile
-        glog
-        )
+add_subdirectory(toyjvm)

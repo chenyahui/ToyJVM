@@ -1,0 +1,1 @@
+add_executable(test_const_inst test_const_inst.cpp)

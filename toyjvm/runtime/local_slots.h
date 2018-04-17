@@ -35,7 +35,7 @@ namespace jvm {
         }
 
         template<typename T>
-        T at(size_t index)
+        T at(size_t index) const
         {
             assert(index < slot_size_);
             if (use_two_slot<T>::value) {

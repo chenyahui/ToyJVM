@@ -20,5 +20,33 @@ namespace jvm {
         virtual void execute(JvmFrame &frame)
         {}
     };
+
+    template<typename T>
+    class BaseIndexInstruction : public BaseInstruction {
+    public:
+        virtual void fetchOperands(ByteCodeReader &reader)
+        {
+            index_ = static_cast<int>(reader.read<T>());
+        }
+
+    protected:
+        int index_;
+    };
+
+    template<typename T, int INDEX>
+    class BaseLoadStoreInstruction : public BaseInstruction {
+    public:
+        virtual void fetchOperands(ByteCodeReader &reader) override
+        {
+            if (INDEX < 0) {
+                index_ = static_cast<int>(reader.read<T>());
+            }
+        }
+
+        virtual void execute(JvmFrame &frame) override = 0;
+
+    protected:
+        int index_ = INDEX;
+    };
 }
 #endif //TOYJVM_BASE_INSTRUCTION_H
