@@ -8,7 +8,7 @@ file(GLOB_RECURSE HEADERS "./" "*.h")
 
 set(SOURCE_FILES
         ${HEADERS}
-        main.cpp instruction/load_instruction.h instruction/instruction_enum.h instruction/store_instruction.h instruction/stack_instructions.h)
+        main.cpp)
 
 add_executable(toyjvm ${SOURCE_FILES})
 target_link_libraries(toyjvm

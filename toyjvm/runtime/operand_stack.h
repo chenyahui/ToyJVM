@@ -24,7 +24,7 @@ namespace jvm {
             stack_num_ += use_two_slot<T>::value ? 2 : 1;
         }
 
-        template<typename T>
+        template<typename T = boost::any>
         T pop()
         {
             size_t index = stack_num_ - (use_two_slot<T>::value ? 2 : 1);
