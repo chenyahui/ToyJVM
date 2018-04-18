@@ -6,16 +6,20 @@
 #define TOYJVM_CONTROL_INSTRUCTIONS_H
 
 #include <toyjvm/instruction/control_instructions.h>
-#include "base_instruction.h"
+#include <toyjvm/instruction/base_instruction.h>
 
 namespace jvm {
-    class GOTO_Instruction : public BaseOneOperandInstruction<jshort> {
+    template<typename T>
+    class GotoInstruction : public BaseOneOperandInstruction<T> {
     public:
         void execute(JvmFrame &frame) override
         {
             branchJump(frame, operand_);
         }
     };
+
+    using GOTO_Instruction = GotoInstruction<u2>;
+    using GOTO_W_Instruction = GotoInstruction<u4>;
 
     class TABLE_SWITCH_Instruction : public BaseInstruction {
     public:

@@ -45,7 +45,7 @@ namespace jvm {
         void execute(JvmFrame &frame) override
         {
             auto &op_stack = frame.operandStack();
-            T v2 = icmp ? 0 : op_stack.pop<T>();
+            T v2 = icmp ? op_stack.pop<T>() : 0;
             T v1 = op_stack.pop<T>();
             Comparison comparison;
             if (comparison(v1, v2)) {
@@ -67,5 +67,8 @@ namespace jvm {
 
     using IF_ACMPEQ_Instruction = IfCond_Instruction<jref, std::equal_to, true>;
     using IF_ACMPNE_Instruction = IfCond_Instruction<jref, std::not_equal_to, true>;
+
+    using IFNULL_Instruction = IfCond_Instruction<jref, std::equal_to, false>;
+    using IFNONNULL_Instruction = IfCond_Instruction<jref, std::not_equal_to, false>;
 }
 #endif //TOYJVM_COMPARE_INSTRUCTIONS_H

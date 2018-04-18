@@ -8,7 +8,7 @@
 #include <toyjvm/instruction/base_instruction.h>
 #include <toyjvm/common/exception.h>
 #include <cmath>
-#include <toyjvm/instruction/instruction_code.h>
+#include <toyjvm/instruction/instruction_tag.h>
 
 namespace jvm {
     // 单操作数的数学指令
