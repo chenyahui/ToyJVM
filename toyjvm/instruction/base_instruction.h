@@ -12,6 +12,8 @@
 #include <set>
 
 namespace jvm {
+    void branchJump(JvmFrame &frame, int offset);
+
     class BaseInstruction : boost::noncopyable {
     public:
         virtual void fetchOperands(ByteCodeReader &reader)
@@ -22,15 +24,15 @@ namespace jvm {
     };
 
     template<typename T>
-    class BaseIndexInstruction : public BaseInstruction {
+    class BaseOneOperandInstruction : public BaseInstruction {
     public:
         virtual void fetchOperands(ByteCodeReader &reader)
         {
-            index_ = static_cast<int>(reader.read<T>());
+            operand_ = static_cast<int>(reader.read<T>());
         }
 
     protected:
-        int index_;
+        int operand_;
     };
 
     template<typename T, int INDEX>

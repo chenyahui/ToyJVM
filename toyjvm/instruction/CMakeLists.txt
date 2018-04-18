@@ -2,6 +2,6 @@ add_subdirectory(tests)
 
 set(INST_SRC
         stack_instructions.cpp
-        math_instructions.cpp)
+        math_instructions.cpp convert_instructions.h compare_instructions.h bytecode_reader.cpp control_instructions.h control_instructions.cpp)
 
 add_library(toyjvm_inst ${INST_SRC})

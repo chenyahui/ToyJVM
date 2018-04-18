@@ -54,7 +54,7 @@ namespace jvm {
             return result;
         }
 
-    private:
+    protected:
         bytes data_;
         int pc_ = 0;
     };
