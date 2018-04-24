@@ -2,9 +2,9 @@
 // Created by cyhone on 18-2-10.
 //
 #include <toyjvm/classpath/class_path.h>
-#include <toyjvm/common/ioutils.h>
+#include <toyjvm/utilities/ioutils.h>
 #include <boost/filesystem.hpp>
-#include <toyjvm/common/exception.h>
+#include <toyjvm/utilities/exception.h>
 
 namespace jvm {
     static std::string GetJreDir(const std::string &jre_option);

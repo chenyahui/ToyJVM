@@ -2,7 +2,7 @@
 // Created by cyhone on 18-2-8.
 //
 #include <iostream>
-#include <toyjvm/common/cmdline.h>
+#include <toyjvm/utilities/cmdline.h>
 
 namespace jvm {
 

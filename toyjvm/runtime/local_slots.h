@@ -9,9 +9,9 @@
 #include <vector>
 #include <boost/any.hpp>
 #include <assert.h>
-#include <toyjvm/common/jvm_types.h>
+#include <toyjvm/utilities/jvm_types.h>
 #include <array>
-#include <toyjvm/common/type_cast.h>
+#include <toyjvm/utilities/type_cast.h>
 
 namespace jvm {
     class LocalSlots : boost::noncopyable {

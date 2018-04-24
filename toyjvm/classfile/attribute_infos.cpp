@@ -3,12 +3,18 @@
 //
 
 #include <toyjvm/classfile/attribute_infos.h>
+#include <toyjvm/classfile/attribute_table.h>
 
 namespace jvm {
     void AttrConstantValue::read(jvm::BaseReader &reader)
     {
         constant_value_index_ = reader.read<u2>();
     }
+
+    AttrCode::AttrCode(const ConstPool &const_pool)
+            : BaseAttrInfo("Code", const_pool),
+              attr_table_(new AttrTable())
+    {}
 
     void AttrCode::read(jvm::BaseReader &reader)
     {
@@ -27,7 +33,7 @@ namespace jvm {
 
             exception_table_.push_back(e);
         }
-        attr_table_.read(reader, const_pool_);
+        attr_table_->read(reader, const_pool_);
     }
 
     void AttrExceptions::read(jvm::BaseReader &reader)

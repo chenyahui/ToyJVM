@@ -3,9 +3,9 @@
 //
 //
 #include <toyjvm/classpath/class_path.h>
-#include <toyjvm/common/ioutils.h>
+#include <toyjvm/utilities/ioutils.h>
 #include <boost/algorithm/string.hpp>
-#include <toyjvm/common/exception.h>
+#include <toyjvm/utilities/exception.h>
 #include <zip.h>
 #include <iostream>
 

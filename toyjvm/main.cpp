@@ -1,11 +1,11 @@
 //
 // Created by cyhone on 18-2-9.
 //
-#include <toyjvm/common/cmdline.h>
+#include <toyjvm/utilities/cmdline.h>
 #include <toyjvm/main.h>
 #include <iostream>
 #include <toyjvm/classpath/class_path.h>
-#include <toyjvm/common/exception.h>
+#include <toyjvm/utilities/exception.h>
 #include <toyjvm/classfile/classfile.h>
 #include <utility>
 

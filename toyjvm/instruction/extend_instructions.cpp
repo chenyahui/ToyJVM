@@ -34,6 +34,8 @@ case InstructionTag::##TAG: \
                 throw JVMError("todo ret");
                 // TODO ret
         }
+#undef GENE_CASE
+
         modified_instruction_->fetchOperands(reader);
     }
 

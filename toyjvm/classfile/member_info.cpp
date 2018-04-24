@@ -17,4 +17,18 @@ namespace jvm {
         return const_pool_.stringAt(name_index_);
     }
 
+    std::string MemberInfo::descriptor()
+    {
+        return const_pool_.stringAt(descriptor_index_);
+    }
+
+    AttrConstantValue *FieldInfo::constantValueAttr() const
+    {
+        return attr_table_.getFirst<AttrConstantValue>("constantValue");
+    }
+
+    AttrCode *MethodInfo::codeAttr() const
+    {
+        return attr_table_.getFirst<AttrCode>("Code");
+    }
 }

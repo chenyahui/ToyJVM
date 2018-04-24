@@ -6,8 +6,8 @@
 #define TOYJVM_BASEREADER_H
 
 #include <boost/noncopyable.hpp>
-#include <toyjvm/common/jvm_types.h>
-#include <toyjvm/common/type_cast.h>
+#include <toyjvm/utilities/jvm_types.h>
+#include <toyjvm/utilities/type_cast.h>
 #include <algorithm>
 
 namespace jvm {

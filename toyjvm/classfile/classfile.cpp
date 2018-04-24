@@ -1,9 +1,9 @@
 //
 // Created by cyhone on 18-2-8.
 //
-#include <toyjvm/common/basereader.h>
+#include <toyjvm/utilities/basereader.h>
 #include <toyjvm/classfile/classfile.h>
-#include <toyjvm/common/exception.h>
+#include <toyjvm/utilities/exception.h>
 #include <glog/logging.h>
 #include <toyjvm/classfile/const_infos.h>
 #include <boost/format.hpp>
@@ -23,51 +23,31 @@ void ClassFile::parse()
     this_class_ = reader_.read<u2>();
     super_class_ = reader_.read<u2>();
     interfaces_ = reader_.batchRead<u2, u2>();
-    fields_ = readMembers();
-    methods_ = readMembers();
+    fields_ = readMembers<FieldInfo>();
+    methods_ = readMembers<MethodInfo>();
     attr_table_.read(reader_, const_pool_);
 
     logClassInfo();
 }
 
-const std::string &ClassFile::classNameOf(u2 class_index)
-{
-    return const_pool_.constInfoAt<ConstClassInfo>(class_index)->className();
-}
-
 void ClassFile::logClassInfo()
 {
-    DLOG(INFO) << "class name : " << classNameOf(this_class_);
-    DLOG(INFO) << "super class : " << classNameOf(super_class_);
+    DLOG(INFO) << "class name : " << const_pool_.classNameOf(this_class_);
+    DLOG(INFO) << "super class : " << const_pool_.classNameOf(super_class_);
     DLOG(INFO) << "interfaces : ";
     for (auto inter : interfaces_) {
-        DLOG(INFO) << classNameOf(inter);
+        DLOG(INFO) << const_pool_.classNameOf(inter);
     }
 
     DLOG(INFO) << "fields count: " << fields_.size();
     for (auto &f : fields_) {
-        DLOG(INFO) << f.memberName();
+        DLOG(INFO) << f->memberName();
     }
 
     DLOG(INFO) << "methods count: " << fields_.size();
     for (auto &m : methods_) {
-        DLOG(INFO) << m.memberName();
+        DLOG(INFO) << m->memberName();
     }
-}
-
-
-std::vector<MemberInfo> ClassFile::readMembers()
-{
-    auto count = reader_.read<u2>();
-    std::vector<MemberInfo> result;
-    result.reserve(count);
-
-    for (int i = 0; i < count; ++i) {
-        MemberInfo member(const_pool_);
-        member.read(reader_);
-        result.push_back(member);
-    }
-    return result;
 }
 
 

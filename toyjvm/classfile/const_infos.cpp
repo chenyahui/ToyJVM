@@ -3,7 +3,7 @@
 //
 
 #include <toyjvm/classfile/const_infos.h>
-#include <toyjvm/common/modify_utf8.h>
+#include <toyjvm/utilities/modified_utf8.h>
 
 namespace jvm {
     void ConstClassInfo::read(jvm::BaseReader &reader)
@@ -19,16 +19,42 @@ namespace jvm {
         return class_name_;
     }
 
+    void BaseMemberRefInfo::read(jvm::BaseReader &reader)
+    {
+        class_index_ = reader.read<u2>();
+        name_and_type_index_ = reader.read<u2>();
+    }
+
+    std::array<std::string, 2> BaseMemberRefInfo::nameAndDescriptor() const
+    {
+        return const_pool_.constInfoAt<ConstNameAndTypeInfo>(name_and_type_index_)
+                ->nameAndDescriptor();
+    }
+
+    std::string BaseMemberRefInfo::className() const
+    {
+        return const_pool_.classNameOf(class_index_);
+    }
 
     void ConstStringInfo::read(jvm::BaseReader &reader)
     {
         string_index_ = reader.read<u2>();
     }
 
+    std::string ConstStringInfo::val()
+    {
+        return const_pool_.stringAt(string_index_);
+    }
+
     void ConstNameAndTypeInfo::read(jvm::BaseReader &reader)
     {
         name_index_ = reader.read<u2>();
         descriptor_index_ = reader.read<u2>();
+    }
+
+    std::array<std::string, 2> ConstNameAndTypeInfo::nameAndDescriptor() const
+    {
+        return {const_pool_.stringAt(name_index_), const_pool_.stringAt(descriptor_index_)};
     }
 
     void ConstUtf8Info::read(jvm::BaseReader &reader)

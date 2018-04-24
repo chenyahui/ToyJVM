@@ -5,7 +5,7 @@
 #ifndef TOYJVM_PATH_ENTRY_H
 #define TOYJVM_PATH_ENTRY_H
 
-#include <toyjvm/common/jvm_types.h>
+#include <toyjvm/utilities/jvm_types.h>
 #include <string>
 #include <boost/noncopyable.hpp>
 #include <boost/filesystem/path.hpp>

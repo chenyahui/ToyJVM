@@ -5,8 +5,8 @@
 #ifndef TOYJVM_CONST_INFOS_H
 #define TOYJVM_CONST_INFOS_H
 
-#include <toyjvm/common/basereader.h>
-#include <toyjvm/common/jvm_types.h>
+#include <toyjvm/utilities/basereader.h>
+#include <toyjvm/utilities/jvm_types.h>
 #include <toyjvm/classfile/const_pool.h>
 #include <boost/noncopyable.hpp>
 #include <string>
@@ -14,7 +14,7 @@
 namespace jvm {
     class BaseConstInfo : boost::noncopyable {
     public:
-        BaseConstInfo(ConstPool::ConstType tag, const ConstPool &const_pool)
+        BaseConstInfo(ConstType tag, const ConstPool &const_pool)
                 : tag_(tag), const_pool_(const_pool)
         {}
 
@@ -23,8 +23,13 @@ namespace jvm {
         virtual void read(BaseReader &)
         {}
 
+        ConstType tag() const
+        {
+            return tag_;
+        }
+
     protected:
-        ConstPool::ConstType tag_;
+        ConstType tag_;
         const ConstPool &const_pool_;
     };
 
@@ -32,7 +37,7 @@ namespace jvm {
     class ConstClassInfo : public BaseConstInfo {
     public:
         explicit ConstClassInfo(ConstPool &const_pool)
-                : BaseConstInfo(ConstPool::ConstType::Class, const_pool)
+                : BaseConstInfo(ConstType::Class, const_pool)
         {}
 
         void read(BaseReader &) override;
@@ -44,42 +49,46 @@ namespace jvm {
         std::string class_name_;
     };
 
-    template<ConstPool::ConstType tag>
+    template<ConstType tag>
     class BaseMemberRefInfo : public BaseConstInfo {
     public:
         explicit BaseMemberRefInfo(ConstPool &const_pool)
                 : BaseConstInfo(tag, const_pool)
         {}
 
-        void read(jvm::BaseReader &reader) override
-        {
-            class_index_ = reader.read<u2>();
-            name_and_type_index_ = reader.read<u2>();
-        }
+        void read(jvm::BaseReader &reader) override;
+
+        std::array<std::string, 2> nameAndDescriptor() const;
+
+        std::string className() const;
 
     private:
         u2 class_index_;
         u2 name_and_type_index_;
     };
 
-    using ConstFieldRefInfo = BaseMemberRefInfo<ConstPool::ConstType::FieldRef>;
-    using ConstMethodRefInfo = BaseMemberRefInfo<ConstPool::ConstType::MethodRef>;
-    using ConstInterfaceMethodRefInfo = BaseMemberRefInfo<ConstPool::ConstType::InterfaceMethodRef>;
+    using ConstFieldRefInfo = BaseMemberRefInfo<ConstType::FieldRef>;
+    using ConstMethodRefInfo = BaseMemberRefInfo<ConstType::MethodRef>;
+    using ConstInterfaceMethodRefInfo = BaseMemberRefInfo<ConstType::InterfaceMethodRef>;
 
     class ConstStringInfo : public BaseConstInfo {
     public:
         explicit ConstStringInfo(ConstPool &const_pool)
-                : BaseConstInfo(ConstPool::ConstType::String, const_pool)
+                : BaseConstInfo(ConstType::String, const_pool)
         {}
 
         void read(BaseReader &) override;
+
+        std::string val() const  ;
 
     private:
         u2 string_index_;
     };
 
-    template<ConstPool::ConstType tag, typename T>
-    class BaseNumberInfo : public BaseConstInfo {
+
+
+    template<ConstType tag, typename T>
+    class BaseNumberInfo : public BaseConstInfo{
     public:
         explicit BaseNumberInfo(ConstPool &const_pool)
                 : BaseConstInfo(tag, const_pool)
@@ -99,16 +108,18 @@ namespace jvm {
         T val_;
     };
 
-    using ConstFloatInfo = BaseNumberInfo<ConstPool::ConstType::Float, jfloat>;
-    using ConstDoubleInfo = BaseNumberInfo<ConstPool::ConstType::Double, jdouble>;
-    using ConstIntegerInfo = BaseNumberInfo<ConstPool::ConstType::Integer, jint>;
-    using ConstLongInfo = BaseNumberInfo<ConstPool::ConstType::Long, jlong>;
+    using ConstFloatInfo = BaseNumberInfo<ConstType::Float, jfloat>;
+    using ConstDoubleInfo = BaseNumberInfo<ConstType::Double, jdouble>;
+    using ConstIntegerInfo = BaseNumberInfo<ConstType::Integer, jint>;
+    using ConstLongInfo = BaseNumberInfo<ConstType::Long, jlong>;
 
     class ConstNameAndTypeInfo : public BaseConstInfo {
     public:
         explicit ConstNameAndTypeInfo(ConstPool &const_pool)
-                : BaseConstInfo(ConstPool::ConstType::NameAndType, const_pool)
+                : BaseConstInfo(ConstType::NameAndType, const_pool)
         {}
+
+        std::array<std::string, 2> nameAndDescriptor() const;
 
         void read(BaseReader &) override;
 
@@ -120,7 +131,7 @@ namespace jvm {
     class ConstUtf8Info : public BaseConstInfo {
     public:
         explicit ConstUtf8Info(ConstPool &const_pool)
-                : BaseConstInfo(ConstPool::ConstType::Utf8, const_pool)
+                : BaseConstInfo(ConstType::Utf8, const_pool)
         {}
 
         void read(BaseReader &) override;
@@ -134,7 +145,7 @@ namespace jvm {
     class ConstMethodHandleInfo : public BaseConstInfo {
     public:
         explicit ConstMethodHandleInfo(ConstPool &const_pool)
-                : BaseConstInfo(ConstPool::ConstType::MethodHandle, const_pool)
+                : BaseConstInfo(ConstType::MethodHandle, const_pool)
         {}
 
         void read(BaseReader &) override;
@@ -147,7 +158,7 @@ namespace jvm {
     class ConstMethodTypeInfo : public BaseConstInfo {
     public:
         explicit ConstMethodTypeInfo(ConstPool &const_pool)
-                : BaseConstInfo(ConstPool::ConstType::MethodType, const_pool)
+                : BaseConstInfo(ConstType::MethodType, const_pool)
         {}
 
         void read(BaseReader &) override;
@@ -159,7 +170,7 @@ namespace jvm {
     class ConstInvokeDynamicInfo : public BaseConstInfo {
     public:
         explicit ConstInvokeDynamicInfo(ConstPool &const_pool)
-                : BaseConstInfo(ConstPool::ConstType::InvokeDynamic, const_pool)
+                : BaseConstInfo(ConstType::InvokeDynamic, const_pool)
         {}
 
         void read(BaseReader &) override;

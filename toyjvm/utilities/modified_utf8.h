@@ -6,7 +6,7 @@
 #define TOYJVM_MODIFY_UTF8_H
 
 #include <string>
-#include <toyjvm/common/jvm_types.h>
+#include <toyjvm/utilities/jvm_types.h>
 
 namespace jvm {
     std::string parseMutf8AsString(bytes &data);

@@ -5,7 +5,7 @@
 #ifndef TOYJVM_MAIN_H
 #define TOYJVM_MAIN_H
 
-#include <toyjvm/common/cmdline.h>
+#include <toyjvm/utilities/cmdline.h>
 
 namespace jvm {
     void startJVM(CmdArgs &);

@@ -6,12 +6,14 @@
 #define TOYJVM_ATTRIBUTE_INFOS_H
 
 #include <string>
-#include "const_pool.h"
-#include "attribute_table.h"
 #include <boost/noncopyable.hpp>
-#include <toyjvm/common/basereader.h>
+#include <toyjvm/utilities/basereader.h>
+#include <toyjvm/classfile/const_pool.h>
+#include <memory>
 
 namespace jvm {
+    class AttrTable;
+
     class BaseAttrInfo {
     public:
         BaseAttrInfo(const std::string &attr_type, const ConstPool &const_pool)
@@ -20,6 +22,11 @@ namespace jvm {
 
         virtual void read(BaseReader &reader)
         {}
+
+        inline const std::string &attrType() const
+        {
+            return attr_type_;
+        }
 
         virtual ~BaseAttrInfo() = default;
 
@@ -37,6 +44,11 @@ namespace jvm {
 
         void read(BaseReader &reader) override;
 
+        inline u2 constValueIndex() const
+        {
+            return constant_value_index_;
+        }
+
     private:
         u2 constant_value_index_;
     };
@@ -53,18 +65,32 @@ namespace jvm {
      */
     class AttrCode : public BaseAttrInfo {
     public:
-        explicit AttrCode(const ConstPool &const_pool)
-                : BaseAttrInfo("Code", const_pool)
-        {}
+        explicit AttrCode(const ConstPool &const_pool);
 
         void read(BaseReader &reader) override;
+
+    public:
+        inline u2 maxStack() const
+        {
+            return max_stack_;
+        }
+
+        inline u2 maxLocals() const
+        {
+            return max_locals_;
+        }
+
+        inline bytes moveCode()
+        {
+            return std::move(code_);
+        }
 
     private:
         u2 max_stack_;
         u2 max_locals_;
         bytes code_;
         std::vector<ExceptionInfo> exception_table_;
-        AttrTable attr_table_;
+        std::unique_ptr<AttrTable> attr_table_;
     };
 
     class AttrExceptions : public BaseAttrInfo {

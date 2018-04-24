@@ -7,16 +7,37 @@
 
 #include <string>
 #include <toyjvm/classfile/const_pool.h>
-#include <toyjvm/common/basereader.h>
+#include <toyjvm/utilities/basereader.h>
+#include <toyjvm/classfile/attribute_infos.h>
 
 namespace jvm {
-    class BaseAttrInfo;
+
 
     class AttrTable {
     public:
         AttrTable() = default;
 
         void read(BaseReader &reader, const ConstPool &);
+
+        inline const std::vector<BaseAttrInfo *> attrInfos() const
+        {
+            return attr_infos_;
+        }
+
+        /*
+         *  用户需要自行保证attr_type和T一致
+         */
+        template<typename T, typename std::enable_if<std::is_base_of<BaseAttrInfo, T>::value>::type>
+        T *getFirst(const std::string &attr_type) const
+        {
+            for (auto attr_info : attr_infos_) {
+                if (attr_info->attrType() == attr_type) {
+                    return dynamic_cast<T *>(attr_info);
+                }
+            }
+
+            return nullptr;
+        };
 
     private:
         BaseAttrInfo *readAttrInfo(BaseReader &reader, const ConstPool &);

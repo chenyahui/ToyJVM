@@ -7,7 +7,7 @@
 
 #include <string>
 #include <functional>
-#include <toyjvm/common/jvm_types.h>
+#include <toyjvm/utilities/jvm_types.h>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 

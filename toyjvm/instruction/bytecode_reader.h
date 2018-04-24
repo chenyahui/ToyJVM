@@ -5,7 +5,7 @@
 #ifndef TOYJVM_BYTECODE_READER_H
 #define TOYJVM_BYTECODE_READER_H
 
-#include <toyjvm/common/basereader.h>
+#include <toyjvm/utilities/basereader.h>
 
 namespace jvm {
     class ByteCodeReader : public BaseReader {

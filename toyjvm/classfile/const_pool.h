@@ -5,30 +5,31 @@
 #ifndef TOYJVM_CONST_POOL_H
 #define TOYJVM_CONST_POOL_H
 
-#include <toyjvm/common/basereader.h>
+#include <toyjvm/utilities/basereader.h>
 #include <string>
 
 namespace jvm {
     class BaseConstInfo;
 
+    enum class ConstType {
+        Class = 7,
+        FieldRef = 9,
+        MethodRef = 10,
+        InterfaceMethodRef = 11,
+        String = 8,
+        Integer = 3,
+        Float = 4,
+        Long = 5,
+        Double = 6,
+        NameAndType = 12,
+        Utf8 = 1,
+        MethodHandle = 15,
+        MethodType = 16,
+        InvokeDynamic = 18
+    };
+
     class ConstPool : boost::noncopyable {
     public:
-        enum ConstType {
-            Class = 7,
-            FieldRef = 9,
-            MethodRef = 10,
-            InterfaceMethodRef = 11,
-            String = 8,
-            Integer = 3,
-            Float = 4,
-            Long = 5,
-            Double = 6,
-            NameAndType = 12,
-            Utf8 = 1,
-            MethodHandle = 15,
-            MethodType = 16,
-            InvokeDynamic = 18
-        };
 
         explicit ConstPool(BaseReader &reader)
                 : reader_(reader)
@@ -37,9 +38,16 @@ namespace jvm {
 
         void read();
 
-        BaseConstInfo *ConstInfoFactory(ConstType tag);
+        std::shared_ptr<BaseConstInfo> ConstInfoFactory(ConstType tag);
 
-        ~ConstPool();
+        ~ConstPool() = default;
+
+        inline const std::vector<std::shared_ptr<BaseConstInfo>> &constInfos() const
+        {
+            return const_infos_;
+        }
+
+        std::string classNameOf(u2 class_index) const;
 
     public:
         std::string stringAt(int index) const;
@@ -55,7 +63,7 @@ namespace jvm {
 
     private:
         BaseReader &reader_;
-        std::vector<BaseConstInfo *> const_infos_;
+        std::vector<std::shared_ptr<BaseConstInfo>> const_infos_;
     };
 
 }

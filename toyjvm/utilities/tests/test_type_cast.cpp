@@ -3,7 +3,7 @@
 //
 
 #include <gtest/gtest.h>
-#include <toyjvm/common/type_cast.h>
+#include <toyjvm/utilities/type_cast.h>
 
 using namespace jvm;
 

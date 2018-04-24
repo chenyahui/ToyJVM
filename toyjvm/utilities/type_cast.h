@@ -6,7 +6,7 @@
 #define TOYJVM_TYPE_CAST_H
 
 #include <assert.h>
-#include <toyjvm/common/jvm_types.h>
+#include <toyjvm/utilities/jvm_types.h>
 #include <utility>
 #include <array>
 

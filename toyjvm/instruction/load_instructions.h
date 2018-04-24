@@ -6,7 +6,7 @@
 #define TOYJVM_LOAD_INSTRUCTION_H
 
 #include <toyjvm/instruction/base_instruction.h>
-#include <toyjvm/common/jvm_types.h>
+#include <toyjvm/utilities/jvm_types.h>
 
 namespace jvm {
     template<typename T, int INDEX>

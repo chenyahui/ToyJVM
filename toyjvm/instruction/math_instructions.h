@@ -6,7 +6,7 @@
 #define TOYJVM_MATH_INSTRUCTIONS_H
 
 #include <toyjvm/instruction/base_instruction.h>
-#include <toyjvm/common/exception.h>
+#include <toyjvm/utilities/exception.h>
 #include <cmath>
 #include <toyjvm/instruction/instruction_tag.h>
 

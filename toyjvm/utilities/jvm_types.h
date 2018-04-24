@@ -7,6 +7,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <memory>
 
 namespace jvm {
     using u8 = uint64_t;
@@ -22,7 +23,17 @@ namespace jvm {
     using jbyte = uint8_t;
     using jlong = int64_t;
     using jshort = short;
+    using jbool = int32_t;
 
-    using jref = char *;
+    class JvmRef;
+
+    class JvmObject;
+
+    class JvmBaseArray;
+
+    using jref = std::shared_ptr<JvmRef>;
+    using jobj = std::shared_ptr<JvmObject>;
+    using jarr = std::shared_ptr<JvmBaseArray>;
+
 }
 #endif //TOYJVM_TYPES_H

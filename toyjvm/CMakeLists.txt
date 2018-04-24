@@ -1,4 +1,4 @@
-add_subdirectory(common)
+add_subdirectory(utilities)
 add_subdirectory(classpath)
 add_subdirectory(classfile)
 add_subdirectory(runtime)
@@ -12,7 +12,7 @@ set(SOURCE_FILES
 
 add_executable(toyjvm ${SOURCE_FILES})
 target_link_libraries(toyjvm
-        toyjvm_common
+        toyjvm_utility
         toyjvm_classpath
         toyjvm_classfile
         glog
