@@ -33,32 +33,31 @@ namespace jvm {
 
             auto descriptor = field->descriptor();
             auto &opstack = frame.operandStack();
-            RealActor realActor;
             switch (descriptor[0]) {
                 case 'Z':
                 case 'B':
                 case 'C':
                 case 'S':
                 case 'I': {
-                    realActor.handle<jint>(slot_id, static_slots, opstack);
+                    RealActor::template handle<jint>(slot_id, static_slots, opstack);
                     break;
                 }
 
                 case 'F': {
-                    realActor.handle<jfloat>(slot_id, static_slots, opstack);
+                    RealActor::template handle<jfloat>(slot_id, static_slots, opstack);
                     break;
                 }
                 case 'J': {
-                    realActor.handle<jlong>(slot_id, static_slots, opstack);
+                    RealActor::template handle<jlong>(slot_id, static_slots, opstack);
                     break;
                 }
                 case 'D': {
-                    realActor.handle<jdouble>(slot_id, static_slots, opstack);
+                    RealActor::template handle<jdouble>(slot_id, static_slots, opstack);
                     break;
                 }
                 case 'L':
                 case '[': {
-                    realActor.handle<jref>(slot_id, static_slots, opstack);
+                    RealActor::template handle<jref>(slot_id, static_slots, opstack);
                     break;
                 }
             }
@@ -71,7 +70,7 @@ namespace jvm {
         class RealAction {
         public:
             template<typename T>
-            void handle(size_t slot_id,
+            static void handle(size_t slot_id,
                            LocalSlots *static_slots,
                            OperandStack &opstack)
             {
@@ -91,7 +90,7 @@ namespace jvm {
         class RealAction {
         public:
             template<typename T>
-            void handle(size_t slot_id,
+            static void handle(size_t slot_id,
                            LocalSlots *static_slots,
                            OperandStack &opstack)
             {
@@ -111,7 +110,7 @@ namespace jvm {
         class RealAction {
         public:
             template<typename T>
-            void handle(size_t slot_id,
+            static void handle(size_t slot_id,
                            LocalSlots *static_slots,
                            OperandStack &opstack)
             {
@@ -130,7 +129,6 @@ namespace jvm {
         {
             realAction<PUTFIELD_Instruction::RealAction>(frame);
         }
-
     };
 
     class GETFIELD_Instruction : public BaseFieldInstruction {
@@ -143,7 +141,7 @@ namespace jvm {
         class RealAction {
         public:
             template<typename T>
-            void handle(size_t slot_id,
+            static void handle(size_t slot_id,
                            LocalSlots *static_slots,
                            OperandStack &opstack)
             {

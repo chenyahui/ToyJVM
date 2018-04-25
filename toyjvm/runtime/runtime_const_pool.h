@@ -20,7 +20,7 @@ namespace jvm {
         explicit RuntimeConstPool(const ConstPool &const_pool, std::shared_ptr<JvmClass> klass);
 
         template<typename T>
-        const T& at(size_t index) const
+        const T at(size_t index) const
         {
             return boost::any_cast<T>(std::get<0>(pool_[index]));
         }

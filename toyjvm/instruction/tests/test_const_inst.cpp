@@ -17,5 +17,4 @@ TEST(ConstInstruction, normal)
     dconst1Instruction.run(reader, frame);
 
     EXPECT_EQ(frame.operandStack().pop<jdouble>(), 1.0);
-
 }

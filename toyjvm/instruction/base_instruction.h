@@ -30,7 +30,7 @@ namespace jvm {
     template<typename T>
     class BaseOneOperandInstruction : public BaseInstruction {
     public:
-        virtual void fetchOperands(ByteCodeReader &reader)
+        virtual void fetchOperands(ByteCodeReader &reader) override
         {
             operand_ = static_cast<int>(reader.read<T>());
         }
