@@ -1,5 +1,10 @@
-Rewriteing
+Rewriting
 
 
 # TODO
-Depending on:
+* JNI
+* GC
+* Template interpreter
+* JMM
+
+
