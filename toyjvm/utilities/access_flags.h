@@ -57,6 +57,9 @@ namespace jvm {
             return (flags_ & FINAL) != 0;
         }
 
+        inline bool isInterface() const{
+            return (flags_ & INTERFACE) != 0;
+        }
 
     private:
         jint flags_;

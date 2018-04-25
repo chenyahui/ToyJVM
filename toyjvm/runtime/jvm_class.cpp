@@ -22,12 +22,73 @@ namespace jvm {
         return access_flags_;
     }
 
-    JvmArrayClass::JvmArrayClass(const std::string &class_name)
-            : JvmBaseClass(true, class_name, AccessFlags::PUBLIC)
+    bool JvmBaseClass::isSubClassOf(jvm::JvmBaseClass *klass) const
     {
+        assert(!klass->isArray() && !klass->access_flags_.isInterface());
+        auto t = dynamic_cast<JvmClass *>(klass);
+        assert(t != nullptr);
+
+        for (auto c = super_class_; c != nullptr; c = c->super_class_) {
+            if (c == t) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool JvmBaseClass::isImplements(jvm::JvmBaseClass *iface) const
+    {
+        assert(iface->access_flags_.isInterface());
+        auto t = dynamic_cast<JvmClass *>(iface);
+        assert(t != nullptr);
+
+        for (auto c = this; c != nullptr; c = c->super_class_.get()) {
+            for (const auto& inter : c->interfaces_) {
+                if (inter == t || inter->isSubInterfaceOf(t)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    bool JvmBaseClass::isAssignableFrom(jvm::JvmBaseClass *t) const
+    {
+        assert(!t->isArray());
+        if (this == t) return true;
+        if (t->accessFlags().isInterface()) {
+            return isImplements(t);
+        } else {
+            return isSubClassOf(t);
+        }
+    }
+
+    JvmArrayClass::JvmArrayClass(const std::string &class_name)
+            : JvmBaseClass(true, class_name, AccessFlags::PUBLIC),
+              component_name_(descriptorToClassName(class_name.substr(1)))
+    {
+        assert(class_name[0] == '[');
+
         super_class_ = Loader::instance()->loadClass("java/lang/Object");
         interfaces_.push_back(Loader::instance()->loadClass("java/lang/Cloneable"));
         interfaces_.push_back(Loader::instance()->loadClass("java/io/Serializable"));
+    }
+
+    std::shared_ptr<JvmBaseClass> JvmArrayClass::componentClass() const
+    {
+        return Loader::instance()->loadClass(component_name_);
+    }
+
+    bool JvmArrayClass::isAssignableFrom(jvm::JvmBaseClass *t) const
+    {
+        if (this == t) return true;
+        if (!t->isArray()) {
+            return JvmBaseClass::isAssignableFrom(t);
+        }
+        auto sc = componentClass();
+        auto tc = dynamic_cast<JvmArrayClass *>(t)->componentClass();
+
+        return sc->isAssignableFrom(tc.get());
     }
 
     std::shared_ptr<JvmBaseArray> JvmArrayClass::arrayFactory(jvm::u4 count)
@@ -67,7 +128,7 @@ namespace jvm {
               static_slots_count_(0),
               runtime_const_pool_(class_file->const_pool_, shared_from_this())
     {
-        if (isNotJavaLangObject()) {
+        if (!isJavaLangObject()) {
             // 解析super class
             super_class_ = Loader::instance()->loadClass(
                     class_file->const_pool_.classNameOf(class_file->super_class_)
@@ -91,18 +152,19 @@ namespace jvm {
         }
     }
 
-    bool JvmClass::isNotJavaLangObject()
+    bool JvmClass::isJavaLangObject()
     {
-        return class_name_ != "java/lang/Object";
+        return class_name_ == "java/lang/Object";
     }
 
-    bool JvmClass::isSubClassOf(jvm::JvmClass *klass) const
+    bool JvmClass::isSubInterfaceOf(jvm::JvmClass *inter) const
     {
-        for (auto c = super_class_; c != nullptr; c = c->super_class_) {
-            if (c == klass) {
+        for (auto &super_inter:interfaces_) {
+            if (super_inter == inter || super_inter->isSubInterfaceOf(inter)) {
                 return true;
             }
         }
+
         return false;
     }
 }

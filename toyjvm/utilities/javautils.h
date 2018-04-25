@@ -9,6 +9,9 @@
 
 namespace jvm {
 
-    std::string getPackageName(std::string &class_name);
+    std::string getPackageName(const std::string &class_name);
+
+    std::string descriptorToClassName(const std::string& descriptor);
+
 }
 #endif //TOYJVM_JAVA_UTILS_H

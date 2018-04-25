@@ -32,6 +32,17 @@ namespace jvm {
 
         const AccessFlags &accessFlags() const;
 
+        virtual bool isAssignableFrom(JvmBaseClass *t) const;
+
+        bool isSubClassOf(JvmBaseClass *klass) const;
+
+        bool isImplements(JvmBaseClass *klass) const;
+
+        bool isArray() const
+        {
+            return is_array_;
+        }
+
     protected:
         bool is_array_;
         std::string class_name_;
@@ -46,7 +57,14 @@ namespace jvm {
     public:
         explicit JvmArrayClass(const std::string &class_name);
 
+        bool isAssignableFrom(JvmBaseClass *t) const override;
+
         std::shared_ptr<JvmBaseArray> arrayFactory(u4 count);
+
+        std::shared_ptr<JvmBaseClass> componentClass() const;
+
+    private:
+        std::string component_name_;
     };
 
     class JvmClass : public JvmBaseClass, public std::enable_shared_from_this<JvmClass> {
@@ -54,9 +72,7 @@ namespace jvm {
         explicit JvmClass(ClassFile *class_file);
 
         std::shared_ptr<JvmField> getField() const;
-
-        bool isSubClassOf(JvmClass *klass) const;
-
+        bool isSubInterfaceOf(JvmClass*) const;
         size_t instanceSlotsCount() const
         {
             return instance_slots_count_;
@@ -89,7 +105,7 @@ namespace jvm {
         }
 
     private:
-        bool isNotJavaLangObject();
+        bool isJavaLangObject();
 
     private:
         RuntimeConstPool runtime_const_pool_;

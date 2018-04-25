@@ -17,6 +17,16 @@ namespace jvm {
                 : klass_(klass)
         {}
 
+        std::shared_ptr<JvmBaseClass> klass() const
+        {
+            return klass_.lock();
+        }
+
+        bool isInstanceOf(JvmBaseClass *t) const
+        {
+            return klass_.lock()->isAssignableFrom(t);
+        }
+
         virtual ~JvmRef() = default;
 
     protected:
@@ -30,7 +40,7 @@ namespace jvm {
                   instance_fields_(klass->instanceSlotsCount())
         {}
 
-        const jvm::LocalSlots& instanceFields() const
+        const jvm::LocalSlots &instanceFields() const
         {
             return instance_fields_;
         }
