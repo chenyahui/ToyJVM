@@ -10,12 +10,12 @@
 
 namespace jvm {
     template<typename T, int INDEX>
-    class StoreInstruction : public BaseLoadStoreInstruction<T, INDEX> {
+    class StoreInstruction : public BaseLoadStoreInstruction<u1, INDEX> {
     public:
         void execute(JvmFrame &frame) override
         {
             T val = frame.operandStack().pop<T>();
-            frame.operandStack().set<T>(BaseLoadStoreInstruction<T, INDEX>::index_, val);
+            frame.operandStack().set<T>(BaseLoadStoreInstruction<u1, INDEX>::index_, val);
         }
     };
 
@@ -30,7 +30,7 @@ namespace jvm {
     GENE_STORES(F, jfloat)
     GENE_STORES(D, jdouble)
     GENE_STORES(L, jlong)
-//    GENE_STORES(A, jref)
+    GENE_STORES(A, jref)
 
 #undef GENE_STORES
 }
