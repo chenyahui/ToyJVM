@@ -15,7 +15,7 @@ namespace jvm {
         void execute(JvmFrame &frame) override
         {
             const auto &local_vars = frame.localSlots();
-            T val = local_vars.at<T>(index_);
+            T val = local_vars.at<T>(BaseLoadStoreInstruction<T, INDEX>::index_);
             frame.operandStack().push<T>(val);
         }
     };
@@ -31,7 +31,7 @@ namespace jvm {
     GENE_LOADS(F, jfloat)
     GENE_LOADS(D, jdouble)
     GENE_LOADS(L, jlong)
-    GENE_LOADS(A, jref)
+//    GENE_LOADS(A, jref)
 
 #undef GENE_LOADS
 }

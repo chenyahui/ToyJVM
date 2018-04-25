@@ -59,5 +59,4 @@ namespace jvm {
         void execute(JvmFrame &frame) override;
     };
 };
-}
 #endif //TOYJVM_STACK_INSTRUCTIONS_H

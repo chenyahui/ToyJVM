@@ -12,43 +12,51 @@
 #include <toyjvm/utilities/jvm_types.h>
 #include <array>
 #include <toyjvm/utilities/type_cast.h>
+#include <type_traits>
+#include <iostream>
 
 namespace jvm {
     class LocalSlots : boost::noncopyable {
+    protected:
+        template<typename T>
+        struct use_two_slot {
+            static const bool value = std::is_same<T, jdouble>::value || std::is_same<T, jlong>::value;
+        };
+
     public:
         explicit LocalSlots(size_t slot_size)
                 : slot_size_(slot_size),
                   slots_(slot_size)
         {}
 
-        template<typename T>
+
+        template<typename T, typename std::enable_if<!use_two_slot<T>::value>::type * = nullptr>
         void set(size_t index, T data)
         {
-            assert(index < slot_size_);
-            if (use_two_slot<T>::value) {
-                auto two = union_cast<T, std::array<int, 2>>(data);
-                slots_[index] = boost::any(two[0]);
-                slots_[index + 1] = boost::any(two[1]);
-            } else {
-                slots_[index] = boost::any(data);
-            }
+            slots_[index] = boost::any(data);
         }
 
-        template<typename T>
+        template<class T, typename std::enable_if<use_two_slot<T>::value>::type * = nullptr>
+        void set(size_t index, T data)
+        {
+            auto two = union_cast<T, std::array<u4, 2>>(data);
+            slots_[index] = boost::any(two[0]);
+            slots_[index + 1] = boost::any(two[1]);
+        };
+
+
+        template<typename T, typename std::enable_if<use_two_slot<T>::value>::type * = nullptr>
         T at(size_t index) const
         {
-            assert(index < slot_size_);
-            if (use_two_slot<T>::value) {
-                return union_cast<std::array<int, 2>, T>({at<int>(index), at<int>(index + 1)});
-            }
+            return union_cast<std::array<u4, 2>, T>({at<u4>(index), at<u4>(index + 1)});
+        }
+
+        template<typename T, typename std::enable_if<!use_two_slot<T>::value>::type * = nullptr>
+        T at(size_t index) const
+        {
             return boost::any_cast<T>(slots_[index]);
         }
 
-    protected:
-        template<typename T>
-        struct use_two_slot {
-            static const bool value = std::is_same<T, jdouble>::value || std::is_same<T, jlong>::value;
-        };
 
     protected:
         size_t slot_size_;

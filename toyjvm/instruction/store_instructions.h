@@ -15,7 +15,7 @@ namespace jvm {
         void execute(JvmFrame &frame) override
         {
             T val = frame.operandStack().pop<T>();
-            frame.operandStack().set<T>(index_, val);
+            frame.operandStack().set<T>(BaseLoadStoreInstruction<T, INDEX>::index_, val);
         }
     };
 
@@ -30,7 +30,7 @@ namespace jvm {
     GENE_STORES(F, jfloat)
     GENE_STORES(D, jdouble)
     GENE_STORES(L, jlong)
-    GENE_STORES(A, jref)
+//    GENE_STORES(A, jref)
 
 #undef GENE_STORES
 }

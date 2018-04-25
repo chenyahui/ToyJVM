@@ -11,8 +11,8 @@ TEST(test_type_cast, splitLongTo2Bit32)
 {
     auto assert_long = [](long val, int high, int low) {
         auto two = union_cast<long, std::array<int, 2>>(val);
-        ASSERT_EQ(two[1], high);
-        ASSERT_EQ(two[0], low);
+        EXPECT_EQ(two[1], high);
+        EXPECT_EQ(two[0], low);
     };
 
     assert_long(0x100000001, 1, 1);
@@ -23,7 +23,7 @@ TEST(test_type_cast, merge2Bit32ToLong)
 {
     auto assert_long = [](int high, int low, long val) {
         auto result = union_cast<std::array<int, 2>, long>({low, high});
-        ASSERT_EQ(result, val);
+        EXPECT_EQ(result, val);
     };
 
     assert_long(1, 1, 0x100000001);

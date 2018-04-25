@@ -9,6 +9,9 @@ set(INST_SRC
         control_instructions.h
         control_instructions.cpp
         extend_instructions.h
-        extend_instructions.cpp ref_instructions.h ref_instructions.cpp)
+        extend_instructions.cpp
+#        ref_instructions.h
+#        ref_instructions.cpp
+        )
 
 add_library(toyjvm_inst ${INST_SRC})

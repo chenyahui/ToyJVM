@@ -8,6 +8,8 @@
 #include <toyjvm/instruction/base_instruction.h>
 #include <toyjvm/runtime/jvm_reference.h>
 #include <toyjvm/utilities/exception.h>
+#include <toyjvm/utilities/jvm_types.h>
+#include <toyjvm/runtime/symbol_ref.h>
 
 namespace jvm {
     class NEW_Instruction : public BaseOneOperandInstruction<u2> {
@@ -16,73 +18,144 @@ namespace jvm {
     };
 
     class BaseFieldInstruction : public BaseOneOperandInstruction<u2> {
-    public:
-        void execute(jvm::JvmFrame &frame) override;
-
     protected:
-        template<typename T>
-        virtual void realAction(size_t slot_id,
-                                LocalSlots *static_slots,
-                                OperandStack &opstack) = 0;
+        template<typename RealActor>
+        void realAction(jvm::JvmFrame &frame)
+        {
+            const auto &rt_const_pool = frame.method()->klass()->runtimeConstPool();
+            // 找到要赋值的字段
+            auto &field_ref = rt_const_pool.at<std::shared_ptr<FieldRef>>(operand_);
+            auto field = field_ref->resolveField();
+
+            auto klass = field->klass();
+            auto static_slots = klass->staticFields();
+            auto slot_id = field->slotIndex();
+
+            auto descriptor = field->descriptor();
+            auto &opstack = frame.operandStack();
+            RealActor realActor;
+            switch (descriptor[0]) {
+                case 'Z':
+                case 'B':
+                case 'C':
+                case 'S':
+                case 'I': {
+                    realActor.handle<jint>(slot_id, static_slots, opstack);
+                    break;
+                }
+
+                case 'F': {
+                    realActor.handle<jfloat>(slot_id, static_slots, opstack);
+                    break;
+                }
+                case 'J': {
+                    realActor.handle<jlong>(slot_id, static_slots, opstack);
+                    break;
+                }
+                case 'D': {
+                    realActor.handle<jdouble>(slot_id, static_slots, opstack);
+                    break;
+                }
+                case 'L':
+                case '[': {
+                    realActor.handle<jref>(slot_id, static_slots, opstack);
+                    break;
+                }
+            }
+        }
+
     };
 
     class PUTSTATIC_Instruction : public BaseFieldInstruction {
     private:
-        template<typename T>
-        void realAction(size_t slot_id,
-                        LocalSlots *static_slots,
-                        OperandStack &opstack) override
+        class RealAction {
+        public:
+            template<typename T>
+            void handle(size_t slot_id,
+                           LocalSlots *static_slots,
+                           OperandStack &opstack)
+            {
+                static_slots->set<T>(slot_id, opstack.pop<T>());
+            }
+        };
+
+    public:
+        void execute(JvmFrame &frame) override
         {
-            static_slots->set<T>(slot_id, opstack.pop<T>());
+            realAction<PUTSTATIC_Instruction::RealAction>(frame);
         }
     };
 
     class GETSTATIC_Instruction : public BaseFieldInstruction {
     private:
-        template<typename T>
-        void realAction(size_t slot_id,
-                        LocalSlots *static_slots,
-                        OperandStack &opstack) override
+        class RealAction {
+        public:
+            template<typename T>
+            void handle(size_t slot_id,
+                           LocalSlots *static_slots,
+                           OperandStack &opstack)
+            {
+                opstack.push<T>(static_slots->at<T>(slot_id));
+            }
+        };
+
+    public:
+        void execute(JvmFrame &frame) override
         {
-            opstack.push<T>(static_slots->at<T>(slot_id));
+            realAction<GETSTATIC_Instruction::RealAction>(frame);
         }
     };
 
     class PUTFIELD_Instruction : public BaseFieldInstruction {
     private:
-    private:
-        template<typename T>
-        void realAction(size_t slot_id,
-                        LocalSlots *,
-                        OperandStack &opstack) override
-        {
-            auto val = opstack.pop<T>();
-            auto obj = opstack.pop<jobj>();
+        class RealAction {
+        public:
+            template<typename T>
+            void handle(size_t slot_id,
+                           LocalSlots *static_slots,
+                           OperandStack &opstack)
+            {
+                auto val = opstack.pop<T>();
+                auto obj = opstack.pop<jobj>();
 
-            if (obj == nullptr) {
-                throw JVMError("null pointer");
+                if (obj == nullptr) {
+                    throw JVMError("null pointer");
+                }
+
+                const_cast<LocalSlots &>(obj->instanceFields()).set<T>(slot_id, val);
             }
-
-            const_cast<LocalSlots &>(obj->instanceFields()).set<T>(slot_id, val);
+        };
+    public:
+        void execute(JvmFrame &frame) override
+        {
+            realAction<PUTFIELD_Instruction::RealAction>(frame);
         }
+
     };
 
     class GETFIELD_Instruction : public BaseFieldInstruction {
-    private:
-    private:
-        template<typename T>
-        void realAction(size_t slot_id,
-                        LocalSlots *,
-                        OperandStack &opstack) override
+    public:
+        void execute(JvmFrame &frame) override
         {
-            auto obj = opstack.pop<std::shared_ptr<JvmObject>>();
-
-            if (obj == nullptr) {
-                throw JVMError("null pointer");
-            }
-
-            opstack.push<T>(obj->instanceFields().at<T>(slot_id));
+            realAction<GETFIELD_Instruction::RealAction>(frame);
         }
+    private:
+        class RealAction {
+        public:
+            template<typename T>
+            void handle(size_t slot_id,
+                           LocalSlots *static_slots,
+                           OperandStack &opstack)
+            {
+                auto obj = opstack.pop<std::shared_ptr<JvmObject>>();
+
+                if (obj == nullptr) {
+                    throw JVMError("null pointer");
+                }
+
+                opstack.push<T>(obj->instanceFields().at<T>(slot_id));
+            }
+        };
     };
 
     class INSTANCEOF_Instruction : public BaseOneOperandInstruction<u2> {

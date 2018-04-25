@@ -8,34 +8,35 @@
 #include <toyjvm/instruction/base_instruction.h>
 
 namespace jvm {
-    template<typename T, T val>
+    template<typename T, int val>
     class BaseConstInstruction : public BaseInstruction {
     public:
         void execute(JvmFrame &frame) override
         {
-            frame.operandStack().push<T>(val);
+            T data = static_cast<T>(val);
+            frame.operandStack().push<T>(data);
         }
     };
 
     using NOP_Instruction = BaseInstruction;
 
-    using DCONST_0_Instruction = BaseConstInstruction<double, 0>;
-    using DCONST_1_Instruction = BaseConstInstruction<double, 1>;
+    using DCONST_0_Instruction = BaseConstInstruction<jdouble , 0>;
+    using DCONST_1_Instruction = BaseConstInstruction<jdouble, 1>;
 
-    using FCONST_0_Instruction = BaseConstInstruction<float, 0>;
-    using FCONST_1_Instruction = BaseConstInstruction<float, 1>;
-    using FCONST_2_Instruction = BaseConstInstruction<float, 2>;
+    using FCONST_0_Instruction = BaseConstInstruction<jfloat, 0>;
+    using FCONST_1_Instruction = BaseConstInstruction<jfloat, 1>;
+    using FCONST_2_Instruction = BaseConstInstruction<jfloat, 2>;
 
-    using ICONST_M1_Instruction = BaseConstInstruction<int, -1>;
-    using ICONST_0_Instruction = BaseConstInstruction<int, 0>;
-    using ICONST_1_Instruction = BaseConstInstruction<int, 1>;
-    using ICONST_2_Instruction = BaseConstInstruction<int, 2>;
-    using ICONST_3_Instruction = BaseConstInstruction<int, 3>;
-    using ICONST_4_Instruction = BaseConstInstruction<int, 4>;
-    using ICONST_5_Instruction = BaseConstInstruction<int, 5>;
+    using ICONST_M1_Instruction = BaseConstInstruction<jint, -1>;
+    using ICONST_0_Instruction = BaseConstInstruction<jint, 0>;
+    using ICONST_1_Instruction = BaseConstInstruction<jint, 1>;
+    using ICONST_2_Instruction = BaseConstInstruction<jint, 2>;
+    using ICONST_3_Instruction = BaseConstInstruction<jint, 3>;
+    using ICONST_4_Instruction = BaseConstInstruction<jint, 4>;
+    using ICONST_5_Instruction = BaseConstInstruction<jint, 5>;
 
-    using LCONST_0_Instruction = BaseConstInstruction<int64_t, 0>;
-    using LCONST_1_Instruction = BaseConstInstruction<int64_t, 1>;
+    using LCONST_0_Instruction = BaseConstInstruction<jlong, 0>;
+    using LCONST_1_Instruction = BaseConstInstruction<jlong, 1>;
 
     class ACONST_NULL_Instruction : public BaseInstruction {
     public:

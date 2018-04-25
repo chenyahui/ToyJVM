@@ -16,6 +16,10 @@ namespace jvm {
 
     class BaseInstruction : boost::noncopyable {
     public:
+        void run(ByteCodeReader &reader, JvmFrame &frame){
+            fetchOperands(reader);
+            execute(frame);
+        }
         virtual void fetchOperands(ByteCodeReader &reader)
         {}
 

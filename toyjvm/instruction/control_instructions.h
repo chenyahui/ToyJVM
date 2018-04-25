@@ -14,7 +14,7 @@ namespace jvm {
     public:
         void execute(JvmFrame &frame) override
         {
-            branchJump(frame, operand_);
+            branchJump(frame, BaseOneOperandInstruction<T>::operand_);
         }
     };
 

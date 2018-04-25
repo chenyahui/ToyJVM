@@ -9,6 +9,7 @@
 #include <boost/any.hpp>
 #include <vector>
 #include <toyjvm/runtime/local_slots.h>
+#include <iostream>
 
 namespace jvm {
     class OperandStack : public LocalSlots {
@@ -20,7 +21,7 @@ namespace jvm {
         template<typename T>
         void push(T data)
         {
-            set(stack_num_, data);
+            set<T>(stack_num_, data);
             stack_num_ += use_two_slot<T>::value ? 2 : 1;
         }
 

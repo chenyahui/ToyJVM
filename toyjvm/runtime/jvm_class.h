@@ -18,9 +18,9 @@ namespace jvm {
 
     class JvmMethod;
 
-    virtual class JvmBaseClass : boost::noncopyable , public std::enable_shared_from_this<JvmBaseClass>{
+    class JvmBaseClass : boost::noncopyable, public std::enable_shared_from_this<JvmBaseClass> {
     public:
-        JvmBaseClass(bool is_array, const std::string& class_name, jint flags)
+        JvmBaseClass(bool is_array, const std::string &class_name, jint flags)
                 : is_array_(is_array),
                   access_flags_(flags),
                   class_name_(class_name)
@@ -45,6 +45,7 @@ namespace jvm {
     class JvmArrayClass : public JvmBaseClass, public std::enable_shared_from_this<JvmArrayClass> {
     public:
         explicit JvmArrayClass(const std::string &class_name);
+
         std::shared_ptr<JvmBaseArray> arrayFactory(u4 count);
     };
 
@@ -69,7 +70,7 @@ namespace jvm {
         void allocStaticSlots(size_t val)
         {
             static_slots_count_ = val;
-            static_fields_ = std::move(new LocalSlots(static_slots_count_));
+            static_fields_ = std::move(std::unique_ptr<LocalSlots>(new LocalSlots(static_slots_count_)));
         }
 
         LocalSlots *staticFields() const
@@ -77,12 +78,12 @@ namespace jvm {
             return static_fields_.get();
         }
 
-        RuntimeConstPool &runtimeConstPool() const
+        const RuntimeConstPool &runtimeConstPool() const
         {
             return runtime_const_pool_;
         }
 
-        std::vector<std::shared_ptr<JvmField>> &fields() const
+        const std::vector<std::shared_ptr<JvmField>> &fields() const
         {
             return fields_;
         }

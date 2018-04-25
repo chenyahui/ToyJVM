@@ -8,7 +8,7 @@ namespace jvm {
     void IINC_Instruction::execute(jvm::JvmFrame &frame)
     {
         auto &local_vars = frame.localSlots();
-        auto val = local_vars.at(index_);
+        auto val = local_vars.at<jint>(index_);
         local_vars.set<jint>(index_, val + const_);
     }
 

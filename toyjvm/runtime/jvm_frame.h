@@ -18,12 +18,12 @@ namespace jvm {
                   operand_stack_(max_stack_num)
         {}
 
-        inline LocalSlots &localSlots() const
+        inline LocalSlots &localSlots()
         {
             return local_slots_;
         }
 
-        inline OperandStack &operandStack() const
+        inline OperandStack &operandStack()
         {
             return operand_stack_;
         }

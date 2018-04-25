@@ -17,7 +17,7 @@ namespace jvm {
                 : klass_(klass)
         {}
 
-        virtual ~JReference() = default;
+        virtual ~JvmRef() = default;
 
     protected:
         std::weak_ptr<JvmBaseClass> klass_;

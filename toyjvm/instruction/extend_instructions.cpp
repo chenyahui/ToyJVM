@@ -14,7 +14,7 @@ namespace jvm {
         auto tag = reader.read<u1>();
 
 #define GENE_CASE(TAG) \
-case InstructionTag::##TAG: \
+case InstructionTag::TAG: \
         modified_instruction_ = new TAG##_Instruction(); \
         break;
 
@@ -23,12 +23,12 @@ case InstructionTag::##TAG: \
             GENE_CASE(LLOAD)
             GENE_CASE(FLOAD)
             GENE_CASE(DLOAD)
-            GENE_CASE(ALOAD)
+//            GENE_CASE(ALOAD)
             GENE_CASE(ISTORE)
             GENE_CASE(LSTORE)
             GENE_CASE(FSTORE)
             GENE_CASE(DSTORE)
-            GENE_CASE(ASTORE)
+//            GENE_CASE(ASTORE)
             GENE_CASE(IINC)
             case InstructionTag::RET:
                 throw JVMError("todo ret");

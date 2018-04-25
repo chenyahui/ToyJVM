@@ -14,10 +14,6 @@ namespace jvm {
                 : BaseReader(data)
         {}
 
-        ByteCodeReader(const ByteCodeReader &reader)
-                : BaseReader(reader)
-        {}
-
         void skipPadding();
     };
 }

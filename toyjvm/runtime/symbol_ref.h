@@ -13,7 +13,7 @@
 namespace jvm {
     class SymbolRef : boost::noncopyable {
     public:
-        explicit SymbolRef(RuntimeConstPool &runtime_const_pool)
+        explicit SymbolRef(RuntimeConstPool &runtime_const_pool, const std::string&)
                 : runtime_const_pool_(runtime_const_pool),
                   klass_(nullptr)
         {}
@@ -31,8 +31,7 @@ namespace jvm {
     public:
         ClassRef(RuntimeConstPool &runtime_const_pool,
                  ConstClassInfo *class_info)
-                : SymbolRef(runtime_const_pool),
-                  class_name_(class_info->className())
+                : SymbolRef(runtime_const_pool,class_info->className())
         {
         }
     };
@@ -42,8 +41,7 @@ namespace jvm {
     public:
         MemberRef(RuntimeConstPool &runtime_const_pool,
                   BaseMemberRefInfo<tag> *member_info)
-                : SymbolRef(runtime_const_pool),
-                  class_name_(member_info->className()),
+                : SymbolRef(runtime_const_pool, member_info->className()),
                   name_descriptor_(member_info->nameAndDescriptor())
         {
         }
