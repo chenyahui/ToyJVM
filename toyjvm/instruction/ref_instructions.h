@@ -71,8 +71,8 @@ namespace jvm {
         public:
             template<typename T>
             static void handle(size_t slot_id,
-                           LocalSlots *static_slots,
-                           OperandStack &opstack)
+                               LocalSlots *static_slots,
+                               OperandStack &opstack)
             {
                 static_slots->set<T>(slot_id, opstack.pop<T>());
             }
@@ -91,8 +91,8 @@ namespace jvm {
         public:
             template<typename T>
             static void handle(size_t slot_id,
-                           LocalSlots *static_slots,
-                           OperandStack &opstack)
+                               LocalSlots *static_slots,
+                               OperandStack &opstack)
             {
                 opstack.push<T>(static_slots->at<T>(slot_id));
             }
@@ -111,8 +111,8 @@ namespace jvm {
         public:
             template<typename T>
             static void handle(size_t slot_id,
-                           LocalSlots *static_slots,
-                           OperandStack &opstack)
+                               LocalSlots *static_slots,
+                               OperandStack &opstack)
             {
                 auto val = opstack.pop<T>();
                 auto obj = opstack.pop<jobj>();
@@ -124,6 +124,7 @@ namespace jvm {
                 const_cast<LocalSlots &>(obj->instanceFields()).set<T>(slot_id, val);
             }
         };
+
     public:
         void execute(JvmFrame &frame) override
         {
@@ -137,13 +138,14 @@ namespace jvm {
         {
             realAction<GETFIELD_Instruction::RealAction>(frame);
         }
+
     private:
         class RealAction {
         public:
             template<typename T>
             static void handle(size_t slot_id,
-                           LocalSlots *static_slots,
-                           OperandStack &opstack)
+                               LocalSlots *static_slots,
+                               OperandStack &opstack)
             {
                 auto obj = opstack.pop<std::shared_ptr<JvmObject>>();
 
@@ -165,5 +167,57 @@ namespace jvm {
     public:
         void execute(JvmFrame &frame) override;
     };
+
+    template<typename Width>
+    class BaseLdcInstruction : public BaseOneOperandInstruction<Width> {
+    public:
+        void execute(JvmFrame &frame) override
+        {
+            auto &opstack = frame.operandStack();
+            auto klass = frame.method()->klass();
+            const auto &rt_const_pool = klass->runtimeConstPool();
+
+            auto tag = rt_const_pool.typeAt(this->operand_);
+            switch (tag) {
+                case ConstType::Integer:{
+                    copyConst<jint>(opstack, rt_const_pool);
+                    break;
+                }
+                case ConstType::Float:{
+                    copyConst<jfloat>(opstack, rt_const_pool);
+                    break;
+                }
+                case ConstType::Long:{
+                    copyConst<jlong>(opstack, rt_const_pool);
+                    break;
+                }
+                case ConstType::Double:{
+                    copyConst<jdouble>(opstack, rt_const_pool);
+                    break;
+                }
+                case ConstType::Class: {
+                    auto class_ref = rt_const_pool.at<std::shared_ptr<ClassRef>>(this->operand_);
+                    // todo
+                    break;
+                }
+                case ConstType::String:{
+                    // todo
+                    break;
+                }
+            }
+        }
+
+
+    private:
+        template<typename T>
+        void copyConst(OperandStack &opstack, const RuntimeConstPool &const_pool)
+        {
+            opstack.push<T>(const_pool.at<T>(this->operand_));
+        }
+    };
+
+    using LDC_Instruction = BaseLdcInstruction<u1>;
+    using LDC_W_Instruction = BaseLdcInstruction<u2>;
+    using LDC2_W_Instruction = BaseLdcInstruction<u2>;
 }
 #endif //TOYJVM_REF_INSTRUCTIONS_H

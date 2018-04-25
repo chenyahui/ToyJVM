@@ -18,7 +18,7 @@ namespace jvm {
 
     class JvmMethod;
 
-    class JvmBaseClass : boost::noncopyable, public std::enable_shared_from_this<JvmBaseClass> {
+    class JvmBaseClass : boost::noncopyable{
     public:
         JvmBaseClass(bool is_array, const std::string &class_name, jint flags)
                 : is_array_(is_array),

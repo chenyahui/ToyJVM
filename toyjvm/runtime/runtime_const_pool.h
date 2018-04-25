@@ -25,6 +25,11 @@ namespace jvm {
             return boost::any_cast<T>(std::get<0>(pool_[index]));
         }
 
+        ConstType typeAt(size_t index) const
+        {
+            return std::get<1>(pool_[index]);
+        }
+
         // 其所属的class
         inline std::shared_ptr<JvmClass> ofClass() const
         {
