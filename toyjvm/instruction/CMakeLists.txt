@@ -12,6 +12,6 @@ set(INST_SRC
         extend_instructions.cpp
         ref_instructions.h
         ref_instructions.cpp
-        )
+        instruction_factory.h instruction_factory.cpp)
 
 add_library(toyjvm_inst ${INST_SRC})

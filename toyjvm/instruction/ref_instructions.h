@@ -65,18 +65,21 @@ namespace jvm {
 
     };
 
+#define DefRealAction(METHOD_BODY) \
+  class RealAction { \
+    public: \
+    template<typename T> \
+    static void handle(size_t slot_id, \
+                       LocalSlots *static_slots, \
+                       OperandStack &opstack) \
+            METHOD_BODY \
+    };
+
     class PUTSTATIC_Instruction : public BaseFieldInstruction {
     private:
-        class RealAction {
-        public:
-            template<typename T>
-            static void handle(size_t slot_id,
-                               LocalSlots *static_slots,
-                               OperandStack &opstack)
-            {
-                static_slots->set<T>(slot_id, opstack.pop<T>());
-            }
-        };
+        DefRealAction({
+                          static_slots->set<T>(slot_id, opstack.pop<T>());
+                      })
 
     public:
         void execute(JvmFrame &frame) override
@@ -87,16 +90,9 @@ namespace jvm {
 
     class GETSTATIC_Instruction : public BaseFieldInstruction {
     private:
-        class RealAction {
-        public:
-            template<typename T>
-            static void handle(size_t slot_id,
-                               LocalSlots *static_slots,
-                               OperandStack &opstack)
-            {
-                opstack.push<T>(static_slots->at<T>(slot_id));
-            }
-        };
+        DefRealAction({
+                          opstack.push<T>(static_slots->at<T>(slot_id));
+                      })
 
     public:
         void execute(JvmFrame &frame) override
@@ -107,23 +103,16 @@ namespace jvm {
 
     class PUTFIELD_Instruction : public BaseFieldInstruction {
     private:
-        class RealAction {
-        public:
-            template<typename T>
-            static void handle(size_t slot_id,
-                               LocalSlots *static_slots,
-                               OperandStack &opstack)
-            {
-                auto val = opstack.pop<T>();
-                auto obj = opstack.pop<jobj>();
+        DefRealAction({
+                          auto val = opstack.pop<T>();
+                          auto obj = opstack.pop<jobj>();
 
-                if (obj == nullptr) {
-                    throw JVMError("null pointer");
-                }
+                          if (obj == nullptr) {
+                              throw JVMError("null pointer");
+                          }
 
-                const_cast<LocalSlots &>(obj->instanceFields()).set<T>(slot_id, val);
-            }
-        };
+                          const_cast<LocalSlots &>(obj->instanceFields()).set<T>(slot_id, val);
+                      })
 
     public:
         void execute(JvmFrame &frame) override
@@ -140,23 +129,18 @@ namespace jvm {
         }
 
     private:
-        class RealAction {
-        public:
-            template<typename T>
-            static void handle(size_t slot_id,
-                               LocalSlots *static_slots,
-                               OperandStack &opstack)
-            {
-                auto obj = opstack.pop<std::shared_ptr<JvmObject>>();
+        DefRealAction({
+                          auto obj = opstack.pop<std::shared_ptr<JvmObject>>();
 
-                if (obj == nullptr) {
-                    throw JVMError("null pointer");
-                }
+                          if (obj == nullptr) {
+                              throw JVMError("null pointer");
+                          }
 
-                opstack.push<T>(obj->instanceFields().at<T>(slot_id));
-            }
-        };
+                          opstack.push<T>(obj->instanceFields().at<T>(slot_id));
+                      })
     };
+
+#undef DefRealAction
 
     class INSTANCEOF_Instruction : public BaseOneOperandInstruction<u2> {
     public:
@@ -179,19 +163,19 @@ namespace jvm {
 
             auto tag = rt_const_pool.typeAt(this->operand_);
             switch (tag) {
-                case ConstType::Integer:{
+                case ConstType::Integer: {
                     copyConst<jint>(opstack, rt_const_pool);
                     break;
                 }
-                case ConstType::Float:{
+                case ConstType::Float: {
                     copyConst<jfloat>(opstack, rt_const_pool);
                     break;
                 }
-                case ConstType::Long:{
+                case ConstType::Long: {
                     copyConst<jlong>(opstack, rt_const_pool);
                     break;
                 }
-                case ConstType::Double:{
+                case ConstType::Double: {
                     copyConst<jdouble>(opstack, rt_const_pool);
                     break;
                 }
@@ -200,7 +184,7 @@ namespace jvm {
                     // todo
                     break;
                 }
-                case ConstType::String:{
+                case ConstType::String: {
                     // todo
                     break;
                 }

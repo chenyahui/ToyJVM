@@ -35,7 +35,7 @@ namespace jvm {
 
     class JvmObject : public JvmRef {
     public:
-        JvmObject(std::shared_ptr<JvmClass> klass)
+        explicit JvmObject(std::shared_ptr<JvmClass> klass)
                 : JvmRef(klass),
                   instance_fields_(klass->instanceSlotsCount())
         {}
@@ -66,7 +66,7 @@ namespace jvm {
     template<typename T>
     class JvmArray : public JvmBaseArray {
     public:
-        JvmArray(u4 count,
+        explicit JvmArray(u4 count,
                  std::shared_ptr<JvmArrayClass> array_class)
                 : JvmBaseArray(array_class)
         {}
