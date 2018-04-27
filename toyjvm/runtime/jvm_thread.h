@@ -7,9 +7,10 @@
 
 #include <vector>
 #include <toyjvm/runtime/jvm_frame.h>
+#include <boost/noncopyable.hpp>
 
 namespace jvm {
-    class JvmThread {
+    class JvmThread : boost::noncopyable {
     private:
         int pc_;
         std::vector<JvmFrame> stack_;

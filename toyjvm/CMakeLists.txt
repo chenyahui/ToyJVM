@@ -8,7 +8,7 @@ file(GLOB_RECURSE HEADERS "./" "*.h")
 
 set(SOURCE_FILES
         ${HEADERS}
-        main.cpp interperter/interpret.h)
+        main.cpp interpreter/interpret.h interpreter/interpret.cpp)
 
 add_executable(toyjvm ${SOURCE_FILES})
 target_link_libraries(toyjvm

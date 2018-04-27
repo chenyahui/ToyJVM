@@ -25,7 +25,7 @@ namespace jvm {
 
         void init(const std::string &jre_option, const std::string &cp_option)
         {
-            class_path_ = std::make_shared<ClassPath>(jre_option, cp_option);
+            class_path_ = std::move(std::unique_ptr<ClassPath>(new ClassPath(jre_option, cp_option)));
         }
 
         std::shared_ptr<JvmBaseClass> loadClass(const std::string &class_name);
@@ -38,8 +38,9 @@ namespace jvm {
         std::shared_ptr<JvmClass> defineClass(bytes class_bytes);
 
     private:
-        std::unordered_map<std::string, std::shared_ptr<JvmBaseClass>> class_map_;
-        std::shared_ptr<ClassPath> class_path_;
+        std::unordered_map<std::string, std::shared_ptr<JvmClass>> non_array_class_map_;
+        std::unordered_map<std::string, std::shared_ptr<JvmArrayClass>> array_class_map_;
+        std::unique_ptr<ClassPath> class_path_;
     };
 
     using Loader = Singleton<ClassLoader>;

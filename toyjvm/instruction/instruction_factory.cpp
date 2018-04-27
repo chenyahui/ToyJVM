@@ -5,14 +5,7 @@
 #include <toyjvm/instruction/instruction_factory.h>
 #include <toyjvm/instruction/const_instructions.h>
 #include <toyjvm/instruction/compare_instructions.h>
-#include <toyjvm/instruction/control_instructions.h>
-#include <toyjvm/instruction/convert_instructions.h>
-#include <toyjvm/instruction/extend_instructions.h>
 #include <toyjvm/instruction/load_instructions.h>
-#include <toyjvm/instruction/math_instructions.h>
-#include <toyjvm/instruction/ref_instructions.h>
-#include <toyjvm/instruction/stack_instructions.h>
-#include <toyjvm/instruction/store_instructions.h>
 
 namespace jvm {
 #define MakeInst(INST) \
@@ -23,8 +16,14 @@ namespace jvm {
     std::shared_ptr<BaseInstruction> instructionFactory(InstructionTag tag)
     {
 
-        switch (tag){
+        switch (tag) {
             MakeInst(ACONST_NULL)
+            MakeInst(ALOAD)
+            MakeInst(ALOAD_0)
+            MakeInst(ALOAD_1)
+            MakeInst(ALOAD_2)
+            MakeInst(ALOAD_3)
+
         }
     }
 
