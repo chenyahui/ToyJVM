@@ -8,12 +8,12 @@
 #include <toyjvm/runtime/jvm_member.h>
 
 namespace jvm {
-    std::shared_ptr<JvmClass> ClassLoader::loadClass(const std::string &class_name)
+    std::shared_ptr<JvmBaseClass> ClassLoader::loadClass(const std::string &class_name)
     {
         if (class_map_.find(class_name) != class_map_.end()) {
             return class_map_[class_name];
         }
-        auto klass = loadNonArrayClass(class_name);
+        auto klass = std::dynamic_pointer_cast<JvmBaseClass>(loadNonArrayClass(class_name));
         class_map_[class_name] = klass;
 
         return klass;

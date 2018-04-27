@@ -7,6 +7,14 @@
 #include <toyjvm/runtime/jvm_reference.h>
 
 namespace jvm {
+    const std::string& JvmBaseClass::classDescriptor() const
+    {
+        if(class_descriptor_.empty()){
+            class_descriptor_ = classNameToDescriptor(class_name_);
+        }
+
+        return class_descriptor_;
+    }
     const std::vector<std::shared_ptr<JvmClass>> &JvmBaseClass::interfaces() const
     {
         return interfaces_;
@@ -69,9 +77,9 @@ namespace jvm {
     {
         assert(class_name[0] == '[');
 
-        super_class_ = Loader::instance()->loadClass("java/lang/Object");
-        interfaces_.push_back(Loader::instance()->loadClass("java/lang/Cloneable"));
-        interfaces_.push_back(Loader::instance()->loadClass("java/io/Serializable"));
+        super_class_ = Loader::instance()->loadNonArrayClass("java/lang/Object");
+        interfaces_.push_back(Loader::instance()->loadNonArrayClass("java/lang/Cloneable"));
+        interfaces_.push_back(Loader::instance()->loadNonArrayClass("java/io/Serializable"));
     }
 
     std::shared_ptr<JvmBaseClass> JvmArrayClass::componentClass() const
@@ -130,12 +138,12 @@ namespace jvm {
     {
         if (!isJavaLangObject()) {
             // 解析super class
-            super_class_ = Loader::instance()->loadClass(
+            super_class_ = Loader::instance()->loadNonArrayClass(
                     class_file->const_pool_.classNameOf(class_file->super_class_)
             );
             // 解析interfaces
             for (auto item: class_file->interfaces_) {
-                interfaces_.push_back(Loader::instance()->loadClass(
+                interfaces_.push_back(Loader::instance()->loadNonArrayClass(
                         class_file->const_pool_.classNameOf(item)
                 ));
             }

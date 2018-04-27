@@ -11,7 +11,11 @@
 #include <toyjvm/utilities/singleton.h>
 
 namespace jvm {
+    class JvmBaseClass;
+
     class JvmClass;
+
+    class JvmArrayClass;
 
     void prepareClass(JvmClass *klass);
 
@@ -24,15 +28,17 @@ namespace jvm {
             class_path_ = std::make_shared<ClassPath>(jre_option, cp_option);
         }
 
-        std::shared_ptr<JvmClass> loadClass(const std::string &class_name);
+        std::shared_ptr<JvmBaseClass> loadClass(const std::string &class_name);
 
-    private:
         std::shared_ptr<JvmClass> loadNonArrayClass(const std::string &class_name);
 
+        std::shared_ptr<JvmArrayClass> loadArrayClass(const std::string &class_name);
+
+    private:
         std::shared_ptr<JvmClass> defineClass(bytes class_bytes);
 
     private:
-        std::unordered_map<std::string, std::shared_ptr<JvmClass>> class_map_;
+        std::unordered_map<std::string, std::shared_ptr<JvmBaseClass>> class_map_;
         std::shared_ptr<ClassPath> class_path_;
     };
 

@@ -18,13 +18,15 @@ namespace jvm {
 
     class JvmMethod;
 
-    class JvmBaseClass : boost::noncopyable{
+    class JvmBaseClass : boost::noncopyable {
     public:
         JvmBaseClass(bool is_array, const std::string &class_name, jint flags)
                 : is_array_(is_array),
                   access_flags_(flags),
                   class_name_(class_name)
         {}
+
+        const std::string &classDescriptor() const;
 
         const std::vector<std::shared_ptr<JvmClass>> &interfaces() const;
 
@@ -49,6 +51,7 @@ namespace jvm {
         AccessFlags access_flags_;
         std::shared_ptr<JvmClass> super_class_;
         std::vector<std::shared_ptr<JvmClass>> interfaces_;
+        mutable std::string class_descriptor_;
     };
 
     class JvmBaseArray;
@@ -72,7 +75,9 @@ namespace jvm {
         explicit JvmClass(ClassFile *class_file);
 
         std::shared_ptr<JvmField> getField() const;
-        bool isSubInterfaceOf(JvmClass*) const;
+
+        bool isSubInterfaceOf(JvmClass *) const;
+
         size_t instanceSlotsCount() const
         {
             return instance_slots_count_;

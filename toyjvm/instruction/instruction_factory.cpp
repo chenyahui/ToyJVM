@@ -27,4 +27,6 @@ namespace jvm {
             MakeInst(ACONST_NULL)
         }
     }
+
+#undef MakeInst
 }

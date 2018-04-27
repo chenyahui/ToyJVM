@@ -13,5 +13,6 @@ namespace jvm {
 
     std::string descriptorToClassName(const std::string& descriptor);
 
+    std::string classNameToDescriptor(const std::string& descriptor);
 }
 #endif //TOYJVM_JAVA_UTILS_H
