@@ -43,12 +43,16 @@ namespace jvm {
             next_pc_ = next_pc;
         }
 
+        size_t nextPc() const{
+            return next_pc_;
+        }
+
     private:
         LocalSlots local_slots_;
         OperandStack operand_stack_;
         std::shared_ptr<JvmMethod> method_;
         JvmThread &thread_;
-        size_t next_pc_;
+        size_t next_pc_ = 0;
     };
 }
 #endif //TOYJVM_JVM_FRAME_H

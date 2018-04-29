@@ -11,7 +11,7 @@ namespace jvm {
     std::shared_ptr<JvmClass> SymbolRef::resolveClass()
     {
         if (!klass_) {
-            klass_ = Loader::instance()->loadClass(class_name_);
+            klass_ = Loader::instance()->loadNonArrayClass(class_name_);
         }
 
         return klass_;

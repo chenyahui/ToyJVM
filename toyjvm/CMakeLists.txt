@@ -12,7 +12,7 @@ set(SOURCE_FILES
 
 add_executable(toyjvm ${SOURCE_FILES})
 target_link_libraries(toyjvm
-        toyjvm_utility
+        toyjvm_utilities
         toyjvm_classpath
         toyjvm_classfile
         glog

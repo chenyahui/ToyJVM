@@ -25,7 +25,7 @@ namespace jvm {
 
         bool empty() const;
     private:
-        size_t pc_;
+        size_t pc_ = 0;
         std::vector<std::shared_ptr<JvmFrame>> stack_;
     };
 }

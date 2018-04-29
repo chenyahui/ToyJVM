@@ -14,4 +14,8 @@ set(INST_SRC
         ref_instructions.cpp
         instruction_factory.h instruction_factory.cpp array_instructions.h array_instructions.cpp)
 
-add_library(toyjvm_inst ${INST_SRC})
+add_library(toyjvm_inst
+        ${INST_SRC}
+        )
+
+target_link_libraries(toyjvm_inst toyjvm_runtime)

@@ -17,25 +17,25 @@ namespace jvm {
 
             switch (item->tag()) {
                 case ConstType::Integer: {
-                    addVal(i, item);
+                    addVal<ConstIntegerInfo *>(i, item);
                     break;
                 }
                 case ConstType::Float: {
-                    addVal(i, item);
+                    addVal<ConstFloatInfo *>(i, item);
                     break;
                 }
                 case ConstType::Double: {
-                    addVal(i, item);
+                    addVal<ConstDoubleInfo *>(i, item);
                     i++;
                     break;
                 }
                 case ConstType::Long: {
-                    addVal(i, item);
+                    addVal<ConstLongInfo *>(i, item);
                     i++;
                     break;
                 }
                 case ConstType::String: {
-                    addVal(i, item);
+                    addVal<ConstStringInfo *>(i, item);
                     break;
                 }
 
@@ -61,6 +61,4 @@ namespace jvm {
 
 
     }
-}
-
 }

@@ -5,6 +5,7 @@
 #include <toyjvm/runtime/class_loader.h>
 #include <toyjvm/utilities/javautils.h>
 #include <toyjvm/runtime/jvm_reference.h>
+#include <toyjvm/runtime/jvm_member.h>
 
 namespace jvm {
     const std::string& JvmBaseClass::classDescriptor() const
@@ -37,7 +38,7 @@ namespace jvm {
         assert(t != nullptr);
 
         for (auto c = super_class_; c != nullptr; c = c->super_class_) {
-            if (c == t) {
+            if (c.get() == t) {
                 return true;
             }
         }
@@ -52,7 +53,7 @@ namespace jvm {
 
         for (auto c = this; c != nullptr; c = c->super_class_.get()) {
             for (const auto& inter : c->interfaces_) {
-                if (inter == t || inter->isSubInterfaceOf(t)) {
+                if (inter.get() == t || inter->isSubInterfaceOf(t)) {
                     return true;
                 }
             }
@@ -152,11 +153,11 @@ namespace jvm {
         // 解析fields和methods
         auto this_ptr = shared_from_this();
         for (auto &field_info : class_file->fields_) {
-            fields_.push_back(std::make_shared<JvmField>(this_ptr, field_info.get()));
+            fields_.emplace_back(std::make_shared<JvmField>(this_ptr, field_info.get()));
         }
 
         for (auto &method_info: class_file->methods_) {
-            methods_.push_back(std::make_shared<JvmMethod>(this_ptr, method_info.get()));
+            methods_.emplace_back(std::make_shared<JvmMethod>(this_ptr, method_info.get()));
         }
     }
 
@@ -168,7 +169,7 @@ namespace jvm {
     bool JvmClass::isSubInterfaceOf(jvm::JvmClass *inter) const
     {
         for (auto &super_inter:interfaces_) {
-            if (super_inter == inter || super_inter->isSubInterfaceOf(inter)) {
+            if (super_inter.get() == inter || super_inter->isSubInterfaceOf(inter)) {
                 return true;
             }
         }

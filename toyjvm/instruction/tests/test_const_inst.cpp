@@ -4,19 +4,17 @@
 
 #include <gtest/gtest.h>
 #include <toyjvm/instruction/const_instructions.h>
-#include <toyjvm/runtime/jvm_thread.h>
+#include "test_inst_context.h"
 
 using namespace jvm;
+using namespace jvm_test;
 
-TEST(ConstInstruction, normal)
+TEST_F(InstTestContext, dconst1)
 {
     bytes data = {};
     ByteCodeReader reader(data);
-    JvmThread t;
-    JvmFrame frame(t, 10, 10);
 
     DCONST_1_Instruction dconst1Instruction;
-    dconst1Instruction.run(reader, frame);
-
-    EXPECT_EQ(frame.operandStack().pop<jdouble>(), 1.0);
+    dconst1Instruction.run(reader, *frame_);
+    EXPECT_EQ(opstack_->pop<jdouble>(), 1.0);
 }

@@ -40,7 +40,7 @@ namespace jvm {
         template<typename ConstRefType, typename SymbolRefType>
         void addRef(int index, BaseConstInfo *item)
         {
-            auto info = dynamic_cast<ConstRefType>(item);
+            auto info = dynamic_cast<ConstRefType*>(item);
             auto ref_info = std::make_shared<SymbolRefType>(*this, info);
             pool_[index] = std::make_tuple<boost::any, ConstType>(ref_info, item->tag());
         }
