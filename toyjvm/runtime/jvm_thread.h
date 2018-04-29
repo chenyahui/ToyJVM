@@ -11,9 +11,22 @@
 
 namespace jvm {
     class JvmThread : boost::noncopyable {
+    public:
+        size_t pc() const
+        {
+            return pc_;
+        }
+
+        std::shared_ptr<JvmFrame> pop();
+
+        void push(std::shared_ptr<JvmFrame>);
+
+        std::shared_ptr<JvmFrame> top() const;
+
+        bool empty() const;
     private:
-        int pc_;
-        std::vector<JvmFrame> stack_;
+        size_t pc_;
+        std::vector<std::shared_ptr<JvmFrame>> stack_;
     };
 }
 #endif //TOYJVM_JVM_THREAD_H

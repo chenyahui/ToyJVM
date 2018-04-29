@@ -4,6 +4,7 @@
 
 #include <gtest/gtest.h>
 #include <toyjvm/instruction/const_instructions.h>
+#include <toyjvm/runtime/jvm_thread.h>
 
 using namespace jvm;
 
@@ -11,7 +12,8 @@ TEST(ConstInstruction, normal)
 {
     bytes data = {};
     ByteCodeReader reader(data);
-    JvmFrame frame(10, 10);
+    JvmThread t;
+    JvmFrame frame(t, 10, 10);
 
     DCONST_1_Instruction dconst1Instruction;
     dconst1Instruction.run(reader, frame);

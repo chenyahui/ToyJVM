@@ -27,6 +27,8 @@ namespace jvm {
                 result = 1;
             } else if (v1 < v2) {
                 result = -1;
+            }else{
+                result = 0;
             }
 
             op_stack.push<int>(result);
@@ -49,26 +51,33 @@ namespace jvm {
             T v1 = op_stack.pop<T>();
             Comparison comparison;
             if (comparison(v1, v2)) {
-                branchJump(frame, this->operand_);
+                frame.jumpToBranch(this->operand_);
             }
         }
     };
 
-#define GENE_IF(type, op) \
-    using IF_ICMP##type_Instruction = IfCond_Instruction<int, std::##op, true>; \
-    using IF##type_Instruction =  IfCond_Instruction<int, std::##op, false>;   \
+    using IF_ICMPEQ_Instruction =  IfCond_Instruction<int, std::equal_to<int>, true>;
+    using IFEQ_Instruction =  IfCond_Instruction<int, std::equal_to<int>, false>;
 
-    GENE_IF(EQ, equal_to)
-    GENE_IF(NE, not_equal_to)
-    GENE_IF(LT, less)
-    GENE_IF(LE, less_equal)
-    GENE_IF(GT, greater)
-    GENE_IF(LE, greater_equal)
+    using IF_ICMPNE_Instruction =  IfCond_Instruction<int, std::not_equal_to<int>, true>;
+    using IFNE_Instruction =  IfCond_Instruction<int, std::not_equal_to<int>, false>;
 
-    using IF_ACMPEQ_Instruction = IfCond_Instruction<jref, std::equal_to, true>;
-    using IF_ACMPNE_Instruction = IfCond_Instruction<jref, std::not_equal_to, true>;
+    using IF_ICMPLT_Instruction =  IfCond_Instruction<int, std::less<int>, true>;
+    using IFLT_Instruction =  IfCond_Instruction<int, std::less<int>, false>;
 
-    using IFNULL_Instruction = IfCond_Instruction<jref, std::equal_to, false>;
-    using IFNONNULL_Instruction = IfCond_Instruction<jref, std::not_equal_to, false>;
+    using IF_ICMPLE_Instruction =  IfCond_Instruction<int, std::less_equal<int>, true>;
+    using IFLE_Instruction =  IfCond_Instruction<int, std::less_equal<int>, false>;
+
+    using IF_ICMPGT_Instruction =  IfCond_Instruction<int, std::greater<int>, true>;
+    using IFGT_Instruction =  IfCond_Instruction<int, std::greater<int>, false>;
+
+    using IF_ICMPGE_Instruction =  IfCond_Instruction<int, std::greater_equal<int>, true>;
+    using IFGE_Instruction =  IfCond_Instruction<int, std::greater_equal<int>, false>;
+
+    using IF_ACMPEQ_Instruction = IfCond_Instruction<jref, std::equal_to<jref>, true>;
+    using IF_ACMPNE_Instruction = IfCond_Instruction<jref, std::not_equal_to<jref>, true>;
+
+    using IFNULL_Instruction = IfCond_Instruction<jref, std::equal_to<jref>, false>;
+    using IFNONNULL_Instruction = IfCond_Instruction<jref, std::not_equal_to<jref>, false>;
 }
 #endif //TOYJVM_COMPARE_INSTRUCTIONS_H

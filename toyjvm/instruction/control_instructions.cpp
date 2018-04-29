@@ -5,7 +5,7 @@
 #include <toyjvm/instruction/control_instructions.h>
 
 namespace jvm {
-    void TABLE_SWITCH_Instruction::fetchOperands(ByteCodeReader &reader)
+    void TABLESWITCH_Instruction::fetchOperands(ByteCodeReader &reader)
     {
         reader.skipPadding();
 
@@ -17,7 +17,7 @@ namespace jvm {
         jump_offsets_ = reader.batchRead<int>(count);
     };
 
-    void TABLE_SWITCH_Instruction::execute(jvm::JvmFrame &frame)
+    void TABLESWITCH_Instruction::execute(jvm::JvmFrame &frame)
     {
         auto index = frame.operandStack().pop<int>();
 
@@ -28,10 +28,10 @@ namespace jvm {
             offset = default_offset_;
         }
 
-        branchJump(frame, offset);
+        frame.jumpToBranch(offset);
     }
 
-    void LOOKUP_SWITCH_Instruction::fetchOperands(ByteCodeReader &reader)
+    void LOOKUPSWITCH_Instruction::fetchOperands(ByteCodeReader &reader)
     {
         reader.skipPadding();
 
@@ -41,7 +41,7 @@ namespace jvm {
         match_offsets_ = reader.batchRead<int>(npairs_ * 2);
     }
 
-    void LOOKUP_SWITCH_Instruction::execute(jvm::JvmFrame &frame)
+    void LOOKUPSWITCH_Instruction::execute(jvm::JvmFrame &frame)
     {
         auto key = frame.operandStack().pop<int>();
 
@@ -53,7 +53,6 @@ namespace jvm {
                 break;
             }
         }
-
-        branchJump(frame, offset);
+        frame.jumpToBranch(offset);
     }
 }

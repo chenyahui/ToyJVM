@@ -14,14 +14,14 @@ namespace jvm {
     public:
         void execute(JvmFrame &frame) override
         {
-            branchJump(frame, this->operand_);
+            frame.jumpToBranch(this->operand_);
         }
     };
 
     using GOTO_Instruction = GotoInstruction<u2>;
     using GOTO_W_Instruction = GotoInstruction<u4>;
 
-    class TABLE_SWITCH_Instruction : public BaseInstruction {
+    class TABLESWITCH_Instruction : public BaseInstruction {
     public:
         void fetchOperands(ByteCodeReader &reader) override;
 
@@ -35,7 +35,7 @@ namespace jvm {
         std::vector<int> jump_offsets_;
     };
 
-    class LOOKUP_SWITCH_Instruction : public BaseInstruction {
+    class LOOKUPSWITCH_Instruction : public BaseInstruction {
     public:
         void fetchOperands(ByteCodeReader &reader) override;
 

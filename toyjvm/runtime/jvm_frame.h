@@ -11,11 +11,14 @@
 #include <toyjvm/runtime/jvm_member.h>
 
 namespace jvm {
+    class JvmThread;
+
     class JvmFrame {
     public:
-        JvmFrame(size_t local_slot_size, size_t max_stack_num)
+        JvmFrame(JvmThread &thread, size_t local_slot_size, size_t max_stack_num)
                 : local_slots_(local_slot_size),
-                  operand_stack_(max_stack_num)
+                  operand_stack_(max_stack_num),
+                  thread_(thread)
         {}
 
         inline LocalSlots &localSlots()
@@ -28,13 +31,24 @@ namespace jvm {
             return operand_stack_;
         }
 
-        inline std::shared_ptr<JvmMethod> method() const{
+        inline std::shared_ptr<JvmMethod> method() const
+        {
             return method_;
         }
+
+        void jumpToBranch(int offset);
+
+        void setNextPc(size_t next_pc)
+        {
+            next_pc_ = next_pc;
+        }
+
     private:
         LocalSlots local_slots_;
         OperandStack operand_stack_;
         std::shared_ptr<JvmMethod> method_;
+        JvmThread &thread_;
+        size_t next_pc_;
     };
 }
 #endif //TOYJVM_JVM_FRAME_H

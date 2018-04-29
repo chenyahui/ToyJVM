@@ -12,8 +12,6 @@
 #include <set>
 
 namespace jvm {
-    void branchJump(JvmFrame &frame, int offset);
-
     class BaseInstruction : boost::noncopyable {
     public:
         void run(ByteCodeReader &reader, JvmFrame &frame){

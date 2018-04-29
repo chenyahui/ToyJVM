@@ -3,7 +3,12 @@
 //
 
 #include <toyjvm/interpreter/interpret.h>
+#include <toyjvm/runtime/jvm_thread.h>
+namespace jvm {
+    void interpret(MethodInfo *method_info)
+    {
+        JvmThread athread;
 
-namespace jvm{
-    
+    }
+
 }
