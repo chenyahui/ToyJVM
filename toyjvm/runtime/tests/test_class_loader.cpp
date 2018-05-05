@@ -13,5 +13,5 @@ TEST(test_class_loader, normal)
     Loader::instance()->init("", "");
     auto strClass = Loader::instance()->loadNonArrayClass("java/lang/String");
 
-    EXPECT_TRUE(false) << strClass->classDescriptor();
+    EXPECT_EQ("Ljava/lang/String;",strClass->classDescriptor());
 }

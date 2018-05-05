@@ -28,9 +28,9 @@ namespace jvm {
 
         const std::string &classDescriptor() const;
 
-        const std::vector<JvmClass*> &interfaces() const;
+        const std::vector<JvmClass *> &interfaces() const;
 
-        const JvmClass* superClass() const;
+        const JvmClass *superClass() const;
 
         const AccessFlags &accessFlags() const;
 
@@ -49,22 +49,22 @@ namespace jvm {
         bool is_array_;
         std::string class_name_;
         AccessFlags access_flags_;
-        JvmClass* super_class_;
-        std::vector<JvmClass*> interfaces_;
+        JvmClass *super_class_ = nullptr;
+        std::vector<JvmClass *> interfaces_;
         mutable std::string class_descriptor_;
     };
 
     class JvmBaseArray;
 
-    class JvmArrayClass : public JvmBaseClass{
+    class JvmArrayClass : public JvmBaseClass {
     public:
         explicit JvmArrayClass(const std::string &class_name);
 
         bool isAssignableFrom(JvmBaseClass *t) const override;
 
-        JvmBaseArray* arrayFactory(u4 count);
+        JvmBaseArray *arrayFactory(u4 count);
 
-        JvmBaseClass* componentClass() const;
+        JvmBaseClass *componentClass() const;
 
     private:
         std::string component_name_;
@@ -103,7 +103,7 @@ namespace jvm {
             return runtime_const_pool_;
         }
 
-        const std::vector<JvmField*> &fields() const
+        const std::vector<JvmField *> &fields() const
         {
             return fields_;
         }
@@ -114,8 +114,8 @@ namespace jvm {
     private:
         RuntimeConstPool runtime_const_pool_;
 
-        std::vector<JvmField*> fields_;
-        std::vector<JvmMethod*> methods_;
+        std::vector<JvmField *> fields_;
+        std::vector<JvmMethod *> methods_;
         size_t instance_slots_count_;
         size_t static_slots_count_;
         std::unique_ptr<LocalSlots> static_fields_;

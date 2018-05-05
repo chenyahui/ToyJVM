@@ -34,6 +34,7 @@ namespace jvm {
 
         JvmArrayClass* loadArrayClass(const std::string &class_name);
 
+        void detailInfo();
     private:
         JvmClass *defineClass(bytes class_bytes);
 

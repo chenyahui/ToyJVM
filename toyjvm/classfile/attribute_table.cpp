@@ -13,7 +13,7 @@ namespace jvm {
         for (int i = 0; i < count; ++i) {
             auto attr_info = readAttrInfo(reader, pool);
             attr_info->read(reader);
-            attr_infos_.push_back(attr_info);
+            attr_infos_[i] = (attr_info);
         }
     }
 

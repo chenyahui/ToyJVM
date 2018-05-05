@@ -15,8 +15,9 @@ namespace jvm {
     JvmMethod::JvmMethod(JvmClass *this_class, MethodInfo *method_info)
             : JvmMember(this_class, method_info)
     {
-        AttrCode *codeAttr;
-        if ((codeAttr = method_info->codeAttr()) != nullptr) {
+
+        AttrCode *codeAttr = method_info->codeAttr();
+        if (codeAttr != nullptr) {
             max_stack_ = codeAttr->maxStack();
             max_locals_ = codeAttr->maxLocals();
             code_ = std::move(codeAttr->moveCode());

@@ -37,7 +37,7 @@ void ClassFile::parse()
     methods_ = readMembers<MethodInfo>();
     attr_table_.read(reader_, const_pool_);
 
-//    logClassInfo();
+    //logClassInfo();
 }
 
 void ClassFile::logClassInfo()

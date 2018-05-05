@@ -10,4 +10,5 @@ add_library(toyjvm_classfile
         ${classfile_SRCS}
         )
 target_link_libraries(toyjvm_classfile
-        glog)
+        glog
+        toyjvm_utilities)

@@ -7,7 +7,17 @@
 #include <toyjvm/runtime/jvm_class.h>
 #include <toyjvm/runtime/jvm_member.h>
 
+#include <glog/logging.h>
+
 namespace jvm {
+    void ClassLoader::detailInfo()
+    {
+        DLOG(INFO) << "non array class 共有: " << non_array_class_map_.size() << " 个";
+        for (auto &kv: non_array_class_map_) {
+            DLOG(INFO) << "==> " << kv.first;
+        }
+    }
+
     JvmBaseClass *ClassLoader::loadClass(const std::string &class_name)
     {
         if (class_name[0] == '[') {
@@ -19,22 +29,23 @@ namespace jvm {
 
     JvmArrayClass *ClassLoader::loadArrayClass(const std::string &class_name)
     {
-        if (array_class_map_.find(class_name) != array_class_map_.end()) {
-            return array_class_map_[class_name];
+        if (array_class_map_.find(class_name) == array_class_map_.end()) {
+            array_class_map_[class_name] = new JvmArrayClass(class_name);
         }
-        return new JvmArrayClass(class_name);
+        return array_class_map_[class_name];
     }
 
     JvmClass *ClassLoader::loadNonArrayClass(const std::string &class_name)
     {
-        if (non_array_class_map_.find(class_name) != non_array_class_map_.end()) {
-            return non_array_class_map_[class_name];
+        if (non_array_class_map_.find(class_name) == non_array_class_map_.end()) {
+
+            auto class_bytes = class_path_->readClass(class_name);
+            auto klass = defineClass(std::move(class_bytes));
+            prepareClass(klass);
+
+            non_array_class_map_[class_name] = klass;
         }
-
-        auto class_bytes = class_path_->readClass(class_name);
-        auto klass = defineClass(std::move(class_bytes));
-
-        prepareClass(klass);
+        return non_array_class_map_[class_name];
     }
 
     JvmClass *ClassLoader::defineClass(jvm::bytes class_bytes)
