@@ -8,20 +8,21 @@
 #include <toyjvm/runtime/jvm_member.h>
 
 namespace jvm {
-    const std::string& JvmBaseClass::classDescriptor() const
+    const std::string &JvmBaseClass::classDescriptor() const
     {
-        if(class_descriptor_.empty()){
+        if (class_descriptor_.empty()) {
             class_descriptor_ = classNameToDescriptor(class_name_);
         }
 
         return class_descriptor_;
     }
-    const std::vector<std::shared_ptr<JvmClass>> &JvmBaseClass::interfaces() const
+
+    const std::vector<JvmClass *> &JvmBaseClass::interfaces() const
     {
         return interfaces_;
     }
 
-    const std::shared_ptr<JvmClass> &JvmBaseClass::superClass() const
+    const JvmClass *JvmBaseClass::superClass() const
     {
         return super_class_;
     }
@@ -38,7 +39,7 @@ namespace jvm {
         assert(t != nullptr);
 
         for (auto c = super_class_; c != nullptr; c = c->super_class_) {
-            if (c.get() == t) {
+            if (c == t) {
                 return true;
             }
         }
@@ -51,9 +52,9 @@ namespace jvm {
         auto t = dynamic_cast<JvmClass *>(iface);
         assert(t != nullptr);
 
-        for (auto c = this; c != nullptr; c = c->super_class_.get()) {
-            for (const auto& inter : c->interfaces_) {
-                if (inter.get() == t || inter->isSubInterfaceOf(t)) {
+        for (auto c = this; c != nullptr; c = c->super_class_) {
+            for (const auto &inter : c->interfaces_) {
+                if (inter == t || inter->isSubInterfaceOf(t)) {
                     return true;
                 }
             }
@@ -83,7 +84,7 @@ namespace jvm {
         interfaces_.push_back(Loader::instance()->loadNonArrayClass("java/io/Serializable"));
     }
 
-    std::shared_ptr<JvmBaseClass> JvmArrayClass::componentClass() const
+    JvmBaseClass* JvmArrayClass::componentClass() const
     {
         return Loader::instance()->loadClass(component_name_);
     }
@@ -97,37 +98,36 @@ namespace jvm {
         auto sc = componentClass();
         auto tc = dynamic_cast<JvmArrayClass *>(t)->componentClass();
 
-        return sc->isAssignableFrom(tc.get());
+        return sc->isAssignableFrom(tc);
     }
 
-    std::shared_ptr<JvmBaseArray> JvmArrayClass::arrayFactory(jvm::u4 count)
+    JvmBaseArray* JvmArrayClass::arrayFactory(jvm::u4 count)
     {
         if (class_name_ == "[Z") {
-            return std::make_shared<JvmArray<jbool>>(count, shared_from_this());
+            return new JvmArray<jbool>(count, this);
         }
         if (class_name_ == "[B") {
-            return std::make_shared<JvmArray<jbyte>>(count, shared_from_this());
+            return new JvmArray<jbyte>(count, this);
         }
         if (class_name_ == "[C") {
-            return std::make_shared<JvmArray<jchar>>(count, shared_from_this());
+            return new JvmArray<jchar>(count, this);
         }
         if (class_name_ == "[S") {
-            return std::make_shared<JvmArray<jshort>>(count, shared_from_this());
+            return new JvmArray<jshort>(count, this);
         }
         if (class_name_ == "[I") {
-            return std::make_shared<JvmArray<jint>>(count, shared_from_this());
+            return new JvmArray<jint>(count, this);
         }
         if (class_name_ == "[J") {
-            return std::make_shared<JvmArray<jlong>>(count, shared_from_this());
+            return new JvmArray<jlong>(count, this);
         }
         if (class_name_ == "[F") {
-            return std::make_shared<JvmArray<jfloat>>(count, shared_from_this());
+            return new JvmArray<jfloat>(count, this);
         }
         if (class_name_ == "[D") {
-            return std::make_shared<JvmArray<jdouble>>(count, shared_from_this());
+            return new JvmArray<jdouble>(count, this);
         }
-
-        std::make_shared<JvmArray<JvmRef>>(count, shared_from_this());
+        return new JvmArray<JvmRef>(count, this);
     }
 
     // 不能在构造函数中使用shared_from_this
@@ -135,29 +135,30 @@ namespace jvm {
             : JvmBaseClass(true, class_file->className(), class_file->access_flags_),
               instance_slots_count_(0),
               static_slots_count_(0),
-              runtime_const_pool_(class_file->const_pool_, shared_from_this())
+              runtime_const_pool_(class_file->const_pool_, this)
     {
         if (!isJavaLangObject()) {
+
+            auto getClass = [class_file](u2 class_index) {
+                return Loader::instance()->loadNonArrayClass(
+                        class_file->const_pool_.classNameOf(class_index)
+                );
+            };
             // 解析super class
-            super_class_ = Loader::instance()->loadNonArrayClass(
-                    class_file->const_pool_.classNameOf(class_file->super_class_)
-            );
+            super_class_ = getClass(class_file->super_class_);
+
             // 解析interfaces
             for (auto item: class_file->interfaces_) {
-                interfaces_.push_back(Loader::instance()->loadNonArrayClass(
-                        class_file->const_pool_.classNameOf(item)
-                ));
+                interfaces_.push_back(getClass(item));
             }
         }
 
-        // 解析fields和methods
-        auto this_ptr = shared_from_this();
-        for (auto &field_info : class_file->fields_) {
-            fields_.emplace_back(std::make_shared<JvmField>(this_ptr, field_info.get()));
+        for (auto field_info : class_file->fields_) {
+            fields_.push_back(new JvmField(this, field_info));
         }
 
-        for (auto &method_info: class_file->methods_) {
-            methods_.emplace_back(std::make_shared<JvmMethod>(this_ptr, method_info.get()));
+        for (auto method_info: class_file->methods_) {
+            methods_.push_back(new JvmMethod(this, method_info));
         }
     }
 
@@ -169,7 +170,7 @@ namespace jvm {
     bool JvmClass::isSubInterfaceOf(jvm::JvmClass *inter) const
     {
         for (auto &super_inter:interfaces_) {
-            if (super_inter.get() == inter || super_inter->isSubInterfaceOf(inter)) {
+            if (super_inter == inter || super_inter->isSubInterfaceOf(inter)) {
                 return true;
             }
         }

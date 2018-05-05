@@ -7,7 +7,7 @@
 
 #include <string>
 #include <boost/noncopyable.hpp>
-#include <toyjvm/utilities/basereader.h>
+#include <toyjvm/utilities/bytereader.h>
 #include <toyjvm/classfile/const_pool.h>
 #include <memory>
 
@@ -20,7 +20,7 @@ namespace jvm {
                 : attr_type_(attr_type), const_pool_(const_pool)
         {}
 
-        virtual void read(BaseReader &reader)
+        virtual void read(ByteReader &reader)
         {}
 
         inline const std::string &attrType() const
@@ -37,12 +37,12 @@ namespace jvm {
 
     class AttrConstantValue : public BaseAttrInfo {
     public:
-        explicit AttrConstantValue(const ConstPool &const_pool)
-                : BaseAttrInfo("ConstantValue", const_pool)
+        explicit AttrConstantValue(const std::string &attr_type, const ConstPool &const_pool)
+                : BaseAttrInfo(attr_type, const_pool)
         {
         }
 
-        void read(BaseReader &reader) override;
+        void read(ByteReader &reader) override;
 
         inline u2 constValueIndex() const
         {
@@ -65,9 +65,9 @@ namespace jvm {
      */
     class AttrCode : public BaseAttrInfo {
     public:
-        explicit AttrCode(const ConstPool &const_pool);
+        explicit AttrCode(const std::string &attr_type, const ConstPool &const_pool);
 
-        void read(BaseReader &reader) override;
+        void read(ByteReader &reader) override;
 
     public:
         inline u2 maxStack() const
@@ -95,11 +95,11 @@ namespace jvm {
 
     class AttrExceptions : public BaseAttrInfo {
     public:
-        explicit AttrExceptions(const ConstPool &const_pool)
-                : BaseAttrInfo("Exceptions", const_pool)
+        explicit AttrExceptions(const std::string &attr_type, const ConstPool &const_pool)
+                : BaseAttrInfo(attr_type, const_pool)
         {}
 
-        void read(BaseReader &reader) override;
+        void read(ByteReader &reader) override;
 
     private:
         std::vector<u2> exception_index_table_;
@@ -114,11 +114,11 @@ namespace jvm {
 
     class AttrInnerClasses : public BaseAttrInfo {
     public:
-        explicit AttrInnerClasses(const ConstPool &const_pool)
-                : BaseAttrInfo("InnerClasses", const_pool)
+        explicit AttrInnerClasses(const std::string &attr_type, const ConstPool &const_pool)
+                : BaseAttrInfo(attr_type, const_pool)
         {}
 
-        void read(BaseReader &reader) override;
+        void read(ByteReader &reader) override;
 
     private:
         std::vector<InnerClassInfo> inner_classes_;
@@ -126,39 +126,27 @@ namespace jvm {
 
     class AttrEnclosingMethod : public BaseAttrInfo {
     public:
-        explicit AttrEnclosingMethod(const ConstPool &const_pool)
-                : BaseAttrInfo("EnclosingMethod", const_pool)
+        explicit AttrEnclosingMethod(const std::string &attr_type, const ConstPool &const_pool)
+                : BaseAttrInfo(attr_type, const_pool)
         {}
 
-        void read(BaseReader &reader) override;
+        void read(ByteReader &reader) override;
 
     private:
         u2 class_index_;
         u2 method_index_;
     };
 
-    template<char const *attr_type>
-    class EmptyAttrInfo : public BaseAttrInfo {
-    public:
-        explicit EmptyAttrInfo(const ConstPool &const_pool)
-                : BaseAttrInfo(attr_type, const_pool)
-        {}
-    };
-
-    // 所以！！！ char* 和 char[]的区别
-    static constexpr const char Synthetic[] = "Synthetic";
-    static constexpr const char Deprecated[] = "Deprecated";
-
-    using AttrSynthetic = EmptyAttrInfo<Synthetic>;
-    using AttrDeprecated = EmptyAttrInfo<Deprecated>;
+    using AttrSynthetic = BaseAttrInfo;
+    using AttrDeprecated = BaseAttrInfo;
 
     class AttrSignature : public BaseAttrInfo {
     public:
-        explicit AttrSignature(const ConstPool &const_pool)
-                : BaseAttrInfo("Signature", const_pool)
+        explicit AttrSignature(const std::string &attr_type,const ConstPool &const_pool)
+                : BaseAttrInfo(attr_type, const_pool)
         {}
 
-        void read(BaseReader &reader) override;
+        void read(ByteReader &reader) override;
 
     private:
         u2 signature_index_;
@@ -166,11 +154,11 @@ namespace jvm {
 
     class AttrSourceFile : public BaseAttrInfo {
     public:
-        explicit AttrSourceFile(const ConstPool &const_pool)
-                : BaseAttrInfo("SourceFile", const_pool)
+        explicit AttrSourceFile(const std::string &attr_type, const ConstPool &const_pool)
+                : BaseAttrInfo(attr_type, const_pool)
         {}
 
-        void read(BaseReader &reader) override;
+        void read(ByteReader &reader) override;
 
     private:
         u2 sourcefile_index_;;
@@ -183,11 +171,11 @@ namespace jvm {
 
     class AttrLineNumberTable : public BaseAttrInfo {
     public:
-        explicit AttrLineNumberTable(const ConstPool &const_pool)
-                : BaseAttrInfo("LineNumberTable", const_pool)
+        explicit AttrLineNumberTable(const std::string &attr_type, const ConstPool &const_pool)
+                : BaseAttrInfo(attr_type, const_pool)
         {}
 
-        void read(BaseReader &reader) override;
+        void read(ByteReader &reader) override;
 
     private:
         std::vector<LineNumberInfo> line_number_table_;
@@ -203,11 +191,11 @@ namespace jvm {
 
     class AttrLocalVariableTable : public BaseAttrInfo {
     public:
-        explicit AttrLocalVariableTable(const ConstPool &const_pool)
-                : BaseAttrInfo("LocalVariableTable", const_pool)
+        explicit AttrLocalVariableTable(const std::string &attr_type, const ConstPool &const_pool)
+                : BaseAttrInfo(attr_type, const_pool)
         {}
 
-        void read(BaseReader &reader) override;
+        void read(ByteReader &reader) override;
 
     private:
         std::vector<LocalVariableInfo> local_variable_table_;
@@ -223,11 +211,11 @@ namespace jvm {
 
     class AttrLocalVariableTypeTable : public BaseAttrInfo {
     public:
-        explicit AttrLocalVariableTypeTable(const ConstPool &const_pool)
-                : BaseAttrInfo("LocalVariableTypeTable", const_pool)
+        explicit AttrLocalVariableTypeTable(const std::string &attr_type, const ConstPool &const_pool)
+                : BaseAttrInfo(attr_type, const_pool)
         {}
 
-        void read(BaseReader &reader) override;
+        void read(ByteReader &reader) override;
 
     private:
         std::vector<LocalVariableTypeInfo> local_variable_type_table_;
@@ -240,11 +228,11 @@ namespace jvm {
 
     class AttrBootstrapMethods : public BaseAttrInfo {
     public:
-        explicit AttrBootstrapMethods(const ConstPool &const_pool)
-                : BaseAttrInfo("BootstrapMethods", const_pool)
+        explicit AttrBootstrapMethods(const std::string &attr_type,const ConstPool &const_pool)
+                : BaseAttrInfo(attr_type, const_pool)
         {}
 
-        void read(BaseReader &reader) override;
+        void read(ByteReader &reader) override;
 
     private:
         std::vector<BootStrapMethod> bootStrap_methods_;
@@ -252,12 +240,12 @@ namespace jvm {
 
     class AttrUnparsed : public BaseAttrInfo {
     public:
-        explicit AttrUnparsed(std::string &attr_name, u4 attr_len, const ConstPool &const_pool)
+        explicit AttrUnparsed(const std::string &attr_name, u4 attr_len, const ConstPool &const_pool)
                 : BaseAttrInfo(attr_name, const_pool),
                   attr_len_(attr_len)
         {}
 
-        void read(BaseReader &reader) override;
+        void read(ByteReader &reader) override;
 
     private:
         u4 attr_len_;

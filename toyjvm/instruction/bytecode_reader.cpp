@@ -8,7 +8,7 @@ namespace jvm {
     void ByteCodeReader::skipPadding()
     {
         while (pc_ % 4 != 0) {
-            BaseReader::read<u1>();
+            ByteReader::read<u1>();
         }
     }
 }

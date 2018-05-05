@@ -4,7 +4,7 @@
 #include <toyjvm/classfile/member_info.h>
 
 namespace jvm {
-    void MemberInfo::read(jvm::BaseReader &reader)
+    void MemberInfo::read(jvm::ByteReader &reader)
     {
         access_flags_ = reader.read<u2>();
         name_index_ = reader.read<u2>();

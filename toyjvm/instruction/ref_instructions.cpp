@@ -8,9 +8,9 @@ namespace jvm {
     void NEW_Instruction::execute(jvm::JvmFrame &frame)
     {
         const auto &rt_const_pool = frame.method()->klass()->runtimeConstPool();
-        auto &class_ref = rt_const_pool.at<std::shared_ptr<ClassRef>>(this->operand_);
+        auto class_ref = rt_const_pool.at<ClassRef *>(this->operand_);
         auto klass = class_ref->resolveClass();
-        auto obj = std::make_shared<JvmObject>(klass);
+        auto obj = new JvmObject(klass);
         frame.operandStack().push(obj);
     }
 
@@ -25,8 +25,8 @@ namespace jvm {
         }
         auto tclass = frame.method()
                 ->klass()
-                ->runtimeConstPool().at<std::shared_ptr<ClassRef>>(this->operand_)
-                ->resolveClass().get();
+                ->runtimeConstPool().at<ClassRef*>(this->operand_)
+                ->resolveClass();
 
         if (!obj_ref->isInstanceOf(tclass)) {
             // todo throw exception
@@ -45,8 +45,8 @@ namespace jvm {
 
         auto tclass = frame.method()
                 ->klass()
-                ->runtimeConstPool().at<std::shared_ptr<ClassRef>>(this->operand_)
-                ->resolveClass().get();
+                ->runtimeConstPool().at<ClassRef*>(this->operand_)
+                ->resolveClass();
 
         opstack.push<int>(obj_ref->isInstanceOf(tclass));
     }

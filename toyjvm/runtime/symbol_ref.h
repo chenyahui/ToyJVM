@@ -13,17 +13,17 @@
 namespace jvm {
     class SymbolRef : boost::noncopyable {
     public:
-        explicit SymbolRef(RuntimeConstPool &runtime_const_pool, const std::string&)
+        explicit SymbolRef(RuntimeConstPool &runtime_const_pool, const std::string &)
                 : runtime_const_pool_(runtime_const_pool),
                   klass_(nullptr)
         {}
 
-        std::shared_ptr<JvmClass> resolveClass();
+        JvmClass *resolveClass();
 
     protected:
         RuntimeConstPool &runtime_const_pool_;
         std::string class_name_;
-        std::shared_ptr<JvmClass> klass_; // 表示该符号代表的类
+        JvmClass *klass_; // 表示该符号代表的类
 
     };
 
@@ -31,16 +31,15 @@ namespace jvm {
     public:
         ClassRef(RuntimeConstPool &runtime_const_pool,
                  ConstClassInfo *class_info)
-                : SymbolRef(runtime_const_pool,class_info->className())
+                : SymbolRef(runtime_const_pool, class_info->className())
         {
         }
     };
 
-    template<ConstType tag>
     class MemberRef : public SymbolRef {
     public:
         MemberRef(RuntimeConstPool &runtime_const_pool,
-                  BaseMemberRefInfo<tag> *member_info)
+                  BaseMemberRefInfo *member_info)
                 : SymbolRef(runtime_const_pool, member_info->className()),
                   name_descriptor_(member_info->nameAndDescriptor())
         {
@@ -50,7 +49,7 @@ namespace jvm {
         std::array<std::string, 2> name_descriptor_;
     };
 
-    class FieldRef : public MemberRef<ConstType::FieldRef> {
+    class FieldRef : public MemberRef {
     public:
         FieldRef(RuntimeConstPool &runtime_const_pool,
                  ConstFieldRefInfo *field_info)
@@ -60,16 +59,16 @@ namespace jvm {
 
         }
 
-        std::shared_ptr<JvmField> resolveField();
+        JvmField *resolveField();
 
     protected:
-        std::shared_ptr<JvmField> lookUpField(JvmClass *klass);
+        JvmField *lookUpField(JvmClass *klass);
 
     protected:
-        std::shared_ptr<JvmField> field_;
+        JvmField *field_;
     };
 
-    class MethodRef : public MemberRef<ConstType::MethodRef> {
+    class MethodRef : public MemberRef {
     public:
         MethodRef(RuntimeConstPool &runtime_const_pool,
                   ConstMethodRefInfo *method_info)
@@ -80,10 +79,10 @@ namespace jvm {
         }
 
     protected:
-        std::shared_ptr<JvmMethod> method_;
+        JvmMethod *method_;
     };
 
-    class InterfaceMethodRef : public MemberRef<ConstType::InterfaceMethodRef> {
+    class InterfaceMethodRef : public MemberRef {
     public:
         InterfaceMethodRef(RuntimeConstPool &runtime_const_pool,
                            ConstInterfaceMethodRefInfo *method_info)
@@ -94,7 +93,7 @@ namespace jvm {
         }
 
     protected:
-        std::shared_ptr<JvmMethod> method_;
+        JvmMethod *method_;
     };
 }
 #endif //TOYJVM_SYMBOL_REF_H

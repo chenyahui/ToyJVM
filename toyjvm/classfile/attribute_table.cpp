@@ -3,11 +3,10 @@
 //
 
 #include <toyjvm/classfile/attribute_table.h>
-#include <toyjvm/classfile/attribute_infos.h>
 #include <glog/logging.h>
 
 namespace jvm {
-    void AttrTable::read(BaseReader &reader, const ConstPool &pool)
+    void AttrTable::read(ByteReader &reader, const ConstPool &pool)
     {
         auto count = reader.read<u2>();
         attr_infos_.resize(count);
@@ -18,7 +17,7 @@ namespace jvm {
         }
     }
 
-    BaseAttrInfo *AttrTable::readAttrInfo(BaseReader &reader, const ConstPool &const_pool)
+    BaseAttrInfo *AttrTable::readAttrInfo(ByteReader &reader, const ConstPool &const_pool)
     {
         auto attr_name_index = reader.read<u2>();
         auto attr_len = reader.read<u4>();
@@ -26,13 +25,13 @@ namespace jvm {
         return attrInfoFactory(attr_name, attr_len, const_pool);
     }
 
-    BaseAttrInfo *AttrTable::attrInfoFactory(std::string &attr_name,
+    BaseAttrInfo *AttrTable::attrInfoFactory(const std::string &attr_name,
                                              u4 attr_len,
                                              const jvm::ConstPool &const_pool)
     {
 #define PARSE_ATTR(TAG) \
 if(attr_name == #TAG){ \
-    return new Attr##TAG(const_pool); \
+    return new Attr##TAG(attr_name, const_pool); \
 }
         PARSE_ATTR(BootstrapMethods)
         PARSE_ATTR(Code)

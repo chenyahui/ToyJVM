@@ -28,9 +28,9 @@ namespace jvm {
 
         const std::string &classDescriptor() const;
 
-        const std::vector<std::shared_ptr<JvmClass>> &interfaces() const;
+        const std::vector<JvmClass*> &interfaces() const;
 
-        const std::shared_ptr<JvmClass> &superClass() const;
+        const JvmClass* superClass() const;
 
         const AccessFlags &accessFlags() const;
 
@@ -49,32 +49,31 @@ namespace jvm {
         bool is_array_;
         std::string class_name_;
         AccessFlags access_flags_;
-        std::shared_ptr<JvmClass> super_class_;
-        std::vector<std::shared_ptr<JvmClass>> interfaces_;
+        JvmClass* super_class_;
+        std::vector<JvmClass*> interfaces_;
         mutable std::string class_descriptor_;
     };
 
     class JvmBaseArray;
 
-    class JvmArrayClass : public JvmBaseClass, public std::enable_shared_from_this<JvmArrayClass> {
+    class JvmArrayClass : public JvmBaseClass{
     public:
         explicit JvmArrayClass(const std::string &class_name);
 
         bool isAssignableFrom(JvmBaseClass *t) const override;
 
-        std::shared_ptr<JvmBaseArray> arrayFactory(u4 count);
+        JvmBaseArray* arrayFactory(u4 count);
 
-        std::shared_ptr<JvmBaseClass> componentClass() const;
+        JvmBaseClass* componentClass() const;
 
     private:
         std::string component_name_;
     };
 
-    class JvmClass : public JvmBaseClass, public std::enable_shared_from_this<JvmClass> {
+    class JvmClass : public JvmBaseClass {
     public:
         explicit JvmClass(ClassFile *class_file);
 
-        std::shared_ptr<JvmField> getField() const;
 
         bool isSubInterfaceOf(JvmClass *) const;
 
@@ -104,7 +103,7 @@ namespace jvm {
             return runtime_const_pool_;
         }
 
-        const std::vector<std::shared_ptr<JvmField>> &fields() const
+        const std::vector<JvmField*> &fields() const
         {
             return fields_;
         }
@@ -115,8 +114,8 @@ namespace jvm {
     private:
         RuntimeConstPool runtime_const_pool_;
 
-        std::vector<std::shared_ptr<JvmField>> fields_;
-        std::vector<std::shared_ptr<JvmMethod>> methods_;
+        std::vector<JvmField*> fields_;
+        std::vector<JvmMethod*> methods_;
         size_t instance_slots_count_;
         size_t static_slots_count_;
         std::unique_ptr<LocalSlots> static_fields_;

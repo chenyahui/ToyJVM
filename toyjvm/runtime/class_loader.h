@@ -28,18 +28,18 @@ namespace jvm {
             class_path_ = std::move(std::unique_ptr<ClassPath>(new ClassPath(jre_option, cp_option)));
         }
 
-        std::shared_ptr<JvmBaseClass> loadClass(const std::string &class_name);
+        JvmBaseClass* loadClass(const std::string &class_name);
 
-        std::shared_ptr<JvmClass> loadNonArrayClass(const std::string &class_name);
+        JvmClass* loadNonArrayClass(const std::string &class_name);
 
-        std::shared_ptr<JvmArrayClass> loadArrayClass(const std::string &class_name);
-
-    private:
-        std::shared_ptr<JvmClass> defineClass(bytes class_bytes);
+        JvmArrayClass* loadArrayClass(const std::string &class_name);
 
     private:
-        std::unordered_map<std::string, std::shared_ptr<JvmClass>> non_array_class_map_;
-        std::unordered_map<std::string, std::shared_ptr<JvmArrayClass>> array_class_map_;
+        JvmClass *defineClass(bytes class_bytes);
+
+    private:
+        std::unordered_map<std::string, JvmClass *> non_array_class_map_;
+        std::unordered_map<std::string, JvmArrayClass *> array_class_map_;
         std::unique_ptr<ClassPath> class_path_;
     };
 

@@ -8,7 +8,7 @@
 #include <toyjvm/runtime/jvm_member.h>
 
 namespace jvm {
-    std::shared_ptr<JvmBaseClass> ClassLoader::loadClass(const std::string &class_name)
+    JvmBaseClass *ClassLoader::loadClass(const std::string &class_name)
     {
         if (class_name[0] == '[') {
             return loadArrayClass(class_name);
@@ -17,15 +17,15 @@ namespace jvm {
         }
     }
 
-    std::shared_ptr<JvmArrayClass> ClassLoader::loadArrayClass(const std::string &class_name)
+    JvmArrayClass *ClassLoader::loadArrayClass(const std::string &class_name)
     {
         if (array_class_map_.find(class_name) != array_class_map_.end()) {
             return array_class_map_[class_name];
         }
-        return std::make_shared<JvmArrayClass>(class_name);
+        return new JvmArrayClass(class_name);
     }
 
-    std::shared_ptr<JvmClass> ClassLoader::loadNonArrayClass(const std::string &class_name)
+    JvmClass *ClassLoader::loadNonArrayClass(const std::string &class_name)
     {
         if (non_array_class_map_.find(class_name) != non_array_class_map_.end()) {
             return non_array_class_map_[class_name];
@@ -34,15 +34,15 @@ namespace jvm {
         auto class_bytes = class_path_->readClass(class_name);
         auto klass = defineClass(std::move(class_bytes));
 
-        prepareClass(klass.get());
+        prepareClass(klass);
     }
 
-    std::shared_ptr<JvmClass> ClassLoader::defineClass(jvm::bytes class_bytes)
+    JvmClass *ClassLoader::defineClass(jvm::bytes class_bytes)
     {
         std::unique_ptr<ClassFile> classfile(new ClassFile(std::move(class_bytes)));
         classfile->parse();
 
-        return std::make_shared<JvmClass>(classfile.get());
+        return new JvmClass(classfile.get());
     }
 
     static void calcInstanceFieldSlotIds(JvmClass *klass);

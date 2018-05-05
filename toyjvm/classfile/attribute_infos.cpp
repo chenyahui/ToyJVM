@@ -6,17 +6,17 @@
 #include <toyjvm/classfile/attribute_table.h>
 
 namespace jvm {
-    void AttrConstantValue::read(jvm::BaseReader &reader)
+    void AttrConstantValue::read(jvm::ByteReader &reader)
     {
         constant_value_index_ = reader.read<u2>();
     }
 
-    AttrCode::AttrCode(const ConstPool &const_pool)
-            : BaseAttrInfo("Code", const_pool),
+    AttrCode::AttrCode(const std::string& attr_type, const ConstPool &const_pool)
+            : BaseAttrInfo(attr_type, const_pool),
               attr_table_(new AttrTable())
     {}
 
-    void AttrCode::read(jvm::BaseReader &reader)
+    void AttrCode::read(jvm::ByteReader &reader)
     {
         max_stack_ = reader.read<u2>();
         max_locals_ = reader.read<u2>();
@@ -36,12 +36,12 @@ namespace jvm {
         attr_table_->read(reader, const_pool_);
     }
 
-    void AttrExceptions::read(jvm::BaseReader &reader)
+    void AttrExceptions::read(jvm::ByteReader &reader)
     {
         exception_index_table_ = reader.batchRead<u2, u2>();
     }
 
-    void AttrInnerClasses::read(jvm::BaseReader &reader)
+    void AttrInnerClasses::read(jvm::ByteReader &reader)
     {
         auto class_num = reader.read<u2>();
         inner_classes_.reserve(class_num);
@@ -56,23 +56,23 @@ namespace jvm {
         }
     }
 
-    void AttrEnclosingMethod::read(jvm::BaseReader &reader)
+    void AttrEnclosingMethod::read(jvm::ByteReader &reader)
     {
         class_index_ = reader.read<u2>();
         method_index_ = reader.read<u2>();
     }
 
-    void AttrSignature::read(jvm::BaseReader &reader)
+    void AttrSignature::read(jvm::ByteReader &reader)
     {
         signature_index_ = reader.read<u2>();
     }
 
-    void AttrSourceFile::read(jvm::BaseReader &reader)
+    void AttrSourceFile::read(jvm::ByteReader &reader)
     {
         sourcefile_index_ = reader.read<u2>();
     }
 
-    void AttrLineNumberTable::read(jvm::BaseReader &reader)
+    void AttrLineNumberTable::read(jvm::ByteReader &reader)
     {
         auto table_len = reader.read<u2>();
         line_number_table_.reserve(table_len);
@@ -86,7 +86,7 @@ namespace jvm {
         }
     }
 
-    void AttrLocalVariableTable::read(jvm::BaseReader &reader)
+    void AttrLocalVariableTable::read(jvm::ByteReader &reader)
     {
         auto count = reader.read<u2>();
         for (int i = 0; i < count; ++i) {
@@ -100,7 +100,7 @@ namespace jvm {
         }
     }
 
-    void AttrLocalVariableTypeTable::read(jvm::BaseReader &reader)
+    void AttrLocalVariableTypeTable::read(jvm::ByteReader &reader)
     {
         auto count = reader.read<u2>();
         for (int i = 0; i < count; ++i) {
@@ -114,7 +114,7 @@ namespace jvm {
         }
     }
 
-    void AttrBootstrapMethods::read(jvm::BaseReader &reader)
+    void AttrBootstrapMethods::read(jvm::ByteReader &reader)
     {
         auto count = reader.read<u2>();
         for (int i = 0; i < count; ++i) {
@@ -125,7 +125,7 @@ namespace jvm {
         }
     }
 
-    void AttrUnparsed::read(jvm::BaseReader &reader)
+    void AttrUnparsed::read(jvm::ByteReader &reader)
     {
         data_ = reader.batchRead<u1>(attr_len_);
     }

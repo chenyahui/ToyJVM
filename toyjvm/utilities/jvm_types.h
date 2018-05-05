@@ -31,9 +31,9 @@ namespace jvm {
 
     class JvmBaseArray;
 
-    using jref = std::shared_ptr<JvmRef>;
-    using jobj = std::shared_ptr<JvmObject>;
-    using jarr = std::shared_ptr<JvmBaseArray>;
+    using jref = JvmRef *;
+    using jobj = JvmObject *;
+    using jarr = JvmBaseArray *;
 
 }
 #endif //TOYJVM_TYPES_H

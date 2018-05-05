@@ -17,16 +17,16 @@ namespace jvm {
             return pc_;
         }
 
-        std::shared_ptr<JvmFrame> pop();
+        JvmFrame* pop();
 
-        void push(std::shared_ptr<JvmFrame>);
+        void push(JvmFrame*);
 
-        std::shared_ptr<JvmFrame> top() const;
+        JvmFrame* top() const;
 
         bool empty() const;
     private:
         size_t pc_ = 0;
-        std::vector<std::shared_ptr<JvmFrame>> stack_;
+        std::vector<JvmFrame*> stack_;
     };
 }
 #endif //TOYJVM_JVM_THREAD_H

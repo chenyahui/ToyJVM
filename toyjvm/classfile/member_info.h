@@ -19,7 +19,7 @@ namespace jvm {
                 : const_pool_(const_pool)
         {}
 
-        void read(BaseReader &reader);
+        void read(ByteReader &reader);
 
         std::string memberName();
 

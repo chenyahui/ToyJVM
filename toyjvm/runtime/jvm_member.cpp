@@ -5,14 +5,14 @@
 #include <toyjvm/runtime/jvm_member.h>
 
 namespace jvm {
-    JvmField::JvmField(std::shared_ptr<JvmClass> this_class, FieldInfo *field_info)
+    JvmField::JvmField(JvmClass *this_class, FieldInfo *field_info)
             : JvmMember(this_class, field_info)
     {
         auto constValueAttr = field_info->constantValueAttr();
         const_value_index_ = constValueAttr != nullptr ? constValueAttr->constValueIndex() : -1;
     }
 
-    JvmMethod::JvmMethod(std::shared_ptr<JvmClass> this_class, MethodInfo *method_info)
+    JvmMethod::JvmMethod(JvmClass *this_class, MethodInfo *method_info)
             : JvmMember(this_class, method_info)
     {
         AttrCode *codeAttr;

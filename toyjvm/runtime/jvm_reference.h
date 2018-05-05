@@ -11,31 +11,31 @@
 #include <toyjvm/runtime/local_slots.h>
 
 namespace jvm {
-    class JvmRef {
+    class JvmRef : boost::noncopyable{
     public:
-        explicit JvmRef(std::shared_ptr<JvmBaseClass> klass)
+        explicit JvmRef(JvmBaseClass *klass)
                 : klass_(klass)
         {}
 
-        std::shared_ptr<JvmBaseClass> klass() const
+        JvmBaseClass* klass() const
         {
-            return klass_.lock();
+            return klass_;
         }
 
         bool isInstanceOf(JvmBaseClass *t) const
         {
-            return klass_.lock()->isAssignableFrom(t);
+            return klass_->isAssignableFrom(t);
         }
 
         virtual ~JvmRef() = default;
 
     protected:
-        std::weak_ptr<JvmBaseClass> klass_;
+        JvmBaseClass *klass_;
     };
 
     class JvmObject : public JvmRef {
     public:
-        explicit JvmObject(std::shared_ptr<JvmClass> klass)
+        explicit JvmObject(JvmClass *klass)
                 : JvmRef(klass),
                   instance_fields_(klass->instanceSlotsCount())
         {}
@@ -54,7 +54,7 @@ namespace jvm {
 
     class JvmBaseArray : public JvmRef {
     public:
-        explicit JvmBaseArray(std::shared_ptr<JvmArrayClass> array_class)
+        explicit JvmBaseArray(JvmArrayClass *array_class)
                 : JvmRef(array_class)
         {}
 
@@ -67,7 +67,7 @@ namespace jvm {
     class JvmArray : public JvmBaseArray {
     public:
         explicit JvmArray(u4 count,
-                 std::shared_ptr<JvmArrayClass> array_class)
+                          JvmArrayClass *array_class)
                 : JvmBaseArray(array_class)
         {}
 

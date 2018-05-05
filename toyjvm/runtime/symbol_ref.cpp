@@ -4,11 +4,10 @@
 
 #include <toyjvm/runtime/symbol_ref.h>
 #include <toyjvm/runtime/class_loader.h>
-#include <toyjvm/utilities/exception.h>
 #include <toyjvm/runtime/jvm_member.h>
 
 namespace jvm {
-    std::shared_ptr<JvmClass> SymbolRef::resolveClass()
+    JvmClass *SymbolRef::resolveClass()
     {
         if (!klass_) {
             klass_ = Loader::instance()->loadNonArrayClass(class_name_);
@@ -17,18 +16,18 @@ namespace jvm {
         return klass_;
     }
 
-    std::shared_ptr<JvmField> FieldRef::resolveField()
+    JvmField *FieldRef::resolveField()
     {
         if (!field_) {
-            field_ = lookUpField(resolveClass().get());
+            field_ = lookUpField(resolveClass());
         }
 
         return field_;
     }
 
-    std::shared_ptr<JvmField> FieldRef::lookUpField(JvmClass *klass)
+    JvmField *FieldRef::lookUpField(JvmClass *klass)
     {
-        for (auto &field_item : klass->fields()) {
+        for (auto field_item : klass->fields()) {
             if (field_item->name() == name_descriptor_[0]
                 && field_item->descriptor() == name_descriptor_[1]) {
                 return field_item;
@@ -36,7 +35,7 @@ namespace jvm {
         }
 
         for (auto &interface : klass->interfaces()) {
-            auto field_item = lookUpField(interface.get());
+            auto field_item = lookUpField(interface);
             if (field_item != nullptr) {
                 return field_item;
             }
@@ -44,7 +43,7 @@ namespace jvm {
 
         auto super_class = klass->superClass();
         if (super_class != nullptr) {
-            return lookUpField(super_class.get());
+            return lookUpField(const_cast<JvmClass *>(super_class));
         }
 
         return nullptr;

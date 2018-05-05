@@ -6,7 +6,7 @@
 #include <toyjvm/utilities/modified_utf8.h>
 
 namespace jvm {
-    void ConstClassInfo::read(jvm::BaseReader &reader)
+    void ConstClassInfo::read(jvm::ByteReader &reader)
     {
         name_index_ = reader.read<u2>();
     }
@@ -18,9 +18,24 @@ namespace jvm {
         }
         return class_name_;
     }
+    void BaseMemberRefInfo::read(jvm::ByteReader &reader)
+    {
+        class_index_ = reader.read<u2>();
+        name_and_type_index_ = reader.read<u2>();
+    }
 
+    std::array<std::string, 2> BaseMemberRefInfo::nameAndDescriptor() const
+    {
+        return const_pool_.constInfoAt<ConstNameAndTypeInfo>(name_and_type_index_)
+                ->nameAndDescriptor();
+    };
 
-    void ConstStringInfo::read(jvm::BaseReader &reader)
+    std::string BaseMemberRefInfo::className() const
+    {
+        return const_pool_.classNameOf(class_index_);
+    }
+
+    void ConstStringInfo::read(jvm::ByteReader &reader)
     {
         string_index_ = reader.read<u2>();
     }
@@ -30,7 +45,7 @@ namespace jvm {
         return const_pool_.stringAt(string_index_);
     }
 
-    void ConstNameAndTypeInfo::read(jvm::BaseReader &reader)
+    void ConstNameAndTypeInfo::read(jvm::ByteReader &reader)
     {
         name_index_ = reader.read<u2>();
         descriptor_index_ = reader.read<u2>();
@@ -41,7 +56,7 @@ namespace jvm {
         return {const_pool_.stringAt(name_index_), const_pool_.stringAt(descriptor_index_)};
     }
 
-    void ConstUtf8Info::read(jvm::BaseReader &reader)
+    void ConstUtf8Info::read(jvm::ByteReader &reader)
     {
         data_ = reader.batchRead<u2, u1>();
     }
@@ -51,18 +66,18 @@ namespace jvm {
         return parseMutf8AsString(data_);
     }
 
-    void ConstMethodHandleInfo::read(jvm::BaseReader &reader)
+    void ConstMethodHandleInfo::read(jvm::ByteReader &reader)
     {
         reference_kind_ = reader.read<u1>();
         reference_index_ = reader.read<u2>();
     }
 
-    void ConstMethodTypeInfo::read(jvm::BaseReader &reader)
+    void ConstMethodTypeInfo::read(jvm::ByteReader &reader)
     {
         descriptor_index_ = reader.read<u2>();
     }
 
-    void ConstInvokeDynamicInfo::read(jvm::BaseReader &reader)
+    void ConstInvokeDynamicInfo::read(jvm::ByteReader &reader)
     {
         boostrap_method_attr_index_ = reader.read<u2>();
         name_and_type_index_ = reader.read<u2>();

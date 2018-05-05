@@ -2,8 +2,8 @@
 // Created by cyhone on 18-1-30.
 //
 
-#ifndef TOYJVM_BASEREADER_H
-#define TOYJVM_BASEREADER_H
+#ifndef TOYJVM_BYTEREADER_H
+#define TOYJVM_BYTEREADER_H
 
 #include <boost/noncopyable.hpp>
 #include <toyjvm/utilities/jvm_types.h>
@@ -11,9 +11,9 @@
 #include <algorithm>
 
 namespace jvm {
-    class BaseReader : boost::noncopyable {
+    class ByteReader : boost::noncopyable {
     public:
-        explicit BaseReader(bytes data)
+        explicit ByteReader(bytes data)
                 : data_(std::move(data))
         {}
 

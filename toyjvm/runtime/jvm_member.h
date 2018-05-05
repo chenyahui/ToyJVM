@@ -11,9 +11,9 @@
 #include <toyjvm/runtime/jvm_class.h>
 
 namespace jvm {
-    class JvmMember {
+    class JvmMember : boost::noncopyable{
     public:
-        explicit JvmMember(std::shared_ptr<JvmClass> this_class, MemberInfo *member_info)
+        explicit JvmMember(JvmClass* this_class, MemberInfo *member_info)
                 : access_flags_(member_info->access_flags_),
                   name_(member_info->memberName()),
                   descriptor_(member_info->descriptor()),
@@ -35,21 +35,21 @@ namespace jvm {
             return name_;
         }
 
-        std::shared_ptr<JvmClass> klass() const
+        JvmClass* klass() const
         {
-            return this_class_.lock();
+            return this_class_;
         }
 
     protected:
         AccessFlags access_flags_;
         std::string name_;
         std::string descriptor_;
-        std::weak_ptr<JvmClass> this_class_;
+        JvmClass* this_class_;
     };
 
     class JvmField : public JvmMember {
     public:
-        explicit JvmField(std::shared_ptr<JvmClass> this_class, FieldInfo *field_info);
+        explicit JvmField(JvmClass* this_class, FieldInfo *field_info);
 
         void setSlotIndex(size_t slot_index)
         {
@@ -78,7 +78,7 @@ namespace jvm {
 
     class JvmMethod : public JvmMember {
     public:
-        explicit JvmMethod(std::shared_ptr<JvmClass> this_class, MethodInfo *method_info);
+        explicit JvmMethod(JvmClass* this_class, MethodInfo *method_info);
 
     private:
         u4 max_stack_ = 0;

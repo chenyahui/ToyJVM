@@ -22,40 +22,41 @@ namespace jvm {
         friend class JvmClass;
 
         explicit ClassFile(bytes data)
-                : reader_(std::move(data)),
-                  const_pool_(reader_)
+                : reader_(data)
         {}
 
-        void parse();
+        ~ClassFile();
 
-        void logClassInfo();
+        void parse();
 
         inline std::string className()
         {
             return const_pool_.classNameOf(this_class_);
         }
 
+        void logClassInfo();
+
     private:
         void checkMagicAndVersions();
 
         template<typename T>
-        std::vector<std::shared_ptr<T>> readMembers()
+        std::vector<T *> readMembers()
         {
             auto count = reader_.read<u2>();
-            std::vector<std::shared_ptr<T>> result;
-            result.reserve(count);
+            std::vector<T *> members;
+            members.reserve(count);
 
             for (int i = 0; i < count; ++i) {
-                auto member = std::make_shared<T>(const_pool_);
+                auto member = new T(const_pool_);
                 member->read(reader_);
-                result.push_back(member);
+                members.push_back(member);
             }
-            return result;
+            return members;
         };
 
 
     private:
-        BaseReader reader_;
+        ByteReader reader_;
 
         ConstPool const_pool_;
         u2 access_flags_;

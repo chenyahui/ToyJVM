@@ -32,7 +32,7 @@ namespace jvm {
         array_type += result->second;
 
         auto array_class = Loader::instance()->loadArrayClass(array_type);
-        opstack.push<std::shared_ptr<JvmBaseArray>>(array_class->arrayFactory(count));
+        opstack.push<JvmBaseArray*>(array_class->arrayFactory(count));
     }
 
     void ANEWARRAY_Instruction::execute(jvm::JvmFrame &frame)
@@ -48,7 +48,7 @@ namespace jvm {
         array_type += component_class->classDescriptor();
 
         auto array_class = Loader::instance()->loadArrayClass(array_type);
-        opstack.push<std::shared_ptr<JvmBaseArray>>(array_class->arrayFactory(count));
+        opstack.push<JvmBaseArray*>(array_class->arrayFactory(count));
     }
 
     void ARRAYLENGTH_Instruction::execute(jvm::JvmFrame &frame)

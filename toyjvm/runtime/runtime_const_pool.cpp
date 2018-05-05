@@ -6,16 +6,16 @@
 
 namespace jvm {
     RuntimeConstPool::RuntimeConstPool(const ConstPool &const_pool,
-                                       std::shared_ptr<JvmClass> klass)
+                                       JvmClass *klass)
             : klass_(klass)
     {
         const auto &const_infos = const_pool.constInfos();
         pool_.resize(const_infos.size());
 
         for (int i = 1; i < const_infos.size(); i++) {
-            auto item = const_infos[i].get();
+            auto item = const_infos[i];
 
-            switch (item->constTag()) {
+            switch (item->tag()) {
                 case ConstType::Integer: {
                     addVal<ConstIntegerInfo *>(i, item);
                     break;

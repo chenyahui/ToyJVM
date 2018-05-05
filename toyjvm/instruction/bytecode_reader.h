@@ -5,13 +5,13 @@
 #ifndef TOYJVM_BYTECODE_READER_H
 #define TOYJVM_BYTECODE_READER_H
 
-#include <toyjvm/utilities/basereader.h>
+#include <toyjvm/utilities/bytereader.h>
 
 namespace jvm {
-    class ByteCodeReader : public BaseReader {
+    class ByteCodeReader : public ByteReader {
     public:
         explicit ByteCodeReader(bytes &data)
-                : BaseReader(data)
+                : ByteReader(data)
         {}
 
         void skipPadding();

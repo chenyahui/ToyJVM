@@ -7,7 +7,7 @@
 
 #include <string>
 #include <toyjvm/classfile/const_pool.h>
-#include <toyjvm/utilities/basereader.h>
+#include <toyjvm/utilities/bytereader.h>
 #include <toyjvm/classfile/attribute_infos.h>
 
 namespace jvm {
@@ -17,7 +17,7 @@ namespace jvm {
     public:
         AttrTable() = default;
 
-        void read(BaseReader &reader, const ConstPool &);
+        void read(ByteReader &reader, const ConstPool &);
 
         inline const std::vector<BaseAttrInfo *> attrInfos() const
         {
@@ -40,9 +40,9 @@ namespace jvm {
         };
 
     private:
-        BaseAttrInfo *readAttrInfo(BaseReader &reader, const ConstPool &);
+        BaseAttrInfo *readAttrInfo(ByteReader &reader, const ConstPool &);
 
-        BaseAttrInfo *attrInfoFactory(std::string &attr_name,
+        BaseAttrInfo *attrInfoFactory(const std::string &attr_name,
                                       u4 attr_len,
                                       const jvm::ConstPool &const_pool);
 

@@ -17,7 +17,7 @@ namespace jvm {
 
     class RuntimeConstPool : public boost::noncopyable {
     public:
-        explicit RuntimeConstPool(const ConstPool &const_pool, std::shared_ptr<JvmClass> klass);
+        explicit RuntimeConstPool(const ConstPool &const_pool, JvmClass* klass);
 
         template<typename T>
         const T at(size_t index) const
@@ -31,9 +31,9 @@ namespace jvm {
         }
 
         // 其所属的class
-        inline std::shared_ptr<JvmClass> ofClass() const
+        inline JvmClass* ofClass() const
         {
-            return klass_.lock();
+            return klass_;
         }
 
     private:
@@ -41,21 +41,21 @@ namespace jvm {
         void addRef(int index, BaseConstInfo *item)
         {
             auto info = dynamic_cast<ConstRefType*>(item);
-            auto ref_info = std::make_shared<SymbolRefType>(*this, info);
-            pool_[index] = std::make_tuple<boost::any, ConstType>(ref_info, item->constTag());
+            auto ref_info = new SymbolRefType(*this, info);
+            pool_[index] = std::make_tuple<boost::any, ConstType>(ref_info, item->tag());
         }
 
         template<typename ConstRefType>
         void addVal(int index, BaseConstInfo *item)
         {
             auto info = dynamic_cast<ConstRefType>(item);
-            pool_[index] = std::make_tuple<boost::any, ConstType>(info->val(), item->constTag());
+            pool_[index] = std::make_tuple<boost::any, ConstType>(info->val(), item->tag());
         }
 
     private:
         using PoolItem = std::tuple<boost::any, ConstType>;
         std::vector<PoolItem> pool_;
-        std::weak_ptr<JvmClass> klass_; // 该runtimePool所属的class
+        JvmClass* klass_; // 该runtimePool所属的class
     };
 }
 #endif //TOYJVM_RUNTIME_CONST_POOL_H

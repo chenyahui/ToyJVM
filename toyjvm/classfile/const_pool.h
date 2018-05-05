@@ -5,7 +5,7 @@
 #ifndef TOYJVM_CONST_POOL_H
 #define TOYJVM_CONST_POOL_H
 
-#include <toyjvm/utilities/basereader.h>
+#include <toyjvm/utilities/bytereader.h>
 #include <string>
 
 namespace jvm {
@@ -30,40 +30,34 @@ namespace jvm {
 
     class ConstPool : boost::noncopyable {
     public:
+        ConstPool() = default;
 
-        explicit ConstPool(BaseReader &reader)
-                : reader_(reader)
-        {}
+        void read(ByteReader &reader);
 
+        BaseConstInfo *constInfoFactory(ConstType tag);
 
-        void read();
+        ~ConstPool();
 
-        std::shared_ptr<BaseConstInfo> ConstInfoFactory(ConstType tag);
-
-        ~ConstPool() = default;
-
-        inline const std::vector<std::shared_ptr<BaseConstInfo>> &constInfos() const
+        inline const std::vector<BaseConstInfo *> &constInfos() const
         {
             return const_infos_;
         }
 
         std::string classNameOf(u2 class_index) const;
 
-    public:
         std::string stringAt(int index) const;
 
         template<typename T>
         T *constInfoAt(int index) const
         {
             assert(index >= 1 && index < const_infos_.size());
-            auto info = std::dynamic_pointer_cast<T>(const_infos_[index]);
+            auto info = dynamic_cast<T*>(const_infos_[index]);
             assert(info != nullptr);
-            return info.get();
+            return info;
         }
 
     private:
-        BaseReader &reader_;
-        std::vector<std::shared_ptr<BaseConstInfo>> const_infos_;
+        std::vector<BaseConstInfo *> const_infos_;
     };
 
 }

@@ -1,11 +1,10 @@
 //
 // Created by cyhone on 18-2-8.
 //
-#include <toyjvm/utilities/basereader.h>
+#include <toyjvm/utilities/bytereader.h>
 #include <toyjvm/classfile/classfile.h>
 #include <toyjvm/utilities/exception.h>
 #include <glog/logging.h>
-#include <toyjvm/classfile/const_infos.h>
 #include <boost/format.hpp>
 
 using namespace jvm;
@@ -15,10 +14,21 @@ using namespace jvm;
 #define JAVA_MAX_SUPPORTED_MAJOR_VERSION 52
 #define JAVA_MAX_SUPPORTED_MINOR_VERSION 0
 
+ClassFile::~ClassFile()
+{
+    for (auto field : fields_) {
+        delete field;
+    }
+
+    for (auto method: methods_) {
+        delete method;
+    }
+}
+
 void ClassFile::parse()
 {
     checkMagicAndVersions();
-    const_pool_.read();
+    const_pool_.read(reader_);
     access_flags_ = reader_.read<u2>();
     this_class_ = reader_.read<u2>();
     super_class_ = reader_.read<u2>();

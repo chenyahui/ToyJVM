@@ -130,7 +130,7 @@ namespace jvm {
 
     private:
         DefRealAction({
-                          auto obj = opstack.pop<std::shared_ptr<JvmObject>>();
+                          auto obj = opstack.pop<jobj>();
 
                           if (obj == nullptr) {
                               throw JVMError("null pointer");
@@ -180,7 +180,7 @@ namespace jvm {
                     break;
                 }
                 case ConstType::Class: {
-                    auto class_ref = rt_const_pool.at<std::shared_ptr<ClassRef>>(this->operand_);
+                    auto class_ref = rt_const_pool.at<ClassRef*>(this->operand_);
                     // todo
                     break;
                 }
