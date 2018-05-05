@@ -12,7 +12,7 @@ set(INST_SRC
         extend_instructions.cpp
         ref_instructions.h
         ref_instructions.cpp
-        instruction_factory.h instruction_factory.cpp array_instructions.h array_instructions.cpp)
+        instruction_factory.h instruction_factory.cpp array_instructions.h array_instructions.cpp tests/test_control_inst.cpp tests/test_convert_inst.cpp invoke_instructions.h)
 
 add_library(toyjvm_inst
         ${INST_SRC}

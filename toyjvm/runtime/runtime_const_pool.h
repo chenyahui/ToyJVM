@@ -42,14 +42,14 @@ namespace jvm {
         {
             auto info = dynamic_cast<ConstRefType*>(item);
             auto ref_info = std::make_shared<SymbolRefType>(*this, info);
-            pool_[index] = std::make_tuple<boost::any, ConstType>(ref_info, item->tag());
+            pool_[index] = std::make_tuple<boost::any, ConstType>(ref_info, item->constTag());
         }
 
         template<typename ConstRefType>
         void addVal(int index, BaseConstInfo *item)
         {
             auto info = dynamic_cast<ConstRefType>(item);
-            pool_[index] = std::make_tuple<boost::any, ConstType>(info->val(), item->tag());
+            pool_[index] = std::make_tuple<boost::any, ConstType>(info->val(), item->constTag());
         }
 
     private:

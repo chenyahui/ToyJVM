@@ -14,8 +14,8 @@
 namespace jvm {
     class BaseConstInfo : boost::noncopyable {
     public:
-        BaseConstInfo(ConstType tag, const ConstPool &const_pool)
-                : tag_(tag), const_pool_(const_pool)
+        BaseConstInfo(ConstType const_tag, const ConstPool &const_pool)
+                : tag_(const_tag), const_pool_(const_pool)
         {}
 
         virtual ~BaseConstInfo() = default;
@@ -23,7 +23,7 @@ namespace jvm {
         virtual void read(BaseReader &)
         {}
 
-        ConstType tag() const
+        ConstType constTag() const
         {
             return tag_;
         }
@@ -49,6 +49,21 @@ namespace jvm {
         std::string class_name_;
     };
 
+    class ConstNameAndTypeInfo : public BaseConstInfo {
+    public:
+        explicit ConstNameAndTypeInfo(ConstPool &const_pool)
+                : BaseConstInfo(ConstType::NameAndType, const_pool)
+        {}
+
+        std::array<std::string, 2> nameAndDescriptor() const;
+
+        void read(BaseReader &) override;
+
+    private:
+        u2 name_index_;
+        u2 descriptor_index_;
+    };
+
     template<ConstType tag>
     class BaseMemberRefInfo : public BaseConstInfo {
     public:
@@ -56,11 +71,19 @@ namespace jvm {
                 : BaseConstInfo(tag, const_pool)
         {}
 
-        void read(jvm::BaseReader &reader) override;
+        void read(jvm::BaseReader &reader){
+            class_index_ = reader.read<u2>();
+            name_and_type_index_ = reader.read<u2>();
+        }
 
-        std::array<std::string, 2> nameAndDescriptor() const;
+        std::array<std::string, 2> nameAndDescriptor() const{
+            return const_pool_.constInfoAt<ConstNameAndTypeInfo>(name_and_type_index_)
+                    ->nameAndDescriptor();
+        };
 
-        std::string className() const;
+        std::string className() const{
+            return const_pool_.classNameOf(class_index_);
+        }
 
     private:
         u2 class_index_;
@@ -79,7 +102,7 @@ namespace jvm {
 
         void read(BaseReader &) override;
 
-        std::string val() const  ;
+        std::string val() const;
 
     private:
         u2 string_index_;
@@ -113,20 +136,6 @@ namespace jvm {
     using ConstIntegerInfo = BaseNumberInfo<ConstType::Integer, jint>;
     using ConstLongInfo = BaseNumberInfo<ConstType::Long, jlong>;
 
-    class ConstNameAndTypeInfo : public BaseConstInfo {
-    public:
-        explicit ConstNameAndTypeInfo(ConstPool &const_pool)
-                : BaseConstInfo(ConstType::NameAndType, const_pool)
-        {}
-
-        std::array<std::string, 2> nameAndDescriptor() const;
-
-        void read(BaseReader &) override;
-
-    private:
-        u2 name_index_;
-        u2 descriptor_index_;
-    };
 
     class ConstUtf8Info : public BaseConstInfo {
     public:

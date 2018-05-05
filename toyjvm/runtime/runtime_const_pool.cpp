@@ -15,7 +15,7 @@ namespace jvm {
         for (int i = 1; i < const_infos.size(); i++) {
             auto item = const_infos[i].get();
 
-            switch (item->tag()) {
+            switch (item->constTag()) {
                 case ConstType::Integer: {
                     addVal<ConstIntegerInfo *>(i, item);
                     break;

@@ -38,8 +38,7 @@ namespace jvm {
     private:
         void checkMagicAndVersions();
 
-        template<typename T,
-                typename std::enable_if<std::is_base_of<MemberInfo, T>::value>::type>
+        template<typename T>
         std::vector<std::shared_ptr<T>> readMembers()
         {
             auto count = reader_.read<u2>();
@@ -62,8 +61,10 @@ namespace jvm {
         u2 access_flags_;
         u2 this_class_;
         u2 super_class_;
-        std::vector<std::shared_ptr<FieldInfo>> fields_;
-        std::vector<std::shared_ptr<MethodInfo>> methods_;
+
+        std::vector<FieldInfo *> fields_;
+        std::vector<MethodInfo *> methods_;
+
         std::vector<u2> interfaces_;
         AttrTable attr_table_;
     };

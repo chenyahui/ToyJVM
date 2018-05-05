@@ -10,10 +10,12 @@ set(runtime_SRCS
         jvm_reference.h
         symbol_ref.cpp
         jvm_frame.cpp
-        jvm_thread.cpp)
+        jvm_thread.cpp tests/test_class_loader.cpp)
 
 add_subdirectory(tests)
 add_library(toyjvm_runtime ${runtime_SRCS})
 target_link_libraries(toyjvm_runtime
         toyjvm_utilities
+        toyjvm_classpath
+        toyjvm_classfile
         )

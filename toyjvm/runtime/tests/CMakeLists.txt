@@ -1,12 +1,14 @@
-set(link_libs toyjvm_runtime
-        pthread
-        gtest
-        gtest_main)
+macro(addTester test_name)
+    add_executable(${test_name}
+            ${test_name}.cpp)
 
-add_executable(test_local_slot test_local_slots.cpp)
-target_link_libraries(test_local_slot
-        ${link_libs})
+    target_link_libraries(${test_name}
+            toyjvm_runtime
+            pthread
+            gtest
+            gtest_main)
+endmacro()
 
-add_executable(test_operand_stack test_operand_stack.cpp)
-target_link_libraries(test_operand_stack
-        ${link_libs})
+addTester(test_local_slots)
+addTester(test_operand_stack)
+addTester(test_class_loader)

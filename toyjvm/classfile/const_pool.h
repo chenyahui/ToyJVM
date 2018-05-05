@@ -56,9 +56,9 @@ namespace jvm {
         T *constInfoAt(int index) const
         {
             assert(index >= 1 && index < const_infos_.size());
-            auto info = dynamic_cast<T *>(const_infos_[index]);
+            auto info = std::dynamic_pointer_cast<T>(const_infos_[index]);
             assert(info != nullptr);
-            return info;
+            return info.get();
         }
 
     private:

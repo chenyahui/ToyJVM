@@ -19,29 +19,13 @@ namespace jvm {
         return class_name_;
     }
 
-    void BaseMemberRefInfo::read(jvm::BaseReader &reader)
-    {
-        class_index_ = reader.read<u2>();
-        name_and_type_index_ = reader.read<u2>();
-    }
-
-    std::array<std::string, 2> BaseMemberRefInfo::nameAndDescriptor() const
-    {
-        return const_pool_.constInfoAt<ConstNameAndTypeInfo>(name_and_type_index_)
-                ->nameAndDescriptor();
-    }
-
-    std::string BaseMemberRefInfo::className() const
-    {
-        return const_pool_.classNameOf(class_index_);
-    }
 
     void ConstStringInfo::read(jvm::BaseReader &reader)
     {
         string_index_ = reader.read<u2>();
     }
 
-    std::string ConstStringInfo::val()
+    std::string ConstStringInfo::val() const
     {
         return const_pool_.stringAt(string_index_);
     }

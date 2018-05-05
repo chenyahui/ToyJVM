@@ -41,7 +41,7 @@ std::string ConstPool::stringAt(int index) const
 std::shared_ptr<BaseConstInfo> ConstPool::ConstInfoFactory(jvm::ConstType tag)
 {
 #define case_info(const_type) \
-case ConstType::##const_type##: \
+case ConstType::const_type: \
     return std::make_shared<Const##const_type##Info>(*this);
 
 

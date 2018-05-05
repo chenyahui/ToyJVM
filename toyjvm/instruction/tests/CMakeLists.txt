@@ -1,4 +1,4 @@
-macro(Tester test_name)
+macro(addTester test_name)
     add_executable(${test_name}
             ${test_name}.cpp)
 
@@ -9,5 +9,7 @@ macro(Tester test_name)
             gtest_main)
 endmacro()
 
-Tester(test_const_inst)
-Tester(test_compare_inst)
+addTester(test_const_inst)
+addTester(test_compare_inst)
+addTester(test_control_inst)
+addTester(test_convert_inst)

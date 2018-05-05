@@ -27,7 +27,7 @@ namespace jvm {
         /*
          *  用户需要自行保证attr_type和T一致
          */
-        template<typename T, typename std::enable_if<std::is_base_of<BaseAttrInfo, T>::value>::type>
+        template<typename T>
         T *getFirst(const std::string &attr_type) const
         {
             for (auto attr_info : attr_infos_) {

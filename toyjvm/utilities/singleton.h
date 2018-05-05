@@ -30,7 +30,7 @@ namespace jvm {
     template<typename T>
     T *Singleton<T>::instance()
     {
-        if (nullptr != instance_) {
+        if (nullptr == instance_) {
             instance_ = new T();
         }
         return instance_;
