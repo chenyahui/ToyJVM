@@ -2,7 +2,7 @@ set(common_SRCS
         cmdline.cpp
         ioutils.cpp
         modified_utf8.cpp
-        access_flags.h string_pool.h descriptor.h singleton.h javautils.h javautils.cpp)
+        access_flags.h string_pool.h descriptor.h singleton.h javautils.h javautils.cpp method_descriptor.h method_descriptor.cpp)
 
 add_subdirectory(tests)
 
