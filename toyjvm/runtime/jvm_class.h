@@ -30,7 +30,7 @@ namespace jvm {
 
         const std::vector<JvmClass *> &interfaces() const;
 
-        const JvmClass *superClass() const;
+        JvmClass *superClass() const;
 
         const AccessFlags &accessFlags() const;
 
@@ -74,6 +74,9 @@ namespace jvm {
     public:
         explicit JvmClass(ClassFile *class_file);
 
+        JvmMethod *getMainMethod();
+
+        JvmMethod *getStaticMethod(const std::string &name, const std::string &descriptor);
 
         bool isSubInterfaceOf(JvmClass *) const;
 
@@ -106,6 +109,11 @@ namespace jvm {
         const std::vector<JvmField *> &fields() const
         {
             return fields_;
+        }
+
+        const std::vector<JvmMethod *> &methods() const
+        {
+            return methods_;
         }
 
     private:

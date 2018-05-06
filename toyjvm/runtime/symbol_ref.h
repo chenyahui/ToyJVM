@@ -68,17 +68,26 @@ namespace jvm {
         JvmField *field_;
     };
 
+
+    JvmMethod *lookUpMethodInClass(JvmClass *klass,
+                                   const std::string &name,
+                                   const std::string &descriptor);
+
+    JvmMethod *lookUpMethodInInterfaces(const std::vector<JvmClass *> &ifaces,
+                                        const std::string &name,
+                                        const std::string &descriptor);
+
     class MethodRef : public MemberRef {
     public:
         MethodRef(RuntimeConstPool &runtime_const_pool,
                   ConstMethodRefInfo *method_info)
                 : MemberRef(runtime_const_pool, method_info),
                   method_(nullptr)
-        {
+        {}
 
-        }
+        JvmMethod *resolveMethod();
 
-    protected:
+    private:
         JvmMethod *method_;
     };
 
@@ -88,10 +97,8 @@ namespace jvm {
                            ConstInterfaceMethodRefInfo *method_info)
                 : MemberRef(runtime_const_pool, method_info),
                   method_(nullptr)
-        {
-
-        }
-
+        {}
+        JvmMethod *resolveInterfaceMethod();
     protected:
         JvmMethod *method_;
     };

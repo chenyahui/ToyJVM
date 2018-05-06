@@ -22,7 +22,7 @@ namespace jvm {
         return interfaces_;
     }
 
-    const JvmClass *JvmBaseClass::superClass() const
+    JvmClass *JvmBaseClass::superClass() const
     {
         return super_class_;
     }
@@ -84,7 +84,7 @@ namespace jvm {
         interfaces_.push_back(Loader::instance()->loadNonArrayClass("java/io/Serializable"));
     }
 
-    JvmBaseClass* JvmArrayClass::componentClass() const
+    JvmBaseClass *JvmArrayClass::componentClass() const
     {
         return Loader::instance()->loadClass(component_name_);
     }
@@ -101,7 +101,7 @@ namespace jvm {
         return sc->isAssignableFrom(tc);
     }
 
-    JvmBaseArray* JvmArrayClass::arrayFactory(jvm::u4 count)
+    JvmBaseArray *JvmArrayClass::arrayFactory(jvm::u4 count)
     {
         if (class_name_ == "[Z") {
             return new JvmArray<jbool>(count, this);
@@ -160,6 +160,23 @@ namespace jvm {
         for (auto method_info: class_file->methods_) {
             methods_.push_back(new JvmMethod(this, method_info));
         }
+    }
+
+    JvmMethod *JvmClass::getMainMethod()
+    {
+        return getStaticMethod("main", "([Ljava/lang/String;)V");
+    }
+
+    JvmMethod *JvmClass::getStaticMethod(const std::string &name, const std::string &descriptor)
+    {
+        for (auto method: methods_) {
+            if (method->accessFlags().isStatic()
+                && method->name() == name
+                && method->descriptor() == descriptor) {
+                return method;
+            }
+        }
+        return nullptr;
     }
 
     bool JvmClass::isJavaLangObject()

@@ -15,6 +15,9 @@ namespace jvm {
 
     class JvmFrame {
     public:
+        JvmFrame(JvmThread &thread, JvmMethod *method);
+
+        // for test
         JvmFrame(JvmThread &thread, size_t local_slot_size, size_t max_stack_num)
                 : local_slots_(local_slot_size),
                   operand_stack_(max_stack_num),
@@ -31,7 +34,7 @@ namespace jvm {
             return operand_stack_;
         }
 
-        inline JvmMethod* method() const
+        inline JvmMethod *method() const
         {
             return method_;
         }
@@ -46,6 +49,11 @@ namespace jvm {
         size_t nextPc() const
         {
             return next_pc_;
+        }
+
+        JvmThread &thread() const
+        {
+            return thread_;
         }
 
     private:

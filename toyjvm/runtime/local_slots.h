@@ -62,5 +62,17 @@ namespace jvm {
         size_t slot_size_;
         std::vector<boost::any> slots_;
     };
+
+    template<>
+    void LocalSlots::set<boost::any>(size_t index, boost::any data)
+    {
+        slots_[index] = data;
+    }
+
+    template<>
+    boost::any LocalSlots::at<boost::any>(size_t index) const
+    {
+        return slots_[index];
+    }
 }
 #endif //TOYJVM_LOCALSLOTS_H

@@ -24,5 +24,8 @@ TEST(test_operant_stack, normal)
     ASSERT_EQ(opstack.pop<long>(), -2997924580);
     ASSERT_EQ(opstack.pop<long>(), 2997924580);
     ASSERT_EQ(opstack.pop<int>(), -100);
+
+    auto val = opstack.pop<boost::any>();
+    opstack.push<boost::any>(val);
     ASSERT_EQ(opstack.pop<int>(), 100);
 }

@@ -11,9 +11,9 @@
 #include <toyjvm/runtime/jvm_class.h>
 
 namespace jvm {
-    class JvmMember : boost::noncopyable{
+    class JvmMember : boost::noncopyable {
     public:
-        explicit JvmMember(JvmClass* this_class, MemberInfo *member_info)
+        explicit JvmMember(JvmClass *this_class, MemberInfo *member_info)
                 : access_flags_(member_info->access_flags_),
                   name_(member_info->memberName()),
                   descriptor_(member_info->descriptor()),
@@ -35,7 +35,7 @@ namespace jvm {
             return name_;
         }
 
-        JvmClass* klass() const
+        JvmClass *klass() const
         {
             return this_class_;
         }
@@ -44,12 +44,12 @@ namespace jvm {
         AccessFlags access_flags_;
         std::string name_;
         std::string descriptor_;
-        JvmClass* this_class_;
+        JvmClass *this_class_;
     };
 
     class JvmField : public JvmMember {
     public:
-        explicit JvmField(JvmClass* this_class, FieldInfo *field_info);
+        explicit JvmField(JvmClass *this_class, FieldInfo *field_info);
 
         void setSlotIndex(size_t slot_index)
         {
@@ -78,12 +78,26 @@ namespace jvm {
 
     class JvmMethod : public JvmMember {
     public:
-        explicit JvmMethod(JvmClass* this_class, MethodInfo *method_info);
+        explicit JvmMethod(JvmClass *this_class, MethodInfo *method_info);
 
+        inline u4 maxStack() const
+        {
+            return max_stack_;
+        }
+
+        inline u4 maxLocals() const
+        {
+            return max_locals_;
+        }
+
+        inline size_t argsSlotCount() const{
+            return args_slot_count_;
+        }
     private:
         u4 max_stack_ = 0;
         u4 max_locals_ = 0;
         bytes code_;
+        size_t args_slot_count_;
     };
 }
 #endif //TOYJVM_JVM_MEMBER_H
