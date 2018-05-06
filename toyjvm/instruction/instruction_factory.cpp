@@ -14,6 +14,7 @@
 #include <toyjvm/instruction/control_instructions.h>
 #include <toyjvm/instruction/array_instructions.h>
 #include <toyjvm/instruction/return_instructions.h>
+#include <toyjvm/instruction/invoke_instructions.h>
 
 namespace jvm {
 #define MakeInst(INST) \
@@ -189,10 +190,10 @@ namespace jvm {
             MakeInst(LDC2_W);
             MakeInst(INSTANCEOF);
             MakeInst(CHECKCAST);
-//            MakeInst(INVOKE_SPECIAL);
-//            MakeInst(INVOKE_INTERFACE);
-//            MakeInst(INVOKE_STATIC);
-//            MakeInst(INVOKE_VIRTUAL);
+            MakeInst(INVOKESPECIAL);
+            MakeInst(INVOKEINTERFACE);
+            MakeInst(INVOKESTATIC);
+            MakeInst(INVOKEVIRTUAL);
             MakeInst(IRETURN);
             MakeInst(LRETURN);
             MakeInst(FRETURN);
@@ -202,22 +203,22 @@ namespace jvm {
             MakeInst(NEWARRAY);
             MakeInst(ANEWARRAY);
             MakeInst(ARRAYLENGTH);
-//            MakeInst(IALOAD);
-//            MakeInst(LALOAD);
-//            MakeInst(FALOAD);
-//            MakeInst(DALOAD);
-//            MakeInst(AALOAD);
-//            MakeInst(BALOAD);
-//            MakeInst(CALOAD);
-//            MakeInst(SALOAD);
-//            MakeInst(IASTORE);
-//            MakeInst(LASTORE);
-//            MakeInst(FASTORE);
-//            MakeInst(DASTORE);
-//            MakeInst(AASTORE);
-//            MakeInst(BASTORE);
-//            MakeInst(CASTORE);
-//            MakeInst(SASTORE);
+            MakeInst(IALOAD);
+            MakeInst(LALOAD);
+            MakeInst(FALOAD);
+            MakeInst(DALOAD);
+            MakeInst(AALOAD);
+            MakeInst(BALOAD);
+            MakeInst(CALOAD);
+            MakeInst(SALOAD);
+            MakeInst(IASTORE);
+            MakeInst(LASTORE);
+            MakeInst(FASTORE);
+            MakeInst(DASTORE);
+            MakeInst(AASTORE);
+            MakeInst(BASTORE);
+            MakeInst(CASTORE);
+            MakeInst(SASTORE);
 //            MakeInst(MULTI_ANEW_ARRAY);
 //            MakeInst(INVOKE_NATIVE);
 //            MakeInst(ATHROW);

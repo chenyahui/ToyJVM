@@ -15,7 +15,7 @@ namespace jvm {
         {
             auto &op_stack = frame.operandStack();
             for (int i = 0; i < NUM; i++) {
-                op_stack.pop();
+                op_stack.pop<boost::any>();
             }
         }
     };
@@ -33,16 +33,16 @@ namespace jvm {
 
             // 弹出
             for (int i = 0; i < X + D; i++) {
-                temp.push_back(op_stack.pop());
+                temp.push_back(op_stack.pop<boost::any>());
             }
 
             // 入栈
             for (int i = 0; i < X + D; i++) {
-                op_stack.push(temp[i]);
+                op_stack.push<boost::any>(temp[i]);
             }
             // 倒着复制
             for (int i = 0; i < D; i++) {
-                op_stack.push(temp[i]);
+                op_stack.push<boost::any>(temp[i]);
             }
         }
     };

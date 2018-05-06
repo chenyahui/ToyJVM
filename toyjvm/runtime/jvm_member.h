@@ -90,14 +90,14 @@ namespace jvm {
             return max_locals_;
         }
 
-        inline size_t argsSlotCount() const{
+        inline int argsSlotCount() const{
             return args_slot_count_;
         }
     private:
         u4 max_stack_ = 0;
         u4 max_locals_ = 0;
         bytes code_;
-        size_t args_slot_count_;
+        int args_slot_count_ = 0;
     };
 }
 #endif //TOYJVM_JVM_MEMBER_H

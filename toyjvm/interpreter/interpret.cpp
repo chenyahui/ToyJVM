@@ -4,10 +4,14 @@
 
 #include <toyjvm/interpreter/interpret.h>
 #include <toyjvm/runtime/jvm_thread.h>
+
 namespace jvm {
-    void interpret(MethodInfo *method_info)
+    void interpret(JvmMethod *method)
     {
         JvmThread athread;
+        auto frame = new JvmFrame(athread, method);
+        athread.push(frame);
+
 
     }
 

@@ -9,19 +9,53 @@
 #include <toyjvm/runtime/symbol_ref.h>
 
 namespace jvm {
-    class BaseInvokeInstruction : public BaseOneOperandInstruction<u2> {
+    template<bool skip2Byte>
+    class BaseInvokeInstruction : public BaseInstruction {
+    public:
+        virtual void fetchOperands(ByteCodeReader &reader)
+        {
+            index_ = static_cast<int>(reader.read<u2>());
+
+            if (skip2Byte) {
+                reader.read<u2>();
+            }
+        }
+
+        void execute(JvmFrame &frame) override;
+
     protected:
-        void invokeMethod(JvmFrame& invoker, JvmMethod* method);
+        virtual JvmMethod *findMethodToInvoked(JvmFrame &frame) = 0;
+
+    private:
+        void invokeMethod(JvmFrame &invoker, JvmMethod *method);
+
+    protected:
+        MethodRef *method_ref_;
+        JvmMethod *resolved_method_;
+        JvmClass *current_class_;
+        JvmClass *resolved_class_;
+
+        int index_;
     };
 
-    class INVOKESTATIC_Instruction : public BaseInvokeInstruction {
-    public:
-        void execute(JvmFrame &frame) override
-        {
-            auto &const_pool = frame.method()->klass()->runtimeConstPool();
-            auto method_ref = const_pool.at<MethodRef *>(operand_);
+    class INVOKESTATIC_Instruction : public BaseInvokeInstruction<false> {
+    private:
+        JvmMethod *findMethodToInvoked(JvmFrame &frame) override;
+    };
 
-        }
+    class INVOKESPECIAL_Instruction : public BaseInvokeInstruction<false> {
+    private:
+        JvmMethod *findMethodToInvoked(JvmFrame &frame) override;
+    };
+
+    class INVOKEVIRTUAL_Instruction : public BaseInvokeInstruction<false> {
+    private:
+        JvmMethod *findMethodToInvoked(JvmFrame &frame) override;
+    };
+
+    class INVOKEINTERFACE_Instruction : public  BaseInvokeInstruction<true>{
+    private:
+        JvmMethod *findMethodToInvoked(JvmFrame &frame) override;
     };
 
 }

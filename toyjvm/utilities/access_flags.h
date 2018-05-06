@@ -8,6 +8,12 @@
 #include <toyjvm/utilities/jvm_types.h>
 
 namespace jvm {
+#define DEF_FLAG(NAME, FLAG) \
+inline bool is##NAME() const \
+{ \
+    return (flags_ & FLAG##) != 0; \
+}
+
     class AccessFlags {
     public:
         explicit AccessFlags(jint flags)
@@ -35,35 +41,27 @@ namespace jvm {
             ENUM = 0x4000,
         };
 
-        inline bool isPublic() const
-        {
-            return (flags_ & PUBLIC) != 0;
-        }
-        inline bool isProtected() const
-        {
-            return (flags_ & PROTECTED) != 0;
-        }
+        DEF_FLAG(Public, PUBLIC)
 
-        inline bool isPrivate() const
-        {
-            return (flags_ & PRIVATE) != 0;
-        }
+        DEF_FLAG(Protected, PROTECTED)
 
-        inline bool isStatic() const{
-            return (flags_ & STATIC) != 0;
-        }
+        DEF_FLAG(Private, PRIVATE)
 
-        inline bool isFinal() const{
-            return (flags_ & FINAL) != 0;
-        }
+        DEF_FLAG(Static, STATIC)
 
-        inline bool isInterface() const{
-            return (flags_ & INTERFACE) != 0;
-        }
+        DEF_FLAG(Final, FINAL)
+
+        DEF_FLAG(Interface, INTERFACE)
+
+        DEF_FLAG(Super, SUPER)
+
+        DEF_FLAG(Abstract, ABSTRACT)
 
     private:
         jint flags_;
     };
+
+#undef DEF_FLAG
 }
 
 

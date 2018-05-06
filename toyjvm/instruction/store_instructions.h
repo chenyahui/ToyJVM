@@ -19,18 +19,44 @@ namespace jvm {
         }
     };
 
+    template<typename T>
+    class ArrayStoreInstruction : public BaseInstruction {
+    public:
+        virtual void execute(JvmFrame &frame)
+        {
+            auto &opstack = frame.operandStack();
+            auto val = opstack.pop<T>();
+            auto index = opstack.pop<int>();
+            auto base_arr = opstack.pop<JvmBaseArray *>();
+
+            auto arr_ref = dynamic_cast<JvmArray<T> *>(base_arr);
+            assert(arr_ref != nullptr);
+            assert(index >= 0 && index < arr_ref->arrayLen());
+
+            arr_ref->set(index, val);
+        }
+    };
+
 #define GENE_STORES(prefix, type)                                       \
     using prefix##STORE_Instruction = StoreInstruction<type,-1>;           \
     using prefix##STORE_0_Instruction = StoreInstruction<type, 0>; \
     using prefix##STORE_1_Instruction = StoreInstruction<type, 1>; \
     using prefix##STORE_2_Instruction = StoreInstruction<type, 2>; \
-    using prefix##STORE_3_Instruction = StoreInstruction<type, 3>;
+    using prefix##STORE_3_Instruction = StoreInstruction<type, 3>; \
+    using prefix##ASTORE_Instruction = ArrayStoreInstruction<type>;
 
     GENE_STORES(I, jint)
     GENE_STORES(F, jfloat)
     GENE_STORES(D, jdouble)
     GENE_STORES(L, jlong)
     GENE_STORES(A, jref)
+
+#define GENE_ARRAY_STORES(prefix, type) \
+    using prefix##ASTORE_Instruction = ArrayStoreInstruction<type>;
+
+    GENE_ARRAY_STORES(B, jref)
+    GENE_ARRAY_STORES(C, jref)
+    GENE_ARRAY_STORES(S, jref)
 
 #undef GENE_STORES
 }

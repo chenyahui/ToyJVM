@@ -34,6 +34,11 @@ namespace jvm {
             return result;
         }
 
+        jref getRefFromTop(int offset)
+        {
+            return at<jref>(slots_.size() - offset - 1);
+        }
+
     private:
         size_t stack_num_ = 0;
     };

@@ -9,11 +9,11 @@ namespace jvm {
     {
         auto &op_stack = frame.operandStack();
 
-        auto val1 = op_stack.pop();
-        auto val2 = op_stack.pop();
+        auto val1 = op_stack.pop<boost::any>();
+        auto val2 = op_stack.pop<boost::any>();
 
-        op_stack.push(val1);
-        op_stack.push(val2);
+        op_stack.push<boost::any>(val1);
+        op_stack.push<boost::any>(val2);
     }
 
 }

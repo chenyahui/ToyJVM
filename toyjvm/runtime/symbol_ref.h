@@ -45,6 +45,16 @@ namespace jvm {
         {
         }
 
+        const std::string &name() const
+        {
+            return name_descriptor_[0];
+        }
+
+        const std::string &descriptor() const
+        {
+            return name_descriptor_[1];
+        }
+
     protected:
         std::array<std::string, 2> name_descriptor_;
     };
@@ -98,7 +108,9 @@ namespace jvm {
                 : MemberRef(runtime_const_pool, method_info),
                   method_(nullptr)
         {}
+
         JvmMethod *resolveInterfaceMethod();
+
     protected:
         JvmMethod *method_;
     };

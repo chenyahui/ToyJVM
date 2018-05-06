@@ -11,13 +11,13 @@
 #include <toyjvm/runtime/local_slots.h>
 
 namespace jvm {
-    class JvmRef : boost::noncopyable{
+    class JvmRef : boost::noncopyable {
     public:
         explicit JvmRef(JvmBaseClass *klass)
                 : klass_(klass)
         {}
 
-        JvmBaseClass* klass() const
+        JvmBaseClass *klass() const
         {
             return klass_;
         }
@@ -74,6 +74,16 @@ namespace jvm {
         int arrayLen() const override
         {
             return data_.size();
+        }
+
+        T at(int index)
+        {
+            return data_[index];
+        }
+
+        void set(int index, T val)
+        {
+            data_[index] = val;
         }
 
     private:
