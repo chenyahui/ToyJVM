@@ -19,10 +19,10 @@ namespace jvm {
     using jfloat = float;
     using jdouble = double;
     using jint = int32_t;
-    using jchar = char;
-    using jbyte = uint8_t;
+    using jchar = uint16_t;
+    using jbyte = int8_t;
     using jlong = int64_t;
-    using jshort = short;
+    using jshort = int32_t;
     using jbool = int32_t;
 
     class JvmRef;
