@@ -8,7 +8,7 @@
 #include <toyjvm/runtime/jvm_member.h>
 
 namespace jvm {
-    const std::string &JvmBaseClass::classDescriptor() const
+    const std::string &JvmBaseClass::descriptor() const
     {
         if (class_descriptor_.empty()) {
             class_descriptor_ = classNameToDescriptor(class_name_);

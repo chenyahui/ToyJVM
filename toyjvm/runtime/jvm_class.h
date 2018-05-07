@@ -26,7 +26,7 @@ namespace jvm {
                   class_name_(class_name)
         {}
 
-        const std::string &classDescriptor() const;
+        const std::string &descriptor() const;
 
         const std::vector<JvmClass *> &interfaces() const;
 
