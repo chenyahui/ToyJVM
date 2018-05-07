@@ -27,18 +27,29 @@ namespace jvm {
         return num_chars;
     }
 
-    bool ModifiedUTF8::operator==(const jvm::ModifiedUTF8 &other) const
+    bool ModifiedUTF8::operator==(const jvm::bytes &data) const
     {
-        if (rawLen() != other.rawLen()) {
+        if (raw_utf8_.size() != data.size()) {
             return false;
         }
 
-        for (int i = 0; i < rawLen(); i++) {
-            if (raw_utf8_[i] != other.raw_utf8_[i]) {
+        for (int i = 0; i < data.size(); i++) {
+            if (raw_utf8_[i] != data[i]) {
                 return false;
             }
         }
         return true;
+    }
+
+    bool ModifiedUTF8::operator==(const jvm::ModifiedUTF8 &other) const
+    {
+        return *this == other.raw_utf8_;
+    }
+
+    bool ModifiedUTF8::operator==(const std::string &str) const
+    {
+        bytes data(str.begin(), str.end());
+        return *this == data;
     }
 
     std::tuple<jchar, int> ModifiedUTF8::next(int start_index) const

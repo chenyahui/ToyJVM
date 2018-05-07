@@ -19,6 +19,10 @@ namespace jvm {
 
         bool operator==(const ModifiedUTF8 &other) const;
 
+        bool operator==(const std::string &str) const;
+
+        bool operator==(const bytes &data) const;
+
         Utf16 asUTF16() const;
 
         // raw string length
@@ -28,6 +32,7 @@ namespace jvm {
         size_t unicodeLen() const;
 
     private:
+
         std::tuple<jchar, int> next(int start_index) const;
 
     private:
