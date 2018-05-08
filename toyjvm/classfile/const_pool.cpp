@@ -40,9 +40,14 @@ std::string ConstPool::classNameOf(jvm::u2 class_index) const
     return constInfoAt<ConstClassInfo>(class_index)->className();
 }
 
-std::string ConstPool::stringAt(int index) const
+ModifiedUTF8 &ConstPool::utf8At(int utf8_index) const
 {
-    return constInfoAt<ConstUtf8Info>(index)->asString();
+    return constInfoAt<ConstUtf8Info>(utf8_index)->val();
+}
+
+std::string ConstPool::stringAt(int utf8_index) const
+{
+    return constInfoAt<ConstUtf8Info>(utf8_index)->asString();
 }
 
 BaseConstInfo *ConstPool::constInfoFactory(jvm::ConstType tag)

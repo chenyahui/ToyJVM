@@ -3,7 +3,6 @@
 //
 
 #include <toyjvm/classfile/const_infos.h>
-#include <toyjvm/utilities/modified_utf8.h>
 
 namespace jvm {
     void ConstClassInfo::read(jvm::ByteReader &reader)
@@ -18,6 +17,7 @@ namespace jvm {
         }
         return class_name_;
     }
+
     void BaseMemberRefInfo::read(jvm::ByteReader &reader)
     {
         class_index_ = reader.read<u2>();
@@ -40,9 +40,9 @@ namespace jvm {
         string_index_ = reader.read<u2>();
     }
 
-    std::string ConstStringInfo::val() const
+    ModifiedUTF8 &ConstStringInfo::val() const
     {
-        return const_pool_.stringAt(string_index_);
+        return const_pool_.utf8At(string_index_);
     }
 
     void ConstNameAndTypeInfo::read(jvm::ByteReader &reader)
@@ -58,12 +58,17 @@ namespace jvm {
 
     void ConstUtf8Info::read(jvm::ByteReader &reader)
     {
-        data_ = reader.batchRead<u2, u1>();
+        utf8_ = std::move(reader.batchRead<u2, u1>());
     }
 
     std::string ConstUtf8Info::asString()
     {
-        return parseMutf8AsString(data_);
+        return utf8_.asString();
+    }
+
+    ModifiedUTF8 &ConstUtf8Info::val()
+    {
+        return utf8_;
     }
 
     void ConstMethodHandleInfo::read(jvm::ByteReader &reader)

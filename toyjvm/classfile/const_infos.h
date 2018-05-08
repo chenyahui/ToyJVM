@@ -7,6 +7,7 @@
 
 #include <toyjvm/utilities/bytereader.h>
 #include <toyjvm/utilities/jvm_types.h>
+#include <toyjvm/utilities/modified_utf8.h>
 #include <toyjvm/classfile/const_pool.h>
 #include <boost/noncopyable.hpp>
 #include <string>
@@ -93,7 +94,8 @@ namespace jvm {
 
         void read(ByteReader &) override;
 
-        std::string val() const;
+        ModifiedUTF8& val() const;
+
 
     private:
         u2 string_index_;
@@ -137,8 +139,10 @@ namespace jvm {
 
         std::string asString();
 
+        ModifiedUTF8 &val();
+
     private:
-        bytes data_;
+        ModifiedUTF8 utf8_;
     };
 
     class ConstMethodHandleInfo : public BaseConstInfo {

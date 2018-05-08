@@ -45,6 +45,8 @@ namespace jvm {
             return instance_fields_;
         }
 
+        void setRef(const std::string &name, const std::string &descriptor, jref ref_obj);
+
         virtual ~JvmObject() = default;
 
     private:
@@ -66,9 +68,14 @@ namespace jvm {
     template<typename T>
     class JvmArray : public JvmBaseArray {
     public:
-        explicit JvmArray(u4 count,
-                          JvmArrayClass *array_class)
+        JvmArray(u4 count,
+                 JvmArrayClass *array_class)
                 : JvmBaseArray(array_class)
+        {}
+
+        JvmArray(std::vector<T> data, JvmArrayClass *array_class)
+                : JvmBaseArray(array_class),
+                  data_(std::move(data))
         {}
 
         int arrayLen() const override

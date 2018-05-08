@@ -74,6 +74,8 @@ namespace jvm {
     public:
         explicit JvmClass(ClassFile *class_file);
 
+        JvmField *getField(const std::string &name, const std::string &descriptor, bool isStatic);
+
         JvmMethod *getMainMethod();
 
         JvmMethod *getStaticMethod(const std::string &name, const std::string &descriptor);

@@ -8,6 +8,7 @@
 #include <toyjvm/runtime/jvm_member.h>
 
 #include <glog/logging.h>
+#include "string_pool.h"
 
 namespace jvm {
     void ClassLoader::detailInfo()
@@ -105,10 +106,10 @@ namespace jvm {
     void allocAndInitStaticVars(JvmClass *klass)
     {
         auto static_slots = klass->staticFields();
-        auto &rt_const_pool = klass->runtimeConstPool();
+        auto &const_pool = klass->runtimeConstPool();
 
 #define CopySlot(Type) \
-static_slots->set<Type>(slot_index, rt_const_pool.at<Type>(const_value_index));
+static_slots->set<Type>(slot_index, const_pool.at<Type>(const_value_index));
 
         for (auto field : klass->fields()) {
             if (field->accessFlags().isStatic()
@@ -129,8 +130,10 @@ static_slots->set<Type>(slot_index, rt_const_pool.at<Type>(const_value_index));
                     CopySlot(jfloat)
                 } else if (descriptor == "D") {
                     CopySlot(jdouble)
+                } else if (descriptor == "Ljava/lang/String;") {
+                    auto modified_utf8 = const_pool.at<ModifiedUTF8>(const_value_index);
+                    static_slots->set<jobj>(slot_index, StringPool::get(modified_utf8));
                 } else {
-                    // TODO string
                     // TODO object
                     // todo array
                 }

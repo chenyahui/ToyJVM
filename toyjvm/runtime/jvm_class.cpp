@@ -194,4 +194,19 @@ namespace jvm {
 
         return false;
     }
+
+    JvmField *JvmClass::getField(const std::string &name, const std::string &descriptor, bool isStatic)
+    {
+        for (auto c = this; c != nullptr; c = c->super_class_) {
+            for (auto field : c->fields_) {
+                if (field->accessFlags().isStatic() == isStatic
+                    && field->descriptor() == descriptor
+                    && field->name() == name) {
+                    return field;
+                }
+            }
+        }
+
+        return nullptr;
+    }
 }

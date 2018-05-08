@@ -10,6 +10,7 @@
 #include <toyjvm/utilities/exception.h>
 #include <toyjvm/utilities/jvm_types.h>
 #include <toyjvm/runtime/symbol_ref.h>
+#include <toyjvm/runtime/string_pool.h>
 
 namespace jvm {
     class NEW_Instruction : public BaseOneOperandInstruction<u2> {
@@ -180,12 +181,13 @@ namespace jvm {
                     break;
                 }
                 case ConstType::Class: {
-                    auto class_ref = rt_const_pool.at<ClassRef*>(this->operand_);
+                    auto class_ref = rt_const_pool.at<ClassRef *>(this->operand_);
                     // todo
                     break;
                 }
                 case ConstType::String: {
-                    // todo
+                    auto modified_utf8 = rt_const_pool.at<ModifiedUTF8>(this->operand_);
+                    opstack.push<jobj>(StringPool::get(modified_utf8));
                     break;
                 }
             }

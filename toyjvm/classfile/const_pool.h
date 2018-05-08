@@ -7,6 +7,7 @@
 
 #include <toyjvm/utilities/bytereader.h>
 #include <string>
+#include <toyjvm/utilities/modified_utf8.h>
 
 namespace jvm {
     class BaseConstInfo;
@@ -45,13 +46,15 @@ namespace jvm {
 
         std::string classNameOf(u2 class_index) const;
 
-        std::string stringAt(int index) const;
+        std::string stringAt(int utf8_index) const;
+
+        ModifiedUTF8 &utf8At(int utf8_index) const;
 
         template<typename T>
         T *constInfoAt(int index) const
         {
             assert(index >= 1 && index < const_infos_.size());
-            auto info = dynamic_cast<T*>(const_infos_[index]);
+            auto info = dynamic_cast<T *>(const_infos_[index]);
             assert(info != nullptr);
             return info;
         }

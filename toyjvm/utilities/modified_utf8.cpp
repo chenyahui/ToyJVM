@@ -16,6 +16,11 @@ namespace jvm {
         return raw_utf8_.size();
     }
 
+    const bytes &ModifiedUTF8::rawUTF8() const
+    {
+        return raw_utf8_;
+    }
+
     size_t ModifiedUTF8::unicodeLen() const
     {
         int num_chars = raw_utf8_.size();
@@ -27,18 +32,18 @@ namespace jvm {
         return num_chars;
     }
 
+    ModifiedUTF8 &ModifiedUTF8::operator=(jvm::bytes data)
+    {
+        raw_utf8_ = std::move(data);
+    }
+
     bool ModifiedUTF8::operator==(const jvm::bytes &data) const
     {
         if (raw_utf8_.size() != data.size()) {
             return false;
         }
 
-        for (int i = 0; i < data.size(); i++) {
-            if (raw_utf8_[i] != data[i]) {
-                return false;
-            }
-        }
-        return true;
+        return std::equal(raw_utf8_.begin(), raw_utf8_.end(), data.begin());
     }
 
     bool ModifiedUTF8::operator==(const jvm::ModifiedUTF8 &other) const
@@ -98,8 +103,7 @@ namespace jvm {
         }
         return std::make_tuple(result, length);
     }
-
-    Utf16 ModifiedUTF8::asUTF16() const
+    std::vector<jchar> ModifiedUTF8::asJCharArr() const
     {
         unsigned char ch;
         int index = 0;
@@ -119,6 +123,17 @@ namespace jvm {
             index += std::get<1>(result);
         }
 
-        return UTF16(std::move(raw_utf16));
+        return raw_utf16;
+    }
+
+    std::string ModifiedUTF8::asString() const
+    {
+        std::string str(raw_utf8_.begin(), raw_utf8_.end());
+        return str;
+    }
+
+    const std::vector<jchar> &UTF16::rawUTF16() const
+    {
+        return raw_utf16_;
     }
 }

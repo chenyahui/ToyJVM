@@ -10,7 +10,7 @@ set(runtime_SRCS
         jvm_reference.h
         symbol_ref.cpp
         jvm_frame.cpp
-        jvm_thread.cpp tests/test_class_loader.cpp)
+        jvm_thread.cpp tests/test_class_loader.cpp string_pool.h string_pool.cpp jvm_reference.cpp)
 
 add_subdirectory(tests)
 add_library(toyjvm_runtime ${runtime_SRCS})
