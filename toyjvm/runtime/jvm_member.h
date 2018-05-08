@@ -90,9 +90,15 @@ namespace jvm {
             return max_locals_;
         }
 
-        inline int argsSlotCount() const{
+        inline int argsSlotCount() const
+        {
             return args_slot_count_;
         }
+
+    private:
+        void injectCodeAttribute(const std::string &result_type);
+        void calcArgsSlotCount(std::vector<std::string>& param_types);
+        void copyCodeAttr(MethodInfo *method_info);
     private:
         u4 max_stack_ = 0;
         u4 max_locals_ = 0;

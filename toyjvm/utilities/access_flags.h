@@ -57,6 +57,7 @@ inline bool is##NAME() const \
 
         DEF_FLAG(Abstract, ABSTRACT)
 
+        DEF_FLAG(Native, NATIVE)
     private:
         jint flags_;
     };

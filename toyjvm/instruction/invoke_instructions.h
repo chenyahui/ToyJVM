@@ -53,9 +53,14 @@ namespace jvm {
         JvmMethod *findMethodToInvoked(JvmFrame &frame) override;
     };
 
-    class INVOKEINTERFACE_Instruction : public  BaseInvokeInstruction<true>{
+    class INVOKEINTERFACE_Instruction : public BaseInvokeInstruction<true> {
     private:
         JvmMethod *findMethodToInvoked(JvmFrame &frame) override;
+    };
+
+    class INVOKENATIVE_Instruction : public BaseInstruction {
+    public:
+        void execute(JvmFrame &frame) override;
     };
 
 }

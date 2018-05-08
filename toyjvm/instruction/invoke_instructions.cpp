@@ -4,6 +4,7 @@
 #include <toyjvm/instruction/invoke_instructions.h>
 #include <toyjvm/runtime/jvm_thread.h>
 #include <glog/logging.h>
+#include <toyjvm/native/native_methods.h>
 
 namespace jvm {
     void BaseInvokeInstruction::execute(jvm::JvmFrame &frame)
@@ -110,6 +111,21 @@ namespace jvm {
         return lookUpMethodInClass(current_class_->superClass(),
                                    method_ref_->name(),
                                    method_ref_->descriptor());
+    }
+
+    void INVOKENATIVE_Instruction::execute(jvm::JvmFrame &frame)
+    {
+        auto method = frame.method();
+        const auto &class_name = method->klass()->name();
+        const auto &method_name = method->name();
+        const auto &method_descriptor = method->descriptor();
+
+        auto native_method = NativeMethods::find(class_name, method_name, method_descriptor);
+        if (native_method == boost::none) {
+            auto method_info = class_name + "." + method_name + method_descriptor;
+            throw "INVOKE_NATIVE error" + method_info;
+        }
+        native_method.get()(frame);
     }
 
 }

@@ -19,7 +19,7 @@ namespace jvm {
         static void registerMethod(const std::string &class_name,
                                    const std::string &method_name,
                                    const std::string &method_descriptor,
-                                   NativeMethod &native_method);
+                                   NativeMethod native_method);
 
         static boost::optional<NativeMethod &> find(const std::string &class_name,
                                            const std::string &method_name,

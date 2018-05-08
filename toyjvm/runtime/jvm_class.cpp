@@ -22,6 +22,11 @@ namespace jvm {
         return interfaces_;
     }
 
+    const std::string &JvmBaseClass::name() const
+    {
+        return class_name_;
+    }
+
     JvmClass *JvmBaseClass::superClass() const
     {
         return super_class_;

@@ -10,9 +10,9 @@
 
 namespace jvm {
     namespace native {
-        class JavaLangSystem : AllStatic{
+        class JavaLangClass : AllStatic{
         public:
-
+            static bool init();
         };
     }
 }

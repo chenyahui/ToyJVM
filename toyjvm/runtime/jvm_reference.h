@@ -93,6 +93,12 @@ namespace jvm {
             data_[index] = val;
         }
 
+        std::vector<T> &rawData()
+        {
+            return data_;
+        }
+
+
     private:
         std::vector<T> data_;
     };

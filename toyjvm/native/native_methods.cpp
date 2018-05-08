@@ -9,7 +9,7 @@ namespace jvm {
     const std::function<void(JvmFrame &)> emptyNativeMethod = [](JvmFrame &) {};
 
     void NativeMethods::registerMethod(const std::string &class_name, const std::string &method_name,
-                                       const std::string &method_descriptor, jvm::NativeMethod &native_method)
+                                       const std::string &method_descriptor, jvm::NativeMethod native_method)
     {
         auto signature = methodSignature(class_name, method_name, method_descriptor);
         native_methods_[signature] = native_method;
