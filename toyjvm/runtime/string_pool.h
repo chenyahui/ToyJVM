@@ -7,6 +7,7 @@
 
 #include <toyjvm/utilities/modified_utf8.h>
 #include <toyjvm/runtime/jvm_reference.h>
+#include <toyjvm/utilities/all_static.h>
 #include <unordered_map>
 
 namespace jvm {
@@ -18,16 +19,11 @@ namespace jvm {
         }
     };
 
-    class StringPool : boost::noncopyable {
+    class StringPool : AllStatic {
     public:
         static jobj get(ModifiedUTF8 &);
 
         static void put(ModifiedUTF8 &, jobj);
-
-    private:
-        StringPool() = delete;
-
-        ~StringPool() = delete;
 
     private:
         static std::unordered_map<ModifiedUTF8, jobj, ModifiedUTF8Hasher> inner_str_objects;
