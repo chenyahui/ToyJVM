@@ -19,10 +19,45 @@ namespace jvm {
         }
     }
 
+    void ClassLoader::initBasicClasses()
+    {
+        auto jl_class = loadNonArrayClass("java/lang/Class");
+        for (auto &kv : non_array_class_map_) {
+            if (kv.second->meta_class_ != nullptr) {
+                kv.second->meta_class_ = new JvmRef(kv.second);
+            }
+        }
+    }
+
+    static const std::unordered_map<std::string, std::string> primitiveTypes = {
+            {"void",    "V"},
+            {"boolean", "Z"},
+            {"byte",    "B"},
+            {"short",   "S"},
+            {"int",     "I"},
+            {"long",    "J"},
+            {"char",    "C"},
+            {"float",   "F"},
+            {"double",  "D"}
+    };
+
+    void ClassLoader::initPrimitiveClasses()
+    {
+        for (auto &kv : primitiveTypes) {
+            auto primitive_class = new JvmPrimitiveClass(kv.first);
+            auto jlc_obj = new JvmRef(non_array_class_map_["java/lang/Class"]);
+            primitive_class->meta_class_ = jlc_obj;
+
+            primitive_class_map[kv.first] = primitive_class;
+        }
+    }
+
     JvmBaseClass *ClassLoader::loadClass(const std::string &class_name)
     {
         if (class_name[0] == '[') {
             return loadArrayClass(class_name);
+        } else if (primitive_class_map.find(class_name) != primitive_class_map.end()) {
+            return primitive_class_map[class_name];
         } else {
             return loadNonArrayClass(class_name);
         }
@@ -32,6 +67,12 @@ namespace jvm {
     {
         if (array_class_map_.find(class_name) == array_class_map_.end()) {
             array_class_map_[class_name] = new JvmArrayClass(class_name);
+
+            for (auto &kv : array_class_map_) {
+                if (kv.second->meta_class_ == nullptr) {
+                    kv.second->meta_class_ = new JvmRef(kv.second);
+                }
+            }
         }
         return array_class_map_[class_name];
     }
@@ -45,7 +86,15 @@ namespace jvm {
             prepareClass(klass);
 
             non_array_class_map_[class_name] = klass;
+
+            for (auto &kv : non_array_class_map_) {
+                if (kv.second->meta_class_ != nullptr) {
+                    kv.second->meta_class_ = new JvmRef(kv.second);
+                }
+            }
         }
+
+
         return non_array_class_map_[class_name];
     }
 

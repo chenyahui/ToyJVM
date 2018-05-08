@@ -182,13 +182,16 @@ namespace jvm {
                 }
                 case ConstType::Class: {
                     auto class_ref = rt_const_pool.at<ClassRef *>(this->operand_);
-                    // todo
+                    opstack.push<jref>(class_ref->resolveClass()->metaClass());
                     break;
                 }
                 case ConstType::String: {
                     auto modified_utf8 = rt_const_pool.at<ModifiedUTF8>(this->operand_);
                     opstack.push<jobj>(StringPool::get(modified_utf8));
                     break;
+                }
+                default: {
+                    // todo method handler
                 }
             }
         }

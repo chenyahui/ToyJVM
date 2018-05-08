@@ -78,6 +78,11 @@ namespace jvm {
         }
     }
 
+    JvmPrimitiveClass::JvmPrimitiveClass(const std::string &class_name)
+            : JvmBaseClass(true, class_name, AccessFlags::PUBLIC)
+    {
+    }
+
     JvmArrayClass::JvmArrayClass(const std::string &class_name)
             : JvmBaseClass(true, class_name, AccessFlags::PUBLIC),
               component_name_(descriptorToClassName(class_name.substr(1)))

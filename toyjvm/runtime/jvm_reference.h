@@ -31,6 +31,7 @@ namespace jvm {
 
     protected:
         JvmBaseClass *klass_;
+        boost::any extra_;
     };
 
     class JvmObject : public JvmRef {
@@ -51,6 +52,7 @@ namespace jvm {
 
     private:
         jvm::LocalSlots instance_fields_;
+
     };
 
 

@@ -18,8 +18,12 @@ namespace jvm {
 
     class JvmMethod;
 
+    class ClassLoader;
+
     class JvmBaseClass : boost::noncopyable {
     public:
+        friend class ClassLoader;
+
         JvmBaseClass(bool is_array, const std::string &class_name, jint flags)
                 : is_array_(is_array),
                   access_flags_(flags),
@@ -47,6 +51,10 @@ namespace jvm {
             return is_array_;
         }
 
+        JvmRef* metaClass() const{
+            return meta_class_;
+        }
+
     protected:
         bool is_array_;
         std::string class_name_;
@@ -54,9 +62,14 @@ namespace jvm {
         JvmClass *super_class_ = nullptr;
         std::vector<JvmClass *> interfaces_;
         mutable std::string class_descriptor_;
+
+        JvmRef *meta_class_;
     };
 
-    class JvmBaseArray;
+    class JvmPrimitiveClass : public JvmBaseClass {
+    public:
+        explicit JvmPrimitiveClass(const std::string &class_name);
+    };
 
     class JvmArrayClass : public JvmBaseClass {
     public:

@@ -10,9 +10,16 @@
 
 namespace jvm {
     namespace native {
-        class JavaLangClass : AllStatic{
+        class JavaLangClass : AllStatic {
         public:
             static bool init();
+
+            static void getClass(JvmFrame &);
+
+            static void getName(JvmFrame &);
+
+        private:
+            static bool is_init_ = init();
         };
     }
 }
