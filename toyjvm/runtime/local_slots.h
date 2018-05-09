@@ -57,6 +57,10 @@ namespace jvm {
             return boost::any_cast<T>(slots_[index]);
         }
 
+        JvmRef *getThis() const
+        {
+            return boost::any_cast<jref>(slots_[0]);
+        }
 
     protected:
         size_t slot_size_;
