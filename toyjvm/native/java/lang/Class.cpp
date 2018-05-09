@@ -12,7 +12,7 @@ using namespace jvm::native;
 void JavaLangClass::registerMethod(const std::string &method_name, const std::string &method_descriptor,
                                    jvm::native::NativeMethod&& native_method)
 {
-    NativeMethods::registerMethod("java/lang/Class", method_name, method_descriptor, native_method);
+    NativeMethods::registerMethod("java/lang/Class", method_name, method_descriptor, std::move(native_method));
 }
 
 bool JavaLangClass::init()
