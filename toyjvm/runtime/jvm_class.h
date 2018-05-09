@@ -24,9 +24,8 @@ namespace jvm {
     public:
         friend class ClassLoader;
 
-        JvmBaseClass(bool is_array, const std::string &class_name, jint flags)
-                : is_array_(is_array),
-                  access_flags_(flags),
+        JvmBaseClass(const std::string &class_name, jint flags)
+                : access_flags_(flags),
                   class_name_(class_name)
         {}
 
@@ -51,12 +50,17 @@ namespace jvm {
             return is_array_;
         }
 
+        bool isPrimitive() const{
+            return is_primitive_;
+        }
+
         JvmRef* metaClass() const{
             return meta_class_;
         }
 
     protected:
-        bool is_array_;
+        bool is_array_ = false;
+        bool is_primitive_ = false;
         std::string class_name_;
         AccessFlags access_flags_;
         JvmClass *super_class_ = nullptr;

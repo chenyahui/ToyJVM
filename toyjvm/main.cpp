@@ -23,6 +23,7 @@ namespace jvm {
             std::cout << e.what() << std::endl;
         }
     }
+
 }
 
 int main(int argc, char *argv[])

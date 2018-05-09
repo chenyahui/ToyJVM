@@ -79,12 +79,14 @@ namespace jvm {
     }
 
     JvmPrimitiveClass::JvmPrimitiveClass(const std::string &class_name)
-            : JvmBaseClass(true, class_name, AccessFlags::PUBLIC)
+            : JvmBaseClass(class_name, AccessFlags::PUBLIC),
+              is_primitive_(true)
     {
     }
 
     JvmArrayClass::JvmArrayClass(const std::string &class_name)
-            : JvmBaseClass(true, class_name, AccessFlags::PUBLIC),
+            : JvmBaseClass(class_name, AccessFlags::PUBLIC),
+              is_array_(true),
               component_name_(descriptorToClassName(class_name.substr(1)))
     {
         assert(class_name[0] == '[');

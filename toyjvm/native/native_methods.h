@@ -12,27 +12,31 @@
 #include <boost/optional.hpp>
 
 namespace jvm {
-    using NativeMethod = std::function<void(JvmFrame &)>;
+    namespace native {
+#define BIND_STATIC(static_method)\
+    std::bind((void(*)(JvmFrame&))&static_method, std::placeholders::_1)
 
-    class NativeMethods : AllStatic {
-    public:
-        static void registerMethod(const std::string &class_name,
-                                   const std::string &method_name,
-                                   const std::string &method_descriptor,
-                                   NativeMethod native_method);
 
-        static boost::optional<NativeMethod &> find(const std::string &class_name,
-                                           const std::string &method_name,
-                                           const std::string &method_descriptor);
+        using NativeMethod = std::function<void(JvmFrame &)>;
 
-    private:
-        static std::string methodSignature(const std::string &class_name,
-                                           const std::string &method_name,
-                                           const std::string &method_descriptor);
+        class NativeMethods : AllStatic {
+        public:
+            static void registerMethod(const std::string &class_name,
+                                       const std::string &method_name,
+                                       const std::string &method_descriptor,
+                                       NativeMethod native_method);
 
-        static std::unordered_map<std::string, NativeMethod> native_methods_;
-    };
+            static boost::optional<NativeMethod &> find(const std::string &class_name,
+                                                        const std::string &method_name,
+                                                        const std::string &method_descriptor);
 
-    void initNativeMethods();
+        private:
+            static std::string methodSignature(const std::string &class_name,
+                                               const std::string &method_name,
+                                               const std::string &method_descriptor);
+
+            static std::unordered_map<std::string, NativeMethod> native_methods_;
+        };
+    }
 }
 #endif //TOYJVM_NATIVE_METHODS_H

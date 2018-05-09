@@ -9,6 +9,7 @@
 #include <toyjvm/runtime/jvm_frame.h>
 #include <boost/algorithm/string.hpp>
 #include <toyjvm/runtime/jvm_reference.h>
+#include <toyjvm/native/native_methods.h>
 
 namespace jvm {
     namespace native {
@@ -20,7 +21,7 @@ namespace jvm {
 
         private:
             template<typename T>
-            static void arrayCopy(JvmBaseArray *src, JvmBaseArray *dest, int src_pos, int dest_pos, int length)
+            static void realArrayCopy(JvmBaseArray *src, JvmBaseArray *dest, int src_pos, int dest_pos, int length)
             {
                 auto src_arr = dynamic_cast<JvmArray<T> *>(src);
                 auto dest_arr = dynamic_cast<JvmArray<T> *>(dest);
@@ -29,6 +30,11 @@ namespace jvm {
                           src_arr->rawData().begin() + length,
                           dest_arr->rawData().begin() + dest_pos);
             }
+
+            static bool checkArrayCopy(JvmBaseArray *src, JvmBaseArray *dest);
+            static void registerMethod(const std::string &method_name,
+                                       const std::string &method_descriptor,
+                                       jvm::native::NativeMethod native_method);
 
         private:
             static bool is_init_ = init();
