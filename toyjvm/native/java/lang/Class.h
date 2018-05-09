@@ -7,17 +7,22 @@
 
 #include <toyjvm/utilities/all_static.h>
 #include <toyjvm/runtime/jvm_frame.h>
-
+#include <toyjvm/native/native_methods.h>
 namespace jvm {
     namespace native {
         class JavaLangClass : AllStatic {
         public:
             static bool init();
 
-            static void getClass(JvmFrame &);
+            static void getPrimitiveClass(JvmFrame &);
 
-            static void getName(JvmFrame &);
+            static void getName0(JvmFrame &);
 
+            static void desiredAssertionStatus0(JvmFrame &);
+        private:
+            static void registerMethod(const std::string &method_name,
+                                       const std::string &method_descriptor,
+                                       jvm::native::NativeMethod&& native_method);
         private:
             static bool is_init_ = init();
         };

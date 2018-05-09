@@ -48,6 +48,8 @@ namespace jvm {
 
         void setRef(const std::string &name, const std::string &descriptor, jref ref_obj);
 
+        jref getRef(const std::string &name, const std::string &descriptor);
+
         virtual ~JvmObject() = default;
 
     private:

@@ -34,7 +34,7 @@ namespace jvm {
             static bool checkArrayCopy(JvmBaseArray *src, JvmBaseArray *dest);
             static void registerMethod(const std::string &method_name,
                                        const std::string &method_descriptor,
-                                       jvm::native::NativeMethod native_method);
+                                       jvm::native::NativeMethod&& native_method);
 
         private:
             static bool is_init_ = init();

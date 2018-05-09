@@ -25,8 +25,12 @@ namespace jvm {
     public:
         ModifiedUTF8() = default;
 
-        explicit ModifiedUTF8(bytes data)
-                : (std::move(data))
+        ModifiedUTF8(const std::string& str)
+                : raw_utf8_(str.begin(), str.end())
+        {}
+
+        ModifiedUTF8(bytes data)
+                : raw_utf8_(std::move(data))
         {}
 
         ModifiedUTF8 &operator=(bytes data);

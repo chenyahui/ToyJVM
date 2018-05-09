@@ -19,11 +19,11 @@ namespace jvm {
         }
     };
 
+    std::string javaLangStringAsString(jobj str_obj);
+
     class StringPool : AllStatic {
     public:
-        static jobj get(ModifiedUTF8 &);
-
-        static void put(ModifiedUTF8 &, jobj);
+        static jobj intern(ModifiedUTF8 &&);
 
     private:
         static std::unordered_map<ModifiedUTF8, jobj, ModifiedUTF8Hasher> inner_str_objects;

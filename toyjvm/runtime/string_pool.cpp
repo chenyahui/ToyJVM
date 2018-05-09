@@ -5,7 +5,7 @@
 #include <toyjvm/runtime/class_loader.h>
 
 namespace jvm {
-    jobj StringPool::get(jvm::ModifiedUTF8 &utf8_data)
+    jobj StringPool::intern(jvm::ModifiedUTF8 &&utf8_data)
     {
         if (inner_str_objects.find(utf8_data) != inner_str_objects.end()) {
             return inner_str_objects[utf8_data];
@@ -20,5 +20,17 @@ namespace jvm {
 
         inner_str_objects[utf8_data] = str_obj;
         return str_obj;
+    }
+
+    std::string javaLangStringAsString(jobj str_obj)
+    {
+        assert(str_obj);
+        auto char_array_obj = dynamic_cast<JvmArray<jchar> *>(str_obj->getRef("value", "[C"));
+        auto &char_vec = char_array_obj->rawData();
+
+        std::string str;
+        str.resize(char_vec.size());
+        std::copy(char_vec.begin(), char_vec.end(), str.begin());
+        return str;
     }
 }

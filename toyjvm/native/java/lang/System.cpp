@@ -7,7 +7,7 @@ using namespace jvm::native;
 
 
 void JavaLangSystem::registerMethod(const std::string &method_name, const std::string &method_descriptor,
-                                    jvm::native::NativeMethod native_method)
+                                    jvm::native::NativeMethod&& native_method)
 {
     NativeMethods::registerMethod("java/lang/System", method_name, method_descriptor, native_method);
 }

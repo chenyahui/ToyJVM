@@ -187,7 +187,7 @@ namespace jvm {
                 }
                 case ConstType::String: {
                     auto modified_utf8 = rt_const_pool.at<ModifiedUTF8>(this->operand_);
-                    opstack.push<jobj>(StringPool::get(modified_utf8));
+                    opstack.push<jobj>(StringPool::intern(modified_utf8));
                     break;
                 }
                 default: {

@@ -8,6 +8,14 @@
 #include <toyjvm/runtime/jvm_member.h>
 
 namespace jvm {
+    std::string JvmBaseClass::javaName() const
+    {
+        auto java_name = class_name_;
+        std::replace(java_name.begin(), java_name.end(), '/', '.');
+
+        return java_name;
+    }
+
     const std::string &JvmBaseClass::descriptor() const
     {
         if (class_descriptor_.empty()) {
@@ -144,7 +152,7 @@ namespace jvm {
 
     // 不能在构造函数中使用shared_from_this
     JvmClass::JvmClass(jvm::ClassFile *class_file)
-            : JvmBaseClass(true, class_file->className(), class_file->access_flags_),
+            : JvmBaseClass(class_file->className(), class_file->access_flags_),
               instance_slots_count_(0),
               static_slots_count_(0),
               runtime_const_pool_(class_file->const_pool_, this)

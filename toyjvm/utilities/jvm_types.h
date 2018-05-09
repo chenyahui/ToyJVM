@@ -16,6 +16,7 @@ namespace jvm {
     using u1 = uint8_t;
     using bytes = std::vector<u1>;
 
+    using jbool = bool;
     using jfloat = float;
     using jdouble = double;
     using jint = int32_t;

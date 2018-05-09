@@ -13,4 +13,11 @@ namespace jvm {
         auto field = objclass->getField(name, descriptor, false);
         instance_fields_.set<jref>(field->slotIndex(), ref_obj);
     }
+
+    jref JvmObject::getRef(const std::string &name, const std::string &descriptor)
+    {
+        auto objclass = dynamic_cast<JvmClass *>(klass_);
+        auto field = objclass->getField(name, descriptor, false);
+        return instance_fields_.at(field->slotIndex());
+    }
 }

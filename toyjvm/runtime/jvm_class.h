@@ -30,7 +30,7 @@ namespace jvm {
         {}
 
         const std::string &name() const;
-
+        std::string javaName() const;
         const std::string &descriptor() const;
 
         const std::vector<JvmClass *> &interfaces() const;
