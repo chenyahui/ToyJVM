@@ -11,10 +11,15 @@ namespace jvm {
         constant_value_index_ = reader.read<u2>();
     }
 
-    AttrCode::AttrCode(const std::string& attr_type, const ConstPool &const_pool)
+    AttrCode::AttrCode(const std::string &attr_type, const ConstPool &const_pool)
             : BaseAttrInfo(attr_type, const_pool),
               attr_table_(new AttrTable())
     {}
+
+    AttrLineNumberTable *AttrCode::lineNumberTable()
+    {
+        return attr_table_->getFirst<AttrLineNumberTable>("LineNumberTable");
+    }
 
     void AttrCode::read(jvm::ByteReader &reader)
     {
@@ -70,6 +75,11 @@ namespace jvm {
     void AttrSourceFile::read(jvm::ByteReader &reader)
     {
         sourcefile_index_ = reader.read<u2>();
+    }
+
+    std::string AttrSourceFile::sourceFileName() const
+    {
+        return const_pool_.stringAt(sourcefile_index_);
     }
 
     void AttrLineNumberTable::read(jvm::ByteReader &reader)

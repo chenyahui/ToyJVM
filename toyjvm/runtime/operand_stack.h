@@ -39,6 +39,16 @@ namespace jvm {
             return at<jref>(slots_.size() - offset - 1);
         }
 
+        void clear()
+        {
+            slots_.erase(slots_.begin(), slots_.end());
+        }
+
+        bool empty() const
+        {
+            return slots_.empty();
+        }
+
     private:
         size_t stack_num_ = 0;
     };

@@ -5,6 +5,12 @@
 #include <toyjvm/runtime/jvm_member.h>
 
 namespace jvm {
+    bool JvmRef::hasExtra() const
+    {
+        // 存疑
+        return extra_ == boost::none;
+    }
+
     void JvmObject::setRef(const std::string &name,
                            const std::string &descriptor,
                            jvm::jref ref_obj)

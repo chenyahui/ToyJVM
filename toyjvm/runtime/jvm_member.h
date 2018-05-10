@@ -9,6 +9,7 @@
 #include <string>
 #include <toyjvm/classfile/member_info.h>
 #include <toyjvm/runtime/jvm_class.h>
+#include <toyjvm/runtime/exception_table.h>
 
 namespace jvm {
     class JvmMember : boost::noncopyable {
@@ -35,7 +36,7 @@ namespace jvm {
             return name_;
         }
 
-        JvmClass *klass() const
+        JvmBaseClass *klass() const
         {
             return this_class_;
         }
@@ -44,7 +45,7 @@ namespace jvm {
         AccessFlags access_flags_;
         std::string name_;
         std::string descriptor_;
-        JvmClass *this_class_;
+        JvmBaseClass *this_class_;
     };
 
     class JvmField : public JvmMember {
@@ -95,15 +96,25 @@ namespace jvm {
             return args_slot_count_;
         }
 
+        int findExceptionHandler(JvmClass *jclass, int pc) const;
+
+        int getLineNumber(int pc);
+
     private:
         void injectCodeAttribute(const std::string &result_type);
-        void calcArgsSlotCount(std::vector<std::string>& param_types);
+
+        void calcArgsSlotCount(std::vector<std::string> &param_types);
+
         void copyCodeAttr(MethodInfo *method_info);
+
     private:
         u4 max_stack_ = 0;
         u4 max_locals_ = 0;
         bytes code_;
         int args_slot_count_ = 0;
+
+        ExceptionTable *exception_table_ = nullptr;
+        AttrLineNumberTable *line_number_table = nullptr;
     };
 }
 #endif //TOYJVM_JVM_MEMBER_H

@@ -30,7 +30,9 @@ namespace jvm {
         {}
 
         const std::string &name() const;
+
         std::string javaName() const;
+
         const std::string &descriptor() const;
 
         const std::vector<JvmClass *> &interfaces() const;
@@ -50,11 +52,13 @@ namespace jvm {
             return is_array_;
         }
 
-        bool isPrimitive() const{
+        bool isPrimitive() const
+        {
             return is_primitive_;
         }
 
-        JvmRef* metaClass() const{
+        JvmRef *metaClass() const
+        {
             return meta_class_;
         }
 
@@ -136,6 +140,7 @@ namespace jvm {
         {
             return methods_;
         }
+        std::string& sourceFileName() const;
 
     private:
         bool isJavaLangObject();
@@ -143,6 +148,7 @@ namespace jvm {
     private:
         RuntimeConstPool runtime_const_pool_;
 
+        std::string source_file_name_;
         std::vector<JvmField *> fields_;
         std::vector<JvmMethod *> methods_;
         size_t instance_slots_count_;

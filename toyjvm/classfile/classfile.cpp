@@ -83,3 +83,7 @@ void ClassFile::checkMagicAndVersions()
     DLOG(INFO) << "version: " << major_version << "." << minor_version;
 }
 
+AttrSourceFile *ClassFile::sourceFileAttr() const
+{
+    attr_table_.getFirst<AttrSourceFile>("SourceFile");
+}

@@ -29,6 +29,19 @@ namespace jvm {
 
         virtual ~JvmRef() = default;
 
+        bool hasExtra() const;
+
+        void setExtra(boost::any data)
+        {
+            extra_ = data;
+        }
+
+        template<typename T>
+        T getExtra()
+        {
+            return boost::any_cast<T>(extra_);
+        }
+
     protected:
         JvmBaseClass *klass_;
         boost::any extra_;

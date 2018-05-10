@@ -60,6 +60,7 @@ namespace jvm {
         u2 catch_type;
     };
 
+    class AttrLineNumberTable;
     /*
      * TODO 对于bytes data类型的数据，没有必要再存储一份吧，直接建立映射
      */
@@ -85,6 +86,12 @@ namespace jvm {
             return std::move(code_);
         }
 
+        const std::vector<ExceptionInfo> &exceptionTable() const
+        {
+            return exception_table_;
+        }
+
+        AttrLineNumberTable* lineNumberTable();
     private:
         u2 max_stack_;
         u2 max_locals_;
@@ -142,7 +149,7 @@ namespace jvm {
 
     class AttrSignature : public BaseAttrInfo {
     public:
-        explicit AttrSignature(const std::string &attr_type,const ConstPool &const_pool)
+        explicit AttrSignature(const std::string &attr_type, const ConstPool &const_pool)
                 : BaseAttrInfo(attr_type, const_pool)
         {}
 
@@ -160,6 +167,7 @@ namespace jvm {
 
         void read(ByteReader &reader) override;
 
+        std::string sourceFileName() const;
     private:
         u2 sourcefile_index_;;
     };
@@ -228,7 +236,7 @@ namespace jvm {
 
     class AttrBootstrapMethods : public BaseAttrInfo {
     public:
-        explicit AttrBootstrapMethods(const std::string &attr_type,const ConstPool &const_pool)
+        explicit AttrBootstrapMethods(const std::string &attr_type, const ConstPool &const_pool)
                 : BaseAttrInfo(attr_type, const_pool)
         {}
 

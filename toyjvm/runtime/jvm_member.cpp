@@ -77,10 +77,27 @@ namespace jvm {
     void JvmMethod::copyCodeAttr(jvm::MethodInfo *method_info)
     {
         AttrCode *codeAttr = method_info->codeAttr();
+        auto instance_klass = dynamic_cast<JvmClass *>(this_class_);
         if (codeAttr != nullptr) {
             max_stack_ = codeAttr->maxStack();
             max_locals_ = codeAttr->maxLocals();
             code_ = std::move(codeAttr->moveCode());
+
+            exception_table_ = new ExceptionTable(codeAttr->exceptionTable(),
+                                                  dynamic_cast<RuntimeConstPool *>(&(instance_klass->runtimeConstPool()))
+            );
+
+            line_number_table = codeAttr->lineNumberTable();
         }
+    }
+
+    int JvmMethod::findExceptionHandler(jvm::JvmClass *jclass, int pc) const
+    {
+        if (exception_table_ != nullptr) {
+            auto handler = exception_table_->findExceptionHandler(jclass, pc);
+            return handler == boost::none ? -1 : handler.get().handler_pc;
+        }
+
+        return -1;
     }
 }

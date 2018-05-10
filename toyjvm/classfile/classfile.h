@@ -36,6 +36,8 @@ namespace jvm {
 
         void logClassInfo();
 
+        AttrSourceFile *sourceFileAttr() const;
+
     private:
         void checkMagicAndVersions();
 

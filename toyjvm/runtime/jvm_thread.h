@@ -17,16 +17,21 @@ namespace jvm {
             return pc_;
         }
 
-        JvmFrame* pop();
+        JvmFrame *pop();
 
-        void push(JvmFrame*);
+        void push(JvmFrame *);
 
-        JvmFrame* top() const;
+        JvmFrame *top() const;
 
         bool empty() const;
+
+        void clear();
+
+        std::vector<JvmFrame *> &frames();
+
     private:
         size_t pc_ = 0;
-        std::vector<JvmFrame*> stack_;
+        std::vector<JvmFrame *> stack_;
     };
 }
 #endif //TOYJVM_JVM_THREAD_H

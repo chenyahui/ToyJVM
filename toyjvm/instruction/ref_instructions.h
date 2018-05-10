@@ -153,6 +153,14 @@ namespace jvm {
         void execute(JvmFrame &frame) override;
     };
 
+    class ATHROW_Instruction : public BaseInstruction {
+    public:
+        void execute(JvmFrame &frame) override;
+    private:
+        bool findAndGotoExceptionHandler(JvmThread& jthread, JvmObject*);
+        void handleUncaughtException(JvmThread& jthread, JvmObject*);
+    };
+
     template<typename Width>
     class BaseLdcInstruction : public BaseOneOperandInstruction<Width> {
     public:
@@ -187,7 +195,7 @@ namespace jvm {
                 }
                 case ConstType::String: {
                     auto modified_utf8 = rt_const_pool.at<ModifiedUTF8>(this->operand_);
-                    opstack.push<jobj>(StringPool::intern(modified_utf8));
+                    opstack.push<jobj>(StringPool::intern(std::move(modified_utf8)));
                     break;
                 }
                 default: {

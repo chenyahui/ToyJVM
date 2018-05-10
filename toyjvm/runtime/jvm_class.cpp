@@ -173,6 +173,11 @@ namespace jvm {
             }
         }
 
+        auto source_file_attr = class_file->sourceFileAttr();
+        source_file_name_ = source_file_attr->attrType() == nullptr
+                            ? source_file_attr->sourceFileName()
+                            : "UnKnown";
+
         for (auto field_info : class_file->fields_) {
             fields_.push_back(new JvmField(this, field_info));
         }
@@ -180,6 +185,11 @@ namespace jvm {
         for (auto method_info: class_file->methods_) {
             methods_.push_back(new JvmMethod(this, method_info));
         }
+    }
+
+    std::string &JvmClass::sourceFileName() const
+    {
+        return source_file_name_;
     }
 
     JvmMethod *JvmClass::getMainMethod()

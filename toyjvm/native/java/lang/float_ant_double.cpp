@@ -9,8 +9,8 @@
 #include <toyjvm/native/native_methods.h>
 #include <functional>
 
-namespace jvm{
-    namespace native{
+namespace jvm {
+    namespace native {
         template<typename From, typename To>
         void convertTypeAtBits(jvm::JvmFrame &frame)
         {
@@ -33,9 +33,9 @@ namespace jvm{
         }
 
         static bool g_init = init();
+#undef bind_convert
     }
 }
-
 
 
 #endif //TOYJVM_FLOAT_ANT_DOUBLE_H
