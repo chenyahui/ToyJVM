@@ -114,7 +114,7 @@ namespace jvm {
         int args_slot_count_ = 0;
 
         ExceptionTable *exception_table_ = nullptr;
-        AttrLineNumberTable *line_number_table = nullptr;
+        AttrLineNumberTable *line_number_table_ = nullptr;
     };
 }
 #endif //TOYJVM_JVM_MEMBER_H

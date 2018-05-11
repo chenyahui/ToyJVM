@@ -87,7 +87,7 @@ namespace jvm {
                                                   dynamic_cast<RuntimeConstPool *>(&(instance_klass->runtimeConstPool()))
             );
 
-            line_number_table = codeAttr->lineNumberTable();
+            line_number_table_ = codeAttr->lineNumberTable();
         }
     }
 
@@ -99,5 +99,18 @@ namespace jvm {
         }
 
         return -1;
+    }
+
+    int JvmMethod::getLineNumber(int pc)
+    {
+        if (access_flags_.isNative()) {
+            return -2;
+        }
+
+        if (line_number_table_ == nullptr) {
+            return -1;
+        }
+
+        return line_number_table_->getLineNumber(pc);
     }
 }

@@ -96,6 +96,17 @@ namespace jvm {
         }
     }
 
+    int AttrLineNumberTable::getLineNumber(int pc) const
+    {
+        for (int i = line_number_table_.size(); i > 0; --i) {
+            if (pc >= line_number_table_[i].start_pc) {
+                return line_number_table_[i].line_number;
+            }
+        }
+
+        return -1;
+    }
+
     void AttrLocalVariableTable::read(jvm::ByteReader &reader)
     {
         auto count = reader.read<u2>();

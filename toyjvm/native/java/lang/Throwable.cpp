@@ -7,6 +7,18 @@
 
 using namespace jvm::native;
 
+bool JavaLangThrowable::init()
+{
+    registerMethod("fillInStackTrace", "(I)Ljava/lang/Throwable;", BIND_STATIC(JavaLangThrowable::fillInStackTrace));
+}
+
+void JavaLangThrowable::registerMethod(const std::string &method_name, const std::string &method_descriptor,
+                                       jvm::native::NativeMethod &&native_method)
+{
+    NativeMethods::registerMethod("java/lang/Throwable", method_name, method_descriptor, std::move(native_method));
+
+}
+
 void JavaLangThrowable::fillInStackTrace(jvm::JvmFrame &frame)
 {
     auto this_obj = dynamic_cast<jobj>(frame.localSlots().getThis());
@@ -33,13 +45,13 @@ JavaLangThrowable::createStackTraceElements(jvm::JvmObject *obj, jvm::JvmThread 
 jvm::StackTraceElement JavaLangThrowable::createStackTraceElement(jvm::JvmFrame *frame)
 {
     auto method = frame->method();
-    auto klass = dynamic_cast<JvmClass*>(method->klass());
+    auto klass = dynamic_cast<JvmClass *>(method->klass());
 
     return {
             klass->sourceFileName(),
             klass->javaName(),
             method->name(),
-            method->GetLineNumber(frame->NextPc() - 1)
+            method->getLineNumber(frame->nextPc() - 1)
     };
 }
 

@@ -185,6 +185,7 @@ namespace jvm {
 
         void read(ByteReader &reader) override;
 
+        int getLineNumber(int pc) const;
     private:
         std::vector<LineNumberInfo> line_number_table_;
     };
